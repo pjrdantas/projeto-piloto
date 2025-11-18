@@ -17,14 +17,11 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
 
     private final RoleJpaRepository roleJpaRepository;
     private final RoleMapper roleMapper;
-    private final PermissionMapper permissionMapper;
-
     public RoleRepositoryAdapter(RoleJpaRepository roleJpaRepository,
                                  RoleMapper roleMapper,
                                  PermissionMapper permissionMapper) {
         this.roleJpaRepository = roleJpaRepository;
         this.roleMapper = roleMapper;
-        this.permissionMapper = permissionMapper;
     }
 
     @Override
