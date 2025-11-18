@@ -9,10 +9,5 @@ class ProjetoPilotoApplicationTest {
 	@Test
     void contextLoads() {
     }
-	/*
-    @Test
-    void mainDeveExecutarSemErros() {
-        ProjetoPilotoApplication.main(new String[]{}); 
-    }
-    */
+	
 }

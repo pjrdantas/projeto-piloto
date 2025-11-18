@@ -35,7 +35,7 @@ public class UserEntity {
     private String nome;
     private String login;
     private String senha;
-    private String ativo;
+    private String ativo; // "S" ou "N"
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

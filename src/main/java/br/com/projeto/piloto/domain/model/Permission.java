@@ -1,6 +1,5 @@
 package br.com.projeto.piloto.domain.model;
 
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Role {
-
+public class Permission {
     private Long id;
     private String nome;
-    private Set<Permission> permissoes;
 }
