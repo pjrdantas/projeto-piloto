@@ -1,0 +1,292 @@
+Listagem de caminhos de pasta
+O n£mero de s‚rie do volume ‚ C0000100 2EC2:27B3
+C:.
+|   .classpath
+|   .factorypath
+|   .gitattributes
+|   .gitignore
+|   .project
+|   estrutura_pastas.txt
+|   HELP.md
+|   mvnw
+|   mvnw.cmd
+|   pom.xml
+|   README.md
+|   
++---.mvn
+|   \---wrapper
+|           maven-wrapper.properties
+|           
++---.settings
+|       org.eclipse.core.resources.prefs
+|       org.eclipse.jdt.apt.core.prefs
+|       org.eclipse.jdt.core.prefs
+|       org.eclipse.m2e.core.prefs
+|       org.springframework.ide.eclipse.prefs
+|       
++---src
+|   +---main
+|   |   +---java
+|   |   |   \---br
+|   |   |       \---com
+|   |   |           \---projeto
+|   |   |               \---piloto
+|   |   |                   |   ProjetoPilotoApplication.java
+|   |   |                   |   
+|   |   |                   +---adapter
+|   |   |                   |   +---in
+|   |   |                   |   |   \---web
+|   |   |                   |   |       +---controller
+|   |   |                   |   |       |       AuthController.java
+|   |   |                   |   |       |       
+|   |   |                   |   |       \---exception
+|   |   |                   |   |               ErrorResponse.java
+|   |   |                   |   |               GlobalExceptionHandler.java
+|   |   |                   |   |               
+|   |   |                   |   \---out
+|   |   |                   |       \---jpa
+|   |   |                   |           |   UserRepositoryAdapter.java
+|   |   |                   |           |   
+|   |   |                   |           +---entity
+|   |   |                   |           |       RoleEntity.java
+|   |   |                   |           |       UserEntity.java
+|   |   |                   |           |       
+|   |   |                   |           +---mapper
+|   |   |                   |           |       RoleMapper.java
+|   |   |                   |           |       UserDTOMapper.java
+|   |   |                   |           |       UserMapper.java
+|   |   |                   |           |       
+|   |   |                   |           \---repository
+|   |   |                   |                   RoleJpaRepository.java
+|   |   |                   |                   SpringDataRoleRepository.java
+|   |   |                   |                   SpringDataUserRepository.java
+|   |   |                   |                   
+|   |   |                   +---api
+|   |   |                   |   \---dto
+|   |   |                   |           AuthResponse.java
+|   |   |                   |           CriarPerfilRequest.java
+|   |   |                   |           CriarPermissaoRequest.java
+|   |   |                   |           CriarUsuarioRequest.java
+|   |   |                   |           LoginRequest.java
+|   |   |                   |           PermissionDTO.java
+|   |   |                   |           RefreshTokenRequest.java
+|   |   |                   |           RegisterRequest.java
+|   |   |                   |           RoleDTO.java
+|   |   |                   |           UsuarioDTO.java
+|   |   |                   |           
+|   |   |                   +---application
+|   |   |                   |   \---usecase
+|   |   |                   |           AuthService.java
+|   |   |                   |           UserDomainService.java
+|   |   |                   |           
+|   |   |                   +---domain
+|   |   |                   |   +---exception
+|   |   |                   |   |       DomainException.java
+|   |   |                   |   |       UserNotFoundException.java
+|   |   |                   |   |       
+|   |   |                   |   +---model
+|   |   |                   |   |       Role.java
+|   |   |                   |   |       User.java
+|   |   |                   |   |       
+|   |   |                   |   \---port
+|   |   |                   |       +---inbound
+|   |   |                   |       |       AuthUseCasePort.java
+|   |   |                   |       |       UserUseCasePort.java
+|   |   |                   |       |       
+|   |   |                   |       \---outbound
+|   |   |                   |               RoleRepositoryPort.java
+|   |   |                   |               UserDomainRepositoryPort.java
+|   |   |                   |               UserRepositoryPort.java
+|   |   |                   |               
+|   |   |                   \---infrastructure
+|   |   |                       +---config
+|   |   |                       |       SwaggerConfig.java
+|   |   |                       |       
+|   |   |                       \---security
+|   |   |                               CustomUserDetailsService.java
+|   |   |                               JwtAuthenticationFilter.java
+|   |   |                               JwtUtil.java
+|   |   |                               SecurityConfig.java
+|   |   |                               
+|   |   \---resources
+|   |       |   application.yml
+|   |       |   
+|   |       +---META-INF
+|   |       |       MANIFEST.MF
+|   |       |       
+|   |       +---static
+|   |       \---templates
+|   \---test
+|       +---java
+|       |   \---br
+|       |       \---com
+|       |           \---projeto
+|       |               \---piloto
+|       |                   |   ProjetoPilotoApplicationTests.java
+|       |                   |   
+|       |                   +---adapter
+|       |                   |   +---in
+|       |                   |   |   \---web
+|       |                   |   |       +---controller
+|       |                   |   |       \---exception
+|       |                   |   |               ErrorResponseTest.java
+|       |                   |   |               GlobalExceptionHandlerTest.java
+|       |                   |   |               
+|       |                   |   \---out
+|       |                   |       \---jpa
+|       |                   |           |   UserRepositoryAdapterTest.java
+|       |                   |           |   
+|       |                   |           +---entity
+|       |                   |           |       RoleEntityTest.java
+|       |                   |           |       UserEntityTest.java
+|       |                   |           |       
+|       |                   |           +---mapper
+|       |                   |           |       package-info.java
+|       |                   |           |       
+|       |                   |           \---repository
+|       |                   |                   package-info.java
+|       |                   |                   
+|       |                   +---api
+|       |                   |   \---dto
+|       |                   |           AuthResponseTest.java
+|       |                   |           LoginRequestTest.java
+|       |                   |           RegisterRequestTest.java
+|       |                   |           
+|       |                   +---application
+|       |                   |   \---service
+|       |                   +---domain
+|       |                   |   \---exception
+|       |                   |           DomainExceptionTest.java
+|       |                   |           UserNotFoundExceptionTest.java
+|       |                   |           
+|       |                   \---infrastructure
+|       |                       +---config
+|       |                       |       SwaggerConfigTest.java
+|       |                       |       
+|       |                       \---security
+|       |                               CustomUserDetailsServiceTest.java
+|       |                               JwtAuthenticationFilterTest.java
+|       |                               JwtUtilTest.java
+|       |                               SecurityConfigTest.java
+|       |                               
+|       \---resources
+|               application-test.yml
+|               
+\---target
+    |   projeto-piloto-0.0.1-SNAPSHOT.jar
+    |   
+    +---classes
+    |   |   application.yml
+    |   |   
+    |   +---br
+    |   |   \---com
+    |   |       \---projeto
+    |   |           \---piloto
+    |   |               |   ProjetoPilotoApplication.class
+    |   |               |   
+    |   |               +---adapter
+    |   |               |   +---in
+    |   |               |   |   \---web
+    |   |               |   |       +---controller
+    |   |               |   |       |       AuthController.class
+    |   |               |   |       |       
+    |   |               |   |       \---exception
+    |   |               |   |               ErrorResponse$ErrorResponseBuilder.class
+    |   |               |   |               ErrorResponse.class
+    |   |               |   |               GlobalExceptionHandler.class
+    |   |               |   |               
+    |   |               |   \---out
+    |   |               |       \---jpa
+    |   |               |           |   UserRepositoryAdapter.class
+    |   |               |           |   
+    |   |               |           +---entity
+    |   |               |           |       RoleEntity$RoleEntityBuilder.class
+    |   |               |           |       RoleEntity.class
+    |   |               |           |       UserEntity$UserEntityBuilder.class
+    |   |               |           |       UserEntity.class
+    |   |               |           |       
+    |   |               |           +---mapper
+    |   |               |           |       RoleMapper.class
+    |   |               |           |       UserDTOMapper.class
+    |   |               |           |       UserMapper.class
+    |   |               |           |       
+    |   |               |           \---repository
+    |   |               |                   RoleJpaRepository.class
+    |   |               |                   SpringDataRoleRepository.class
+    |   |               |                   SpringDataUserRepository.class
+    |   |               |                   
+    |   |               +---api
+    |   |               |   \---dto
+    |   |               |           AuthResponse.class
+    |   |               |           CriarPerfilRequest.class
+    |   |               |           CriarPermissaoRequest.class
+    |   |               |           CriarUsuarioRequest.class
+    |   |               |           LoginRequest.class
+    |   |               |           PermissionDTO.class
+    |   |               |           RefreshTokenRequest.class
+    |   |               |           RegisterRequest.class
+    |   |               |           RoleDTO.class
+    |   |               |           UsuarioDTO.class
+    |   |               |           
+    |   |               +---application
+    |   |               |   \---usecase
+    |   |               |           AuthService.class
+    |   |               |           UserDomainService.class
+    |   |               |           
+    |   |               +---domain
+    |   |               |   +---exception
+    |   |               |   |       DomainException.class
+    |   |               |   |       UserNotFoundException.class
+    |   |               |   |       
+    |   |               |   +---model
+    |   |               |   |       Role$RoleBuilder.class
+    |   |               |   |       Role.class
+    |   |               |   |       User$UserBuilder.class
+    |   |               |   |       User.class
+    |   |               |   |       
+    |   |               |   \---port
+    |   |               |       +---inbound
+    |   |               |       |       AuthUseCasePort.class
+    |   |               |       |       UserUseCasePort.class
+    |   |               |       |       
+    |   |               |       \---outbound
+    |   |               |               RoleRepositoryPort.class
+    |   |               |               UserDomainRepositoryPort.class
+    |   |               |               UserRepositoryPort.class
+    |   |               |               
+    |   |               \---infrastructure
+    |   |                   +---config
+    |   |                   |       SwaggerConfig.class
+    |   |                   |       
+    |   |                   \---security
+    |   |                           CustomUserDetailsService.class
+    |   |                           JwtAuthenticationFilter.class
+    |   |                           JwtUtil.class
+    |   |                           SecurityConfig.class
+    |   |                           
+    |   \---META-INF
+    |       |   MANIFEST.MF
+    |       |   
+    |       \---maven
+    |           \---br.com.projeto
+    |               \---projeto-piloto
+    |                       pom.properties
+    |                       pom.xml
+    |                       
+    +---generated-sources
+    |   \---annotations
+    +---generated-test-sources
+    |   \---test-annotations
+    +---maven-archiver
+    |       pom.properties
+    |       
+    +---maven-status
+    |   \---maven-compiler-plugin
+    |       \---compile
+    |           \---default-compile
+    |                   createdFiles.lst
+    |                   inputFiles.lst
+    |                   
+    \---test-classes
+            application-test.yml
+            
