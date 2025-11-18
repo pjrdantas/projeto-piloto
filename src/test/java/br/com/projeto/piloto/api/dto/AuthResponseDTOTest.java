@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 
-class AuthResponseTest {
+class AuthResponseDTOTest {
 
     @Test
     void deveCriarEExporCamposCorretamente() {
-        AuthResponse resp = new AuthResponse("token123", "refresh456", "usuario1");
+        AuthResponseDTO resp = new AuthResponseDTO("token123", "refresh456", "usuario1");
 
         assertEquals("token123", resp.token());
         assertEquals("refresh456", resp.refreshToken());
@@ -20,9 +20,9 @@ class AuthResponseTest {
 
     @Test
     void equalsEHashCodeFuncionam() {
-        AuthResponse a = new AuthResponse("t", "r", "u");
-        AuthResponse b = new AuthResponse("t", "r", "u");
-        AuthResponse c = new AuthResponse("t2", "r", "u");
+        AuthResponseDTO a = new AuthResponseDTO("t", "r", "u");
+        AuthResponseDTO b = new AuthResponseDTO("t", "r", "u");
+        AuthResponseDTO c = new AuthResponseDTO("t2", "r", "u");
 
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
@@ -31,7 +31,7 @@ class AuthResponseTest {
 
     @Test
     void toStringContemInformacoesEsperadas() {
-        AuthResponse resp = new AuthResponse("tok", "ref", "usr");
+        AuthResponseDTO resp = new AuthResponseDTO("tok", "ref", "usr");
         String s = resp.toString();
 
         assertTrue(s.contains("tok"));

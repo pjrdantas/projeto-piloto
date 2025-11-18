@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.projeto.piloto.api.dto.AuthResponse;
-import br.com.projeto.piloto.api.dto.LoginRequest;
-import br.com.projeto.piloto.api.dto.RefreshTokenRequest;
-import br.com.projeto.piloto.api.dto.RegisterRequest;
+import br.com.projeto.piloto.api.dto.AuthResponseDTO;
+import br.com.projeto.piloto.api.dto.LoginRequestDTO;
+import br.com.projeto.piloto.api.dto.RefreshTokenRequestDTO;
+import br.com.projeto.piloto.api.dto.RegisterRequestDTO;
 import br.com.projeto.piloto.application.usecase.AuthService;
 import br.com.projeto.piloto.domain.model.User;
 import br.com.projeto.piloto.infrastructure.security.JwtUtil;
@@ -47,12 +47,12 @@ public class AuthController {
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class)))
     })
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         User user = authService.authenticate(request.login(), request.senha());
         Set<String> roles = user.getPerfis().stream().map(r -> r.getNome()).collect(Collectors.toSet());
         String token = jwtUtil.generateToken(user.getLogin(), roles);
         String refreshToken = jwtUtil.generateRefreshToken(user.getLogin());
-        return ResponseEntity.ok(new AuthResponse(token, refreshToken, user.getLogin()));
+        return ResponseEntity.ok(new AuthResponseDTO(token, refreshToken, user.getLogin()));
     }
 
     @PostMapping("/register")
@@ -65,7 +65,7 @@ public class AuthController {
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class)))
     })
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
         User novoUser = new User();
         novoUser.setNome(request.nome());
         novoUser.setLogin(request.login());
@@ -90,7 +90,7 @@ public class AuthController {
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class)))
     })
-    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO request) {
         String refreshToken = request.refreshToken();
         if (refreshToken == null || refreshToken.isBlank()) {
             throw new IllegalArgumentException("O token de refresh não pode ser nulo ou vazio");

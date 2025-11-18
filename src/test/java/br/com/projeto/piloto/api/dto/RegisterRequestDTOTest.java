@@ -6,22 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-
-class LoginRequestTest {
+class RegisterRequestDTOTest {
 
     @Test
     void deveCriarEExporCamposCorretamente() {
-        LoginRequest req = new LoginRequest("usuario1", "senha123");
+        RegisterRequestDTO req = new RegisterRequestDTO("João Silva", "joao", "senha123");
 
-        assertEquals("usuario1", req.login());
+        assertEquals("João Silva", req.nome());
+        assertEquals("joao", req.login());
         assertEquals("senha123", req.senha());
     }
 
     @Test
     void equalsEHashCodeFuncionamCorretamente() {
-        LoginRequest a = new LoginRequest("u", "s");
-        LoginRequest b = new LoginRequest("u", "s");
-        LoginRequest c = new LoginRequest("u2", "s");
+        RegisterRequestDTO a = new RegisterRequestDTO("Ana", "ana", "s1");
+        RegisterRequestDTO b = new RegisterRequestDTO("Ana", "ana", "s1");
+        RegisterRequestDTO c = new RegisterRequestDTO("Ana2", "ana", "s1");
 
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
@@ -30,10 +30,11 @@ class LoginRequestTest {
 
     @Test
     void toStringContemInformacoesEsperadas() {
-        LoginRequest req = new LoginRequest("meuUser", "minhaSenha");
+        RegisterRequestDTO req = new RegisterRequestDTO("Carlos", "carlos", "minhaSenha");
         String s = req.toString();
 
-        assertTrue(s.contains("meuUser"));
+        assertTrue(s.contains("Carlos"));
+        assertTrue(s.contains("carlos"));
         assertTrue(s.contains("minhaSenha"));
     }
 }
