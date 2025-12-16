@@ -1,10 +1,11 @@
 package br.com.projeto.piloto.domain.port.inbound;
 
-import br.com.projeto.piloto.domain.model.User;
+import br.com.projeto.piloto.domain.model.AuthUsuarioModel;
 
 public interface AuthUseCasePort {
-
-    User authenticate(String login, String senha);
-
-    User register(User user);
+	
+    AuthUsuarioModel authenticate(String login, String senha);
+    
+    
+    
 }

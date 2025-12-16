@@ -3,37 +3,32 @@ package br.com.projeto.piloto.application.usecase;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.projeto.piloto.domain.model.User;
+import br.com.projeto.piloto.adapter.in.web.exception.InvalidLoginException;
+import br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuario;
+import br.com.projeto.piloto.adapter.out.jpa.mapper.AuthUsuarioMapper;
+import br.com.projeto.piloto.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.domain.port.inbound.AuthUseCasePort;
-import br.com.projeto.piloto.domain.port.inbound.UserUseCasePort;
+import br.com.projeto.piloto.domain.port.outbound.AuthUsuarioRepositoryPort;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService implements AuthUseCasePort {
 
-    private final UserUseCasePort userUseCasePort;
-    private final PasswordEncoder passwordEncoder;
+	private final AuthUsuarioRepositoryPort usuarioRepo;
+	private final PasswordEncoder passwordEncoder;
+	private final AuthUsuarioMapper mapper;
 
-    public AuthService(UserUseCasePort userUseCasePort, PasswordEncoder passwordEncoder) {
-        this.userUseCasePort = userUseCasePort;
-        this.passwordEncoder = passwordEncoder;
-    }
+	@Override
+	public AuthUsuarioModel authenticate(String login, String senha) {
 
-    @Override
-    public User register(User user) {
-        user.setSenha(passwordEncoder.encode(user.getSenha()));
-        return userUseCasePort.save(user);
-    }
+		AuthUsuario user = usuarioRepo.findByLogin(login)
+				.orElseThrow(() -> new InvalidLoginException("Usuário ou senha inválidos"));
 
-    @Override
-    public User authenticate(String login, String senha) {
+		if (!passwordEncoder.matches(senha, user.getSenha())) {
+			throw new InvalidLoginException("Usuário ou senha inválidos");
+		}
 
-        User user = userUseCasePort.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        if (!passwordEncoder.matches(senha, user.getSenha())) {
-            throw new RuntimeException("Senha inválida");
-        }
-
-        return user;
-    }
+		return mapper.toDomain(user);
+	}
 }
