@@ -1,44 +1,51 @@
 package br.com.projeto.piloto.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.adapter.out.jpa.entity.UserEntity;
-import br.com.projeto.piloto.adapter.out.jpa.repository.SpringDataUserRepository;
+import br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuario;
+import br.com.projeto.piloto.domain.port.outbound.AuthUsuarioRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final SpringDataUserRepository userRepository;
+    private final AuthUsuarioRepositoryPort userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByLogin(username)
+        AuthUsuario authUsuario = userRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-        // Mantemos a lógica antiga: UserEntity.ativo é String "S"/"N"
-        if (!"S".equalsIgnoreCase(userEntity.getAtivo())) {
-            throw new DisabledException("Usuário está inativo no sistema");
+        if (!"S".equalsIgnoreCase(authUsuario.getAtivo())) {
+            throw new DisabledException("Usuário inativo");
         }
 
-        String[] authorities = userEntity.getPerfis()
-                .stream()
-                .map(p -> p.getNome())
-                .toArray(String[]::new);
+        Set<String> authorities = new HashSet<>();
+        
+        authUsuario.getPerfis().forEach(perfil -> {
+            authorities.add("ROLE_" + perfil.getNmPerfil().toUpperCase()); 
 
-        return User.withUsername(userEntity.getLogin())
-                .password(userEntity.getSenha())
-                .authorities(authorities)
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false)
+            perfil.getPermissoes().forEach(permissao -> {
+                authorities.add(permissao.getNmPermissao().toUpperCase()); 
+            });
+        });
+
+        return User.withUsername(authUsuario.getLogin())
+                .password(authUsuario.getSenha())
+                .authorities(authorities.toArray(new String[0]))
                 .build();
     }
+
 }

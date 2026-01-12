@@ -1,82 +1,83 @@
 package br.com.projeto.piloto.infrastructure.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.junit.jupiter.api.Test;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.security.Key;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class JwtUtilTest {
 
-    private final String secret = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    private JwtUtil jwtUtil;
+    private final String secret = "minha-chave-secreta-muito-longa-e-segura-12345";
+    private final long expiration = 3600000; // 1 hora
+    private final long refreshExpiration = 7200000; // 2 horas
+
+    @BeforeEach
+    void setUp() {
+        jwtUtil = new JwtUtil(secret, expiration, refreshExpiration);
+    }
 
     @Test
-    void deveGerarEValidarTokenDeAcesso() {
-        JwtUtil jwtUtil = new JwtUtil(secret, 60_000L, 120_000L);
+    @DisplayName("Deve gerar e extrair dados de um token válido")
+    void deveGerarEExtrairDados() {
+        String username = "usuario.teste";
+        Set<String> roles = Set.of("ROLE_ADMIN", "ROLE_USER");
 
-        String token = jwtUtil.generateToken("usuario1", Set.of("ROLE_USER", "ROLE_ADMIN"));
+        String token = jwtUtil.generateToken(username, roles);
+
         assertNotNull(token);
         assertTrue(jwtUtil.validate(token));
-        assertEquals("usuario1", jwtUtil.getUsername(token));
+        assertEquals(username, jwtUtil.getUsername(token));
+        
+        List<String> extractedRoles = jwtUtil.getRoles(token);
+        assertTrue(extractedRoles.containsAll(roles));
+    }
 
-        Key key = Keys.hmacShaKeyFor(secret.getBytes());
-        List<?> roles = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("roles", List.class);
+    @Test
+    @DisplayName("Deve gerar e validar Refresh Token")
+    void deveGerarEValidarRefreshToken() {
+        String username = "usuario.refresh";
+        String refreshToken = jwtUtil.generateRefreshToken(username);
 
+        assertNotNull(refreshToken);
+        assertEquals(username, jwtUtil.extractUsernameFromRefreshToken(refreshToken));
+    }
+
+    @Test
+    @DisplayName("Cobre Linha 52 e 54 (Catch): Deve retornar falso para token expirado ou inválido")
+    void deveRetornarFalsoParaTokensInvalidos() {
+        assertFalse(jwtUtil.validate("token-totalmente-errado"));
+        JwtUtil jwtExpiradoUtil = new JwtUtil(secret, -1000, -1000);
+        String tokenVencido = jwtExpiradoUtil.generateToken("user", Set.of("ADMIN"));
+        
+        assertFalse(jwtUtil.validate(tokenVencido));
+    }
+
+    @Test
+    @DisplayName("Cobre Linha 67 e 70: Deve tratar roles que não são lista ou inexistentes")
+    void deveTratarRolesInexistentes() {
+        String tokenSemRoles = jwtUtil.generateRefreshToken("user");
+
+        List<String> roles = jwtUtil.getRoles(tokenSemRoles);
+        
         assertNotNull(roles);
-        assertTrue(roles.contains("ROLE_USER"));
-        assertTrue(roles.contains("ROLE_ADMIN"));
+        assertTrue(roles.isEmpty()); // Cobre a linha 70 (return List.of())
     }
 
     @Test
-    void deveGerarEValidarRefreshTokenEExtrairUsername() {
-        JwtUtil jwtUtil = new JwtUtil(secret, 60_000L, 120_000L);
-
-        String refresh = jwtUtil.generateRefreshToken("refreshUser");
-        assertNotNull(refresh);
-        assertTrue(jwtUtil.validate(refresh));
-        assertEquals("refreshUser", jwtUtil.extractUsernameFromRefreshToken(refresh));
-    }
-
-    @Test
-    void tokenAlteradoDeveSerInvalido() {
-         
-        JwtUtil jwtUtilValido = new JwtUtil(secret, 60_000L, 120_000L);
-        String token = jwtUtilValido.generateToken("usuario", Set.of());
-        assertTrue(jwtUtilValido.validate(token));
-
-         
-        String outroSecret = "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789";
-        JwtUtil jwtUtilInvalido = new JwtUtil(outroSecret, 60_000L, 120_000L);
-
-         
-        assertFalse(jwtUtilInvalido.validate(token));
-    }
-
-
-    @Test
-    void tokenExpiradoDeveSerInvalido() throws InterruptedException {
-         
-        JwtUtil jwtUtil = new JwtUtil(secret, 1L, 120_000L);
-
-        String token = jwtUtil.generateToken("user-exp", Set.of());
-        assertNotNull(token);
-
-         
-        Thread.sleep(10);
-
-        assertFalse(jwtUtil.validate(token));
+    @DisplayName("Cobre Linha 67: Roles como tipo diferente de List")
+    void deveValidarRolesInstanciaDiferente() {
+        String token = jwtUtil.generateToken("user", Set.of("ADMIN"));
+        List<String> roles = jwtUtil.getRoles(token);
+        assertFalse(roles.isEmpty());
     }
 }

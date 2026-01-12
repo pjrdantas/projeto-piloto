@@ -1,84 +1,79 @@
 package br.com.projeto.piloto.infrastructure.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import br.com.projeto.piloto.adapter.out.jpa.entity.RoleEntity;
-import br.com.projeto.piloto.adapter.out.jpa.entity.UserEntity;
-import br.com.projeto.piloto.adapter.out.jpa.repository.SpringDataUserRepository;
+import br.com.projeto.piloto.adapter.out.jpa.entity.AuthPerfil;
+import br.com.projeto.piloto.adapter.out.jpa.entity.AuthPermissao;
+import br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuario;
+import br.com.projeto.piloto.domain.port.outbound.AuthUsuarioRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {
 
     @Mock
-    private SpringDataUserRepository userRepository;
+    private AuthUsuarioRepositoryPort userRepository;
 
     @InjectMocks
     private CustomUserDetailsService service;
 
     @Test
-    void loadUserByUsername_deveRetornarUserDetails_quandoUsuarioExistirEAtivo() {
-        RoleEntity r1 = RoleEntity.builder().id(1L).nome("ROLE_ADMIN").build();
-        RoleEntity r2 = RoleEntity.builder().id(2L).nome("ROLE_USER").build();
+    @DisplayName("Deve carregar UserDetails com Roles e Permissões corretamente")
+    void deveCarregarUsuarioComAuthorities() {
+        String login = "admin";
+        AuthUsuario usuario = new AuthUsuario();
+        usuario.setLogin(login);
+        usuario.setSenha("123");
+        usuario.setAtivo("S");
+        AuthPermissao permissao = new AuthPermissao();
+        permissao.setNmPermissao("READ_PRIVILEGE");
 
-        UserEntity userEntity = UserEntity.builder()
-                .id(10L)
-                .login("usuario1")
-                .senha("senhaCodificada")
-                .ativo("S")
-                .perfis(Set.of(r1, r2))
-                .build();
+        AuthPerfil perfil = new AuthPerfil();
+        perfil.setNmPerfil("ADMIN");
+        perfil.setPermissoes(Set.of(permissao));
 
-        when(userRepository.findByLogin("usuario1")).thenReturn(Optional.of(userEntity));
+        usuario.setPerfis(Set.of(perfil));
 
-        UserDetails ud = service.loadUserByUsername("usuario1");
-
-        assertEquals("usuario1", ud.getUsername());
-        assertEquals("senhaCodificada", ud.getPassword());
-
-        Set<String> authorities = ud.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
-
-        assertTrue(authorities.contains("ROLE_ADMIN"));
-        assertTrue(authorities.contains("ROLE_USER"));
+        when(userRepository.findByLogin(login)).thenReturn(Optional.of(usuario));
+        UserDetails result = service.loadUserByUsername(login);
+        assertNotNull(result);
+        assertEquals(login, result.getUsername());
+        assertTrue(result.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
+        assertTrue(result.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("READ_PRIVILEGE")));
     }
 
     @Test
-    void loadUserByUsername_deveLancarUsernameNotFound_quandoUsuarioNaoExistir() {
-        when(userRepository.findByLogin("naoexiste")).thenReturn(Optional.empty());
+    @DisplayName("Cobre orElseThrow: Deve lançar erro quando usuário não existe")
+    void deveLancarErroUsuarioNaoEncontrado() {
+        when(userRepository.findByLogin("inexistente")).thenReturn(Optional.empty());
 
-        assertThrows(UsernameNotFoundException.class,
-                () -> service.loadUserByUsername("naoexiste"));
+        assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername("inexistente"));
     }
 
     @Test
-    void loadUserByUsername_deveLancarDisabledException_quandoUsuarioInativo() {
-        UserEntity userEntity = UserEntity.builder()
-                .login("inativo")
-                .senha("x")
-                .ativo("N")
-                .build();
+    @DisplayName("Cobre if(!'S'): Deve lançar erro quando usuário está inativo")
+    void deveLancarErroUsuarioInativo() {
+        AuthUsuario usuarioInativo = new AuthUsuario();
+        usuarioInativo.setAtivo("N");
 
-        when(userRepository.findByLogin("inativo")).thenReturn(Optional.of(userEntity));
+        when(userRepository.findByLogin("inativo")).thenReturn(Optional.of(usuarioInativo));
 
-        assertThrows(DisabledException.class,
-                () -> service.loadUserByUsername("inativo"));
+        assertThrows(DisabledException.class, () -> service.loadUserByUsername("inativo"));
     }
 }

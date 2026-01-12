@@ -1,111 +1,126 @@
 package br.com.projeto.piloto.adapter.in.web.exception;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import br.com.projeto.piloto.api.dto.RegisterRequest;
 import br.com.projeto.piloto.domain.exception.DomainException;
 import br.com.projeto.piloto.domain.exception.UserNotFoundException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 
-import jakarta.validation.Valid;
-
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)  
-@Import(GlobalExceptionHandlerTest.TestController.class)
+@ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private GlobalExceptionHandler handler;
 
-    @RestController
-    @RequestMapping("/test")
-    public static class TestController {
+    @Mock
+    private HttpServletRequest request;
 
-        @GetMapping("/domain-exception")
-        public void throwDomainException() {
-            throw new DomainException("Erro de negócio teste");
-        }
-
-        @GetMapping("/user-not-found")
-        public void throwUserNotFoundException() {
-            throw new UserNotFoundException("Usuário não encontrado no sistema");
-        }
-
-        @GetMapping("/generic-exception")
-        public void throwGenericException() {
-            throw new RuntimeException("Erro genérico inesperado");
-        }
-
-         
-        @PostMapping("/validation")
-        public void validationTest(@RequestBody @Valid RegisterRequest request) {
-           
-        }
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve tratar RuntimeException generica")
+    void handleRuntimeException() {
+        when(request.getRequestURI()).thenReturn("/api/teste");
+        ResponseEntity<ErrorResponse> response = handler.handleRuntimeException(new RuntimeException("Erro fatal"), request);
+        
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Erro de execução", response.getBody().getError());
     }
 
     @Test
-    void deveHandleDomainException() throws Exception {
-        mockMvc.perform(get("/test/domain-exception"))
-                .andExpect(status().isForbidden())  
-                .andExpect(jsonPath("$.status").value(403))
-                .andExpect(jsonPath("$.error").value("Erro de negócio"))
-                .andExpect(jsonPath("$.message").value("Erro de negócio teste"))
-                .andExpect(jsonPath("$.path").value("/test/domain-exception"))
-                .andExpect(jsonPath("$.timestamp").exists());
+    @DisplayName("Deve tratar InvalidLoginException")
+    void handleInvalidLogin() {
+        ResponseEntity<ErrorResponse> response = handler.handleInvalidLogin(new InvalidLoginException("Login falhou"), request);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
     @Test
-    void deveHandleUserNotFoundException() throws Exception {
-        mockMvc.perform(get("/test/user-not-found"))
-                .andExpect(status().isNotFound())  
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.error").value("Usuário não encontrado"))
-                .andExpect(jsonPath("$.message").value("Usuário não encontrado no sistema"))
-                .andExpect(jsonPath("$.path").value("/test/user-not-found"))
-                .andExpect(jsonPath("$.timestamp").exists());
+    @DisplayName("Deve tratar DomainException")
+    void handleDomain() {
+        ResponseEntity<ErrorResponse> response = handler.handleDomain(new DomainException("Erro negocio"), request);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
-    void deveHandleGenericException() throws Exception {
-        mockMvc.perform(get("/test/generic-exception"))
-                .andExpect(status().isInternalServerError())  
-                .andExpect(jsonPath("$.status").value(500))
-                .andExpect(jsonPath("$.error").value("Erro interno"))
-                .andExpect(jsonPath("$.message").value("Ocorreu um erro inesperado no servidor"))
-                .andExpect(jsonPath("$.path").value("/test/generic-exception"))
-                .andExpect(jsonPath("$.timestamp").exists());
+    @DisplayName("Deve tratar UserNotFoundException")
+    void handleUserNotFound() {
+        ResponseEntity<ErrorResponse> response = handler.handleUserNotFound(new UserNotFoundException("Sumiu"), request);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve tratar MethodArgumentNotValidException e mapear erros")
+    void handleValidation() {
+        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        FieldError fieldError = new FieldError("obj", "campo", "obrigatorio");
+        
+        when(ex.getBindingResult()).thenReturn(bindingResult);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(fieldError));
+
+        ResponseEntity<ErrorResponse> response = handler.handleValidation(ex, request);
+
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
+        assertEquals("obrigatorio", response.getBody().getValidationErrors().get("campo"));
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve tratar ExpiredJwtException")
+    void handleExpiredJwt() {
+        ResponseEntity<ErrorResponse> response = handler.handleExpiredJwt(null, request);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertTrue(response.getBody().getMessage().contains("expirou"));
     }
 
     @Test
-    void deveHandleValidationException() throws Exception {
-        String jsonInvalido = "{}";  
+    @DisplayName("Deve tratar JwtException")
+    void handleJwtException() {
+        ResponseEntity<ErrorResponse> response = handler.handleJwtException(new JwtException("Token maluco"), request);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 
-        mockMvc.perform(post("/test/validation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonInvalido))
-                .andExpect(status().isUnprocessableEntity())  
-                .andExpect(jsonPath("$.status").value(422))
-                .andExpect(jsonPath("$.error").value("Erro de validação"))
-                .andExpect(jsonPath("$.message").value("Dados enviados são inválidos"))
-                .andExpect(jsonPath("$.path").value("/test/validation"))
-                .andExpect(jsonPath("$.validationErrors.nome").exists())
-                .andExpect(jsonPath("$.validationErrors.login").exists())
-                .andExpect(jsonPath("$.validationErrors.senha").exists())
-                .andExpect(jsonPath("$.timestamp").exists());
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve tratar IllegalArgumentException com e sem mensagem")
+    void handleIllegalArgument() {
+        ResponseEntity<ErrorResponse> r1 = handler.handleIllegalArgument(new IllegalArgumentException("Msg"), request);
+        assertEquals("Msg", r1.getBody().getMessage());
+        ResponseEntity<ErrorResponse> r2 = handler.handleIllegalArgument(new IllegalArgumentException(), request);
+        assertEquals("Dados inválidos.", r2.getBody().getMessage());
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve tratar DataIntegrityViolationException cobrindo todos os IFs de mensagens Oracle")
+    void handleDataIntegrityViolation() {
+        DataIntegrityViolationException ex = mock(DataIntegrityViolationException.class);
+        Throwable cause = mock(Throwable.class);
+        when(ex.getMostSpecificCause()).thenReturn(cause);
+        when(cause.getMessage()).thenReturn("Unique constraint SYS_C008226 violated");
+        assertEquals("Já existe um usuário com este login.", handler.handleDataIntegrityViolation(ex, request).getBody().getMessage());
+        when(cause.getMessage()).thenReturn("Integrity constraint FK_UP_PERFIL violated");
+        assertEquals("Um ou mais perfis informados não existem.", handler.handleDataIntegrityViolation(ex, request).getBody().getMessage());
+        when(cause.getMessage()).thenReturn("Erro generico");
+        assertTrue(handler.handleDataIntegrityViolation(ex, request).getBody().getMessage().contains("Violação"));
     }
 }

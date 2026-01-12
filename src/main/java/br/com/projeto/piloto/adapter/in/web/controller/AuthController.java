@@ -1,113 +1,143 @@
 package br.com.projeto.piloto.adapter.in.web.controller;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import br.com.projeto.piloto.api.dto.AuthResponse;
-import br.com.projeto.piloto.api.dto.LoginRequest;
-import br.com.projeto.piloto.api.dto.RefreshTokenRequest;
-import br.com.projeto.piloto.api.dto.RegisterRequest;
-import br.com.projeto.piloto.application.usecase.AuthService;
-import br.com.projeto.piloto.domain.model.User;
+import br.com.projeto.piloto.adapter.in.web.dto.AuthResponseDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.LoginRequestDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.RefreshTokenRequestDTO;
+import br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse;
+import br.com.projeto.piloto.application.usecase.AuthInteractor;
+import br.com.projeto.piloto.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.infrastructure.security.JwtUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
-
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
+@Tag(name = "Autenticação", description = "Gerenciamento de login, registro e refresh de tokens")
+@Validated
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
-    private final AuthService authService;
-    private final JwtUtil jwtUtil;
+	private final AuthInteractor authInteractor;
+	private final JwtUtil jwtUtil;
 
-    public AuthController(AuthService authService, JwtUtil jwtUtil) {
-        this.authService = authService;
-        this.jwtUtil = jwtUtil;
-    }
+	@PostMapping("/login")
+	@Operation(summary = "Login do usuário")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Login realizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"token\": \"access-token\", \"refreshToken\": \"refresh-token\", \"login\": \"usuario\" }"))),
+			@ApiResponse(responseCode = "401", description = "Credenciais inválidas",       content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+	public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
+		
+		AuthUsuarioModel authUsuario = authInteractor.authenticate(request.login(), request.senha());
 
-    @PostMapping("/login")
-    @Operation(summary = "Login do usuário")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Login realizado com sucesso",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(example = "{ \"token\": \"access-token\", \"refreshToken\": \"refresh-token\", \"login\": \"usuario\" }"))),
-        @ApiResponse(responseCode = "401", description = "Credenciais inválidas",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class)))
-    })
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        User user = authService.authenticate(request.login(), request.senha());
-        Set<String> roles = user.getPerfis().stream().map(r -> r.getNome()).collect(Collectors.toSet());
-        String token = jwtUtil.generateToken(user.getLogin(), roles);
-        String refreshToken = jwtUtil.generateRefreshToken(user.getLogin());
-        return ResponseEntity.ok(new AuthResponse(token, refreshToken, user.getLogin()));
-    }
+		Set<String> roles = authUsuario.getPerfis().stream().map(r -> r.getNmPerfil()).collect(Collectors.toSet());
 
-    @PostMapping("/register")
-    @Operation(summary = "Registro de um novo usuário")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(example = "{ \"id\": 1, \"nome\": \"Paulo\", \"login\": \"paulo123\" }"))),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class)))
-    })
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        User novoUser = new User();
-        novoUser.setNome(request.nome());
-        novoUser.setLogin(request.login());
-        novoUser.setSenha(request.senha());
-        User created = authService.register(novoUser);
-        return ResponseEntity.ok(created);
-    }
+		String token = jwtUtil.generateToken(authUsuario.getLogin(), roles);
+		String refreshToken = jwtUtil.generateRefreshToken(authUsuario.getLogin());
 
-    @PostMapping("/refresh-token")
-    @Operation(summary = "Renova o access token usando refresh token")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Novo access token gerado",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(example = "{ \"accessToken\": \"novo-access-token\" }"))),
-        @ApiResponse(responseCode = "400", description = "Token inválido ou argumento inválido",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class))),
-        @ApiResponse(responseCode = "401", description = "Token expirado",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class))),
-        @ApiResponse(responseCode = "500", description = "Erro interno",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse.class)))
-    })
-    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequest request) {
-        String refreshToken = request.refreshToken();
-        if (refreshToken == null || refreshToken.isBlank()) {
-            throw new IllegalArgumentException("O token de refresh não pode ser nulo ou vazio");
-        }
+		return ResponseEntity.ok(new AuthResponseDTO(token, refreshToken, authUsuario.getLogin(), authUsuario.getNome(), roles));
+	}
 
-        String login;
-        try {
-            login = jwtUtil.extractUsernameFromRefreshToken(refreshToken);
-        } catch (ExpiredJwtException ex) {
-            throw new ExpiredJwtException(ex.getHeader(), ex.getClaims(), "O token de refresh expirou");
-        } catch (MalformedJwtException ex) {
-            throw new MalformedJwtException("O token de refresh fornecido é inválido ou malformado");
-        } catch (JwtException ex) {
-            throw new JwtException("Erro ao processar o token de refresh: " + ex.getMessage());
-        }
+	@PostMapping("/refresh-token")
+	@Operation(summary = "Renova o access token usando refresh token")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Novo access token gerado",             content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"accessToken\": \"novo-access-token\" }"))),
+			@ApiResponse(responseCode = "400", description = "Token inválido ou argumento inválido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "401", description = "Token expirado",                       content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "500", description = "Erro interno",                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+	public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO request) {
 
-        String newAccessToken = jwtUtil.generateToken(login, Set.of());
-        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
-    }
+		String refreshToken = request.refreshToken();
+		
+		if (refreshToken == null || refreshToken.isBlank()) {
+			return ResponseEntity.badRequest()
+					.body(ErrorResponse.builder().timestamp(LocalDateTime.now())
+					.status(HttpStatus.BAD_REQUEST.value())
+					.error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+					.message("O token de refresh não pode ser nulo ou vazio")
+					.path("/api/auth/refresh-token")
+					.build());
+		}
+
+		String login;
+		try {
+			if (!jwtUtil.validate(refreshToken)) {
+			    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			            .body(ErrorResponse.builder()
+			                    .timestamp(LocalDateTime.now())
+			                    .status(HttpStatus.UNAUTHORIZED.value())
+			                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+			                    .message("Refresh token inválido ou expirado")
+			                    .path("/api/auth/refresh-token")
+			                    .build());
+			}
+
+			login = jwtUtil.extractUsernameFromRefreshToken(refreshToken);
+
+			
+			
+		} catch (ExpiredJwtException ex) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(ErrorResponse.builder()
+					.timestamp(LocalDateTime.now())
+					.status(HttpStatus.UNAUTHORIZED.value())
+					.error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+					.message("O token de refresh expirou")
+					.path("/api/auth/refresh-token").build());
+			
+		} catch (MalformedJwtException ex) {
+			return ResponseEntity.badRequest()
+					.body(ErrorResponse.builder()
+					.timestamp(LocalDateTime.now())
+					.status(HttpStatus.BAD_REQUEST.value())
+					.error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+					.message("O token de refresh fornecido é inválido ou malformado")
+					.path("/api/auth/refresh-token").build());
+		} catch (JwtException ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(ErrorResponse.builder()
+					.timestamp(LocalDateTime.now())
+					.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+					.error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+					.message("Erro ao processar o token de refresh: " + ex.getMessage())
+					.path("/api/auth/refresh-token")
+					.build());
+		}
+
+		AuthUsuarioModel authUsuario = authInteractor.findByLogin(login);
+
+		Set<String> roles = authUsuario.getPerfis().stream()
+		        .map(p -> p.getNmPerfil())
+		        .collect(Collectors.toSet());
+
+		String newAccessToken = jwtUtil.generateToken(login, roles);
+
+		return ResponseEntity.ok(
+		        Map.of("accessToken", newAccessToken)
+		);
+
+	}
 }

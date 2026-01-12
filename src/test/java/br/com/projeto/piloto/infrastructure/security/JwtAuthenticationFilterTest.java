@@ -1,11 +1,10 @@
 package br.com.projeto.piloto.infrastructure.security;
 
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -14,14 +13,15 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -33,103 +33,108 @@ import jakarta.servlet.http.HttpServletResponse;
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
 
-    @Mock
-    private JwtUtil jwtUtil;
+    @Mock private JwtUtil jwtUtil;
+    @Mock private UserDetailsService userDetailsService;
+    @Mock private HttpServletRequest request;
+    @Mock private HttpServletResponse response;
+    @Mock private FilterChain filterChain;
 
-    @Mock
-    private UserDetailsService userDetailsService;
-
+    @InjectMocks
     private JwtAuthenticationFilter filter;
 
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpServletResponse response;
-
-    @Mock
-    private FilterChain chain;
-
     @BeforeEach
-    void setup() {
-        SecurityContextHolder.clearContext();
-        filter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
-    }
-
-    @AfterEach
-    void tearDown() {
+    void setUp() {
         SecurityContextHolder.clearContext();
     }
 
-    @Test
-    void devePassarSemAutenticacao_quandoPathPublico() throws ServletException, IOException {
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Cobre isPublicPath: Deve permitir acesso a rotas públicas sem token")
+    void devePermitirRotaPublica() throws ServletException, IOException {
         when(request.getRequestURI()).thenReturn("/api/auth/login");
 
-        filter.doFilter(request, response, chain);
+        filter.doFilterInternal(request, response, filterChain);
 
-        verify(chain, times(1)).doFilter(request, response);
-        verifyNoInteractions(jwtUtil, userDetailsService);
+        verify(filterChain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    @Test
-    void naoDeveAutenticar_quandoHeaderAusente() throws ServletException, IOException {
-        when(request.getRequestURI()).thenReturn("/api/protected");
-        when(request.getHeader("Authorization")).thenReturn(null);
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Cobre Linha 45-48: Deve retornar 401 se header Authorization estiver ausente ou inválido")
+    void deveRetornar401SeHeaderInvalido() throws ServletException, IOException {
+        when(request.getRequestURI()).thenReturn("/api/protegida");
+        when(request.getHeader("Authorization")).thenReturn(null); // Ou "Basic 123"
 
-        filter.doFilter(request, response, chain);
+        filter.doFilterInternal(request, response, filterChain);
 
-        verify(chain, times(1)).doFilter(request, response);
-        verify(jwtUtil, never()).validate(anyString());
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verifyNoInteractions(filterChain);
     }
 
-    @Test
-    void naoDeveAutenticar_quandoHeaderSemBearer() throws ServletException, IOException {
-        when(request.getRequestURI()).thenReturn("/api/protected");
-        when(request.getHeader("Authorization")).thenReturn("Token abc");
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Cobre Linha 54-57: Deve retornar 401 se o token for inválido no JwtUtil")
+    void deveRetornar401SeTokenInvalido() throws ServletException, IOException {
+        String token = "token.invalido";
+        when(request.getRequestURI()).thenReturn("/api/protegida");
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(false);
 
-        filter.doFilter(request, response, chain);
+        filter.doFilterInternal(request, response, filterChain);
 
-        verify(chain, times(1)).doFilter(request, response);
-        verify(jwtUtil, never()).validate(anyString());
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    @Test
-    void deveAutenticar_quandoTokenValido() throws ServletException, IOException {
-        when(request.getRequestURI()).thenReturn("/api/protected");
-        when(request.getHeader("Authorization")).thenReturn("Bearer valid-token");
-        when(jwtUtil.validate("valid-token")).thenReturn(true);
-        when(jwtUtil.getUsername("valid-token")).thenReturn("usuario1");
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Cobre Sucesso: Deve autenticar usuário quando token é válido")
+    void deveAutenticarComSucesso() throws ServletException, IOException {
+        String token = "token.valido";
+        String username = "admin";
+        UserDetails userDetails = new User(username, "", Collections.emptyList());
 
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getAuthorities()).thenReturn(Collections.emptyList());
-        when(userDetailsService.loadUserByUsername("usuario1")).thenReturn(userDetails);
+        when(request.getRequestURI()).thenReturn("/api/perfil");
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(true);
+        when(jwtUtil.getUsername(token)).thenReturn(username);
+        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
 
-        filter.doFilter(request, response, chain);
+        filter.doFilterInternal(request, response, filterChain);
 
-        verify(jwtUtil, times(1)).validate("valid-token");
-        verify(jwtUtil, times(1)).getUsername("valid-token");
-        verify(userDetailsService, times(1)).loadUserByUsername("usuario1");
-        verify(chain, times(1)).doFilter(request, response);
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        assertNotNull(auth);
-        assertEquals(userDetails, auth.getPrincipal());
+        assertNotNull(SecurityContextHolder.getContext().getAuthentication());
+        assertEquals(username, SecurityContextHolder.getContext().getAuthentication().getName());
+        verify(filterChain).doFilter(request, response);
     }
 
-    @Test
-    void naoDeveAutenticar_quandoTokenInvalido() throws ServletException, IOException {
-        when(request.getRequestURI()).thenReturn("/api/protected");
-        when(request.getHeader("Authorization")).thenReturn("Bearer bad-token");
-        when(jwtUtil.validate("bad-token")).thenReturn(false);
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Cobre Bloco Catch (Linha 75): Deve retornar 401 em caso de qualquer exceção")
+    void deveRetornar401EmCasoDeExcecao() throws ServletException, IOException {
+        String token = "token.error";
+        when(request.getRequestURI()).thenReturn("/api/protegida");
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenThrow(new RuntimeException("Erro genérico"));
 
-        filter.doFilter(request, response, chain);
+        filter.doFilterInternal(request, response, filterChain);
 
-        verify(jwtUtil, times(1)).validate("bad-token");
-        verify(userDetailsService, never()).loadUserByUsername(anyString());
-        verify(chain, times(1)).doFilter(request, response);
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Cobre todos os paths do isPublicPath")
+    void deveCobrirTodasRotasPublicas() throws ServletException, IOException {
+        String[] publicPaths = {
+            "/api/auth/register", "/swagger-ui/index.html", "/swagger-ui.html", 
+            "/v3/api-docs", "/swagger-resources/conf", "/webjars/js"
+        };
+
+        for (String path : publicPaths) {
+            when(request.getRequestURI()).thenReturn(path);
+            filter.doFilterInternal(request, response, filterChain);
+        }
+        
+        verify(filterChain, times(publicPaths.length)).doFilter(request, response);
     }
 }
