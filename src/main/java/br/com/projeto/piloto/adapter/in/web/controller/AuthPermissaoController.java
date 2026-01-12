@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoRequestDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse;
 import br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPermissaoMapper;
-import br.com.projeto.piloto.api.dto.AuthPermissaoRequestDTO;
-import br.com.projeto.piloto.api.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.domain.model.AuthPermissaoModel;
 import br.com.projeto.piloto.domain.port.inbound.AuthPermissaoUseCase;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -63,8 +64,7 @@ public class AuthPermissaoController {
             @ApiResponse(responseCode = "201", description = "Permissão criada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos",              content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "Permissão já existe",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "422", description = "Erro de validação",            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+            @ApiResponse(responseCode = "422", description = "Erro de validação",            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> create(@Validated @RequestBody AuthPermissaoRequestDTO dto, HttpServletRequest request) {
 
         if (authPermissaoUseCase.existsByNmPermissao(dto.nmPermissao())) {
@@ -84,7 +84,6 @@ public class AuthPermissaoController {
 	@Operation(summary = "Atualiza uma permissão existente", responses = {
 			@ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
 			@ApiResponse(responseCode = "404", description = "Permissão não encontrada",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
-
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @Validated @RequestBody AuthPermissaoRequestDTO dto, HttpServletRequest request) {
 
 	    Optional<AuthPermissaoModel> existing = authPermissaoUseCase.findById(id);
@@ -102,8 +101,7 @@ public class AuthPermissaoController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Remove uma permissão", responses = {
             @ApiResponse(responseCode = "204", description = "Removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+            @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> delete(@PathVariable("id") Long id, HttpServletRequest request) {
     	
         Optional<AuthPermissaoModel> existing = authPermissaoUseCase.findById(id);
@@ -119,8 +117,7 @@ public class AuthPermissaoController {
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
     @Operation(summary = "Busca permissão por id", responses = {
             @ApiResponse(responseCode = "200", description = "Permissão encontrada",     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+            @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request) {
     	
         Optional<AuthPermissaoModel> existing = authPermissaoUseCase.findById(id);
@@ -137,8 +134,7 @@ public class AuthPermissaoController {
     @Operation(summary = "Lista todas as permissões")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+            @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> listAll(HttpServletRequest request) {
     	
         List<AuthPermissaoModel> domains = authPermissaoUseCase.listAll();

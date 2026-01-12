@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonPropertyOrder({ "id", "nome", "descricao", "url", "moduleName", "exposedModule", "routePath", "ativo", "criadoEm", "atualizadoEm" })
+@JsonPropertyOrder({ "id", "nmAplicativo", "dsAplicativo", "dsUrl", "nmModulo", "moduloExposto", "dsRota", "flAtivo", "criadoEm", "atualizadoEm" })
 public class AplicativosModel {
     private Long id;
-    private String nome;
-    private String descricao;
-    private String url;
-    private String moduleName;
-    private String exposedModule;
-    private String routePath;
-    private String ativo;  
+    private String nmAplicativo;    
+    private String dsAplicativo;    
+    private String dsUrl;           
+    private String nmModulo;        
+    private String moduloExposto;   
+    private String dsRota;          
+    private String flAtivo;         
     private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
 }

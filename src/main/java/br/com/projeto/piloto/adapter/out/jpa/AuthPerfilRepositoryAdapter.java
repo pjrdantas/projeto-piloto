@@ -41,13 +41,10 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
     public AuthPerfilModel create(@NonNull AuthPerfilModel domain) {
         Objects.requireNonNull(domain, "AuthPerfilModel não pode ser nulo");
 
-        // Garante que a entidade convertida não é nula
         AuthPerfil entity = Objects.requireNonNull(AuthPerfilMapper.toEntity(domain), "AuthPerfil convertido não pode ser nulo");
 
-        // Salva a entidade e garante que o retorno não é nulo
         AuthPerfil saved = Objects.requireNonNull(repository.save(entity), "Perfil criado não pode ser nulo");
 
-        // Converte para domínio e garante não nulidade
         return Objects.requireNonNull(AuthPerfilMapper.toDomain(saved), "Perfil criado não pode ser nulo");
     }
 
@@ -79,7 +76,6 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
 
 	@Override
 	public Optional<AuthPerfilModel> findByNmPerfil(String nome) {
-		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
 }

@@ -2,12 +2,15 @@ package br.com.projeto.piloto.adapter.out.jpa.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -57,6 +60,9 @@ public class Aplicativo implements Serializable {
 
     @Column(name = "ATUALIZADO_EM")
     private LocalDateTime atualizadoEm;
+
+    @OneToMany(mappedBy = "aplicativo", cascade = CascadeType.ALL)
+    private List<AuthPerfil> perfis;
 
     @PrePersist
     public void prePersist() {

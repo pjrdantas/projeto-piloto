@@ -1,6 +1,10 @@
 package br.com.projeto.piloto.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,27 +25,27 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         AuthUsuario authUsuario = userRepository.findByLogin(username)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("Usuário não encontrado: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
         if (!"S".equalsIgnoreCase(authUsuario.getAtivo())) {
-            throw new DisabledException("Usuário está inativo no sistema");
+            throw new DisabledException("Usuário inativo");
         }
 
-        String[] authorities = authUsuario.getPerfis()
-                .stream()
-                .map(perfil -> "ROLE_" + perfil.getNmPerfil().toUpperCase())
-                .toArray(String[]::new);
+        Set<String> authorities = new HashSet<>();
+        
+        authUsuario.getPerfis().forEach(perfil -> {
+            authorities.add("ROLE_" + perfil.getNmPerfil().toUpperCase()); 
+
+            perfil.getPermissoes().forEach(permissao -> {
+                authorities.add(permissao.getNmPermissao().toUpperCase()); 
+            });
+        });
 
         return User.withUsername(authUsuario.getLogin())
                 .password(authUsuario.getSenha())
-                .authorities(authorities)
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false)
+                .authorities(authorities.toArray(new String[0]))
                 .build();
     }
+
 }

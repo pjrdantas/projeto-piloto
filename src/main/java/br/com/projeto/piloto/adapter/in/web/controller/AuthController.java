@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.projeto.piloto.adapter.in.web.dto.AuthResponseDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.LoginRequestDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.RefreshTokenRequestDTO;
 import br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse;
-import br.com.projeto.piloto.api.dto.AuthResponseDTO;
-import br.com.projeto.piloto.api.dto.LoginRequestDTO;
-import br.com.projeto.piloto.api.dto.RefreshTokenRequestDTO;
-import br.com.projeto.piloto.application.usecase.AuthService;
+import br.com.projeto.piloto.application.usecase.AuthInteractor;
 import br.com.projeto.piloto.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.infrastructure.security.JwtUtil;
 
@@ -41,17 +41,17 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
-	private final AuthService authService;
+	private final AuthInteractor authInteractor;
 	private final JwtUtil jwtUtil;
 
-	// ✅ ENDPOINT PÚBLICO (SEM TOKEN)
 	@PostMapping("/login")
 	@Operation(summary = "Login do usuário")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Login realizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"token\": \"access-token\", \"refreshToken\": \"refresh-token\", \"login\": \"usuario\" }"))),
 			@ApiResponse(responseCode = "401", description = "Credenciais inválidas",       content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
-		AuthUsuarioModel authUsuario = authService.authenticate(request.login(), request.senha());
+		
+		AuthUsuarioModel authUsuario = authInteractor.authenticate(request.login(), request.senha());
 
 		Set<String> roles = authUsuario.getPerfis().stream().map(r -> r.getNmPerfil()).collect(Collectors.toSet());
 
@@ -61,7 +61,6 @@ public class AuthController {
 		return ResponseEntity.ok(new AuthResponseDTO(token, refreshToken, authUsuario.getLogin(), authUsuario.getNome(), roles));
 	}
 
-	// ✅ ENDPOINT PÚBLICO (SEM TOKEN)
 	@PostMapping("/refresh-token")
 	@Operation(summary = "Renova o access token usando refresh token")
 	@ApiResponses({
@@ -72,6 +71,7 @@ public class AuthController {
 	public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO request) {
 
 		String refreshToken = request.refreshToken();
+		
 		if (refreshToken == null || refreshToken.isBlank()) {
 			return ResponseEntity.badRequest()
 					.body(ErrorResponse.builder().timestamp(LocalDateTime.now())
@@ -84,7 +84,21 @@ public class AuthController {
 
 		String login;
 		try {
+			if (!jwtUtil.validate(refreshToken)) {
+			    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			            .body(ErrorResponse.builder()
+			                    .timestamp(LocalDateTime.now())
+			                    .status(HttpStatus.UNAUTHORIZED.value())
+			                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+			                    .message("Refresh token inválido ou expirado")
+			                    .path("/api/auth/refresh-token")
+			                    .build());
+			}
+
 			login = jwtUtil.extractUsernameFromRefreshToken(refreshToken);
+
+			
+			
 		} catch (ExpiredJwtException ex) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(ErrorResponse.builder()
@@ -113,7 +127,17 @@ public class AuthController {
 					.build());
 		}
 
-		String newAccessToken = jwtUtil.generateToken(login, Set.of());
-		return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+		AuthUsuarioModel authUsuario = authInteractor.findByLogin(login);
+
+		Set<String> roles = authUsuario.getPerfis().stream()
+		        .map(p -> p.getNmPerfil())
+		        .collect(Collectors.toSet());
+
+		String newAccessToken = jwtUtil.generateToken(login, roles);
+
+		return ResponseEntity.ok(
+		        Map.of("accessToken", newAccessToken)
+		);
+
 	}
 }

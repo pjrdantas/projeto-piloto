@@ -1,5 +1,6 @@
 package br.com.projeto.piloto.infrastructure.security;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,78 +23,63 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+	private final JwtUtil jwtUtil;
+	private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
+	public SecurityConfig(
+	        JwtUtil jwtUtil,
+	        @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService
+	) {
+	    this.jwtUtil = jwtUtil;
+	    this.userDetailsService = userDetailsService;
+	}
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        JwtAuthenticationFilter jwtFilter =
-                new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
 
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
+				.authorizeHttpRequests(auth -> auth
 
-                         
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/v3/api-docs.yaml",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
+						.requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-ui/**", "/swagger-ui.html",
+								"/swagger-resources/**", "/webjars/**")
+						.permitAll()
 
-                         
-                        .requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/auth/**").permitAll()
 
-                         
-                        .anyRequest().authenticated()
-                )
+						.anyRequest().authenticated())
 
-                 
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-     
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-     
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
 
-    
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(false);
+		config.setAllowedOrigins(List.of("*"));
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+		config.setAllowedHeaders(List.of("*"));
+		config.setAllowCredentials(false);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
 
-        return source;
-    }
+		return source;
+	}
 }

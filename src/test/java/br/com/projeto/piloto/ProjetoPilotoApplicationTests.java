@@ -7,7 +7,6 @@ class ProjetoPilotoApplicationTest {
 
     @Test
     void contextLoads() {
-        // Teste desativado
         assert true;
     }
 }

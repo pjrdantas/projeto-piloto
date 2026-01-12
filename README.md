@@ -53,13 +53,11 @@ ESTRUTURA DE PASTAS:
 |   |   |                   |           +---entity
 |   |   |                   |           |       PermissionEntity.java
 |   |   |                   |           |       RoleEntity.java
-|   |   |                   |           |       UserEntity.java
 |   |   |                   |           |       
 |   |   |                   |           +---mapper
 |   |   |                   |           |       PermissionMapper.java
 |   |   |                   |           |       RoleMapper.java
 |   |   |                   |           |       UserDTOMapper.java
-|   |   |                   |           |       UserMapper.java
 |   |   |                   |           |       
 |   |   |                   |           \---repository
 |   |   |                   |                   PermissionJpaRepository.java

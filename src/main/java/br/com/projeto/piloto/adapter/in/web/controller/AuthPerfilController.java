@@ -21,12 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPerfilRequestDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPerfilResponseDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse;
 import br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPerfilMapper;
-import br.com.projeto.piloto.api.dto.AuthPerfilRequestDTO;
-import br.com.projeto.piloto.api.dto.AuthPerfilResponseDTO;
-import br.com.projeto.piloto.api.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.domain.port.inbound.AplicativosUseCase;
 import br.com.projeto.piloto.domain.port.inbound.AuthPerfilUseCase;
 import br.com.projeto.piloto.domain.port.inbound.AuthPermissaoUseCase;
 
@@ -50,6 +51,8 @@ public class AuthPerfilController {
 
     private final AuthPerfilUseCase authPerfilUseCase;
     private final AuthPermissaoUseCase authPermissaoUseCase;
+    private final AplicativosUseCase aplicativosUseCase; // NOVO: Para validar o App
+
    
     private ResponseEntity<ErrorResponse> buildErrorResponse(@NonNull HttpStatus status, String message, HttpServletRequest request) {
         return ResponseEntity.status(status)
@@ -68,14 +71,15 @@ public class AuthPerfilController {
         @ApiResponse(responseCode = "201", description = "Perfil criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPerfilResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Dados inválidos",           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
         @ApiResponse(responseCode = "409", description = "Perfil já existe",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-        @ApiResponse(responseCode = "422", description = "Erro de validação",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+        @ApiResponse(responseCode = "422", description = "Erro de validação",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> create(@Validated @RequestBody AuthPerfilRequestDTO dto, HttpServletRequest request) {
     	   	
         if (authPerfilUseCase.existsByNmPerfil(dto.nmPerfil())) {
-            return buildErrorResponse(HttpStatus.CONFLICT,
-                    "Perfil já existe com o nome: " + dto.nmPerfil(), request);
+            return buildErrorResponse(HttpStatus.CONFLICT, "Perfil já existe: " + dto.nmPerfil(), request);
         }
+
+        var aplicativo = aplicativosUseCase.findById(dto.aplicativoId())
+                .orElseThrow(() -> new IllegalArgumentException("Aplicativo não encontrado: " + dto.aplicativoId()));
 
         var permissoes = Optional.ofNullable(dto.permissoesIds())
             .orElse(Set.of())
@@ -84,45 +88,44 @@ public class AuthPerfilController {
                     .orElseThrow(() -> new IllegalArgumentException("Permissão não encontrada: " + id)))
             .collect(Collectors.toSet());
 
-        AuthPerfilModel domain = AuthPerfilMapper.toDomain(dto, permissoes);
+        AuthPerfilModel domain = AuthPerfilMapper.toDomain(dto, permissoes, aplicativo);
         AuthPerfilModel created = authPerfilUseCase.create(domain);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(AuthPerfilMapper.toResponse(created));
-    }    
+    }
     
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
     @Operation(summary = "Atualiza um perfil existente", responses = {
             @ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPerfilResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Perfil não encontrado",              content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
- 
     public ResponseEntity<?> update(@PathVariable("id") Long id, @Validated @RequestBody AuthPerfilRequestDTO dto, HttpServletRequest request) {
  
-        if (authPerfilUseCase.findById(id).isEmpty()) {
-            return buildErrorResponse(HttpStatus.NOT_FOUND, "Perfil não encontrado: " + id, request);
-        }
+        authPerfilUseCase.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Perfil não encontrado: " + id));
+
+        var aplicativo = aplicativosUseCase.findById(dto.aplicativoId())
+                .orElseThrow(() -> new IllegalArgumentException("Aplicativo não encontrado: " + dto.aplicativoId()));
 
         var permissoes = Optional.ofNullable(dto.permissoesIds())
             .orElse(Set.of())
             .stream()
             .map(pid -> authPermissaoUseCase.findById(pid)
-                    .orElseThrow(() -> new IllegalArgumentException("Perfil não encontrada: " + pid)))
+                    .orElseThrow(() -> new IllegalArgumentException("Permissão não encontrada: " + pid)))
             .collect(Collectors.toSet());
 
-        AuthPerfilModel domain = AuthPerfilMapper.toDomain(dto, permissoes);
+        AuthPerfilModel domain = AuthPerfilMapper.toDomain(dto, permissoes, aplicativo);
         AuthPerfilModel updated = authPerfilUseCase.update(id, domain);
 
         return ResponseEntity.ok(AuthPerfilMapper.toResponse(updated));
-    }
-    
+    }    
     
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Remove um perfil", responses = {
             @ApiResponse(responseCode = "204", description = "Removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Perfil não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> delete(@PathVariable("id") Long id, HttpServletRequest request) {
     	
         Optional<AuthPerfilModel> existing = authPerfilUseCase.findById(id);
@@ -138,8 +141,7 @@ public class AuthPerfilController {
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
     @Operation(summary = "Busca perfil por id", responses = {
             @ApiResponse(responseCode = "200", description = "Perfil encontrada",     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Perfil não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request) {
     	
         Optional<AuthPerfilModel> existing = authPerfilUseCase.findById(id);
@@ -156,8 +158,7 @@ public class AuthPerfilController {
     @Operation(summary = "Lista todos os perfis")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-})
+        @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> listAll(HttpServletRequest request) {
     	
         List<AuthPerfilModel> domains = authPerfilUseCase.listAll();

@@ -1,15 +1,13 @@
 package br.com.projeto.piloto.adapter.out.jpa.mapper;
 
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoRequestDTO;
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.adapter.out.jpa.entity.AuthPermissao;
-import br.com.projeto.piloto.api.dto.AuthPermissaoRequestDTO;
-import br.com.projeto.piloto.api.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.domain.model.AuthPermissaoModel;
 
 public class AuthPermissaoMapper {
 
-    // =========================
-    // DTO -> Domínio
-    // =========================
+
     public static AuthPermissaoModel toDomain(AuthPermissaoRequestDTO dto) {
         if (dto == null) return null;
 
@@ -18,9 +16,6 @@ public class AuthPermissaoMapper {
                 .build();
     }
 
-    // =========================
-    // Entidade -> Domínio
-    // =========================
     public static AuthPermissaoModel toDomain(AuthPermissao entity) {
         if (entity == null) return null;
 
@@ -30,9 +25,6 @@ public class AuthPermissaoMapper {
                 .build();
     }
 
-    // =========================
-    // Domínio -> Entidade
-    // =========================
     public static AuthPermissao toEntity(AuthPermissaoModel domain) {
         if (domain == null) return null;
 
@@ -42,9 +34,6 @@ public class AuthPermissaoMapper {
         return entity;
     }
 
-    // =========================
-    // Domínio -> Response
-    // =========================
     public static AuthPermissaoResponseDTO toResponse(AuthPermissaoModel domain) {
         if (domain == null) return null;
 

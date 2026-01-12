@@ -18,16 +18,14 @@ public class SwaggerConfig {
         final String securitySchemeName = "bearerAuth";
 
         return new OpenAPI()
-                // ✅ INFORMAÇÃO DA API (o que você já tinha)
+
                 .info(new Info()
                         .title("Projeto Piloto API")
                         .description("API de login com Spring Boot, JWT e Oracle")
                         .version("1.0.0"))
 
-                // ✅ ADICIONA SEGURANÇA GLOBAL
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
 
-                // ✅ CONFIGURA O ESQUEMA JWT
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
                                 new SecurityScheme()

@@ -16,6 +16,7 @@ import lombok.Setter;
 public class AuthPerfilModel {
     private Long id;
     private String nmPerfil;
+    private AplicativosModel aplicativo;
     
     @Builder.Default    
     private Set<AuthPermissaoModel> permissoes = Set.of();

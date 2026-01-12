@@ -157,7 +157,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // MÉTODO AUXILIAR PARA MONTAR RESPONSE
     private ResponseEntity<ErrorResponse> buildErrorResponse(
             HttpStatus status,
             String error,

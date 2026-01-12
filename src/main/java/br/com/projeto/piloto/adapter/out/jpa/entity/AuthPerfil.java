@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -36,18 +37,16 @@ public class AuthPerfil implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "NM_PERFIL", nullable = false, unique = true)
+    @Column(name = "NM_PERFIL", nullable = false)
     private String nmPerfil;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "AUTH_USUARIO_PERFIL",
-        joinColumns = @JoinColumn(name = "AUTH_PERFIL_ID"),  
-        inverseJoinColumns = @JoinColumn(name = "AUTH_USUARIO_ID") 
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APLICATIVO_ID", nullable = false)
+    private Aplicativo aplicativo;
+
+    @ManyToMany(mappedBy = "perfis")
     @Builder.Default
     private Set<AuthUsuario> usuarios = new HashSet<>();
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -57,5 +56,4 @@ public class AuthPerfil implements Serializable {
     )
     @Builder.Default
     private Set<AuthPermissao> permissoes = new HashSet<>();
-
 }

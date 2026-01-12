@@ -25,13 +25,13 @@ public class AplicativosRepositoryAdapter implements AplicativosRepositoryPort {
     private AplicativosModel toDomain(Aplicativo e) {
         return AplicativosModel.builder()
                 .id(e.getId())
-                .nome(e.getNmAplicativo())
-                .descricao(e.getDsAplicativo())
-                .url(e.getDsUrl())
-                .moduleName(e.getNmModulo())
-                .exposedModule(e.getModuloExposto())
-                .routePath(e.getDsRota())
-                .ativo(e.getFlAtivo())
+                .nmAplicativo(e.getNmAplicativo())
+                .dsAplicativo(e.getDsAplicativo())
+                .dsUrl(e.getDsUrl())
+                .nmModulo(e.getNmModulo())
+                .moduloExposto(e.getModuloExposto())
+                .dsRota(e.getDsRota())
+                .flAtivo(e.getFlAtivo())
                 .criadoEm(e.getCriadoEm())
                 .atualizadoEm(e.getAtualizadoEm())
                 .build();
@@ -39,17 +39,17 @@ public class AplicativosRepositoryAdapter implements AplicativosRepositoryPort {
 
      
     private Aplicativo toEntity(AplicativosModel d) {
-        Objects.requireNonNull(d, "APplicativosModel não pode ser nulo");
+        Objects.requireNonNull(d, "AplicativosModel não pode ser nulo");
 
         Aplicativo e = new Aplicativo();
         e.setId(d.getId());
-        e.setNmAplicativo(d.getNome());
-        e.setDsAplicativo(d.getDescricao());
-        e.setDsUrl(d.getUrl());
-        e.setNmModulo(d.getModuleName());
-        e.setModuloExposto(d.getExposedModule());
-        e.setDsRota(d.getRoutePath());
-        e.setFlAtivo(d.getAtivo());
+        e.setNmAplicativo(d.getNmAplicativo());
+        e.setDsAplicativo(d.getDsAplicativo());
+        e.setDsUrl(d.getDsUrl());
+        e.setNmModulo(d.getNmModulo());
+        e.setModuloExposto(d.getModuloExposto());
+        e.setDsRota(d.getDsRota());
+        e.setFlAtivo(d.getFlAtivo());
         e.setCriadoEm(d.getCriadoEm());
         e.setAtualizadoEm(d.getAtualizadoEm());
         return e;

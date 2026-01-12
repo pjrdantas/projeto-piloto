@@ -13,4 +13,6 @@ public interface AuthUsuarioRepositoryPort {
     List<AuthUsuario> findAll();
     void deleteById( Long id);
     boolean existsByDsLoginAndIdNot(String login, Long id);
+    boolean existsById(Long id); 
+    
 }

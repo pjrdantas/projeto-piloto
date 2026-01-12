@@ -19,8 +19,6 @@ public class AuthUsuarioRepositoryAdapter implements AuthUsuarioRepositoryPort {
         this.repository = repository;
     }
 
-   
-    
     @Override
     public AuthUsuario save(AuthUsuario usuario) {
         Objects.requireNonNull(usuario, "usuario não pode ser nulo");
@@ -46,11 +44,17 @@ public class AuthUsuarioRepositoryAdapter implements AuthUsuarioRepositoryPort {
     @Override
     public void deleteById(Long id) {
         Objects.requireNonNull(id, "id não pode ser nulo");
-        repository.deleteById(id);
+        repository.deleteById(id); 
     }
     
     @Override
     public boolean existsByDsLoginAndIdNot(String login, Long id) {
         return repository.existsByLoginAndIdNot(login, id);
+    }
+    
+    @Override
+    public boolean existsById(Long id) {
+        Objects.requireNonNull(id, "id não pode ser nulo");
+        return repository.existsById(id);
     }
 }

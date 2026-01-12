@@ -1,13 +1,15 @@
 package br.com.projeto.piloto.adapter.out.jpa.mapper;
 
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
-import br.com.projeto.piloto.adapter.out.jpa.entity.AuthPerfil;
+
 import br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuario;
 import br.com.projeto.piloto.domain.model.AuthUsuarioModel;
-import br.com.projeto.piloto.domain.model.AuthPerfilModel;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor 
 public class AuthUsuarioMapper {
 
     public AuthUsuarioModel toDomain(AuthUsuario usuario) {
@@ -24,7 +26,7 @@ public class AuthUsuarioMapper {
                 .atualizadoEm(usuario.getAtualizadoEm())
                 .perfis(
                     usuario.getPerfis().stream()
-                        .map(this::toDomainPerfil)
+                        .map(AuthPerfilMapper::toDomain) 
                         .collect(Collectors.toSet())
                 )
                 .build();
@@ -43,23 +45,10 @@ public class AuthUsuarioMapper {
 
         usuario.setPerfis(
             model.getPerfis().stream()
-                .map(this::toEntityPerfil)
+                .map(AuthPerfilMapper::toEntity) 
                 .collect(Collectors.toSet())
         );
 
         return usuario;
-    }
-
-    private AuthPerfilModel toDomainPerfil(AuthPerfil p) {
-        return AuthPerfilModel.builder()
-                .id(p.getId())
-                .nmPerfil(p.getNmPerfil())
-                .build();
-    }
-
-    private AuthPerfil toEntityPerfil(AuthPerfilModel model) {
-        AuthPerfil p = new AuthPerfil();
-        p.setId(model.getId());
-        return p; // ⚠️ só ID, JPA resolve
     }
 }
