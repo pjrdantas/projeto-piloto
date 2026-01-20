@@ -64,10 +64,10 @@ public class AuthController {
 	@PostMapping("/refresh-token")
 	@Operation(summary = "Renova o access token usando refresh token")
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Novo access token gerado",             content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"accessToken\": \"novo-access-token\" }"))),
+			@ApiResponse(responseCode = "200", description = "Novo access token gerado", content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"accessToken\": \"novo-access-token\" }"))),
 			@ApiResponse(responseCode = "400", description = "Token inválido ou argumento inválido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "401", description = "Token expirado",                       content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "500", description = "Erro interno",                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "401", description = "Token expirado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "500", description = "Erro interno", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO request) {
 
 		String refreshToken = request.refreshToken();
@@ -82,23 +82,34 @@ public class AuthController {
 					.build());
 		}
 
-		String login;
 		try {
+			// 1. Validação lógica via booleano (respeitando seu JwtUtil)
 			if (!jwtUtil.validate(refreshToken)) {
-			    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-			            .body(ErrorResponse.builder()
-			                    .timestamp(LocalDateTime.now())
-			                    .status(HttpStatus.UNAUTHORIZED.value())
-			                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-			                    .message("Refresh token inválido ou expirado")
-			                    .path("/api/auth/refresh-token")
-			                    .build());
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(ErrorResponse.builder()
+								.timestamp(LocalDateTime.now())
+								.status(HttpStatus.UNAUTHORIZED.value())
+								.error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+								.message("Refresh token inválido ou expirado")
+								.path("/api/auth/refresh-token")
+								.build());
 			}
 
-			login = jwtUtil.extractUsernameFromRefreshToken(refreshToken);
+			// 2. Extração do login
+			String login = jwtUtil.extractUsernameFromRefreshToken(refreshToken);
 
+			// 3. Busca do usuário e suas roles via Interactor
+			AuthUsuarioModel authUsuario = authInteractor.findByLogin(login);
 			
-			
+			Set<String> roles = authUsuario.getPerfis().stream()
+					.map(p -> p.getNmPerfil())
+					.collect(Collectors.toSet());
+
+			// 4. Geração do novo Access Token
+			String newAccessToken = jwtUtil.generateToken(login, roles);
+
+			return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+
 		} catch (ExpiredJwtException ex) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(ErrorResponse.builder()
@@ -116,6 +127,7 @@ public class AuthController {
 					.error(HttpStatus.BAD_REQUEST.getReasonPhrase())
 					.message("O token de refresh fornecido é inválido ou malformado")
 					.path("/api/auth/refresh-token").build());
+					
 		} catch (JwtException ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(ErrorResponse.builder()
@@ -126,18 +138,5 @@ public class AuthController {
 					.path("/api/auth/refresh-token")
 					.build());
 		}
-
-		AuthUsuarioModel authUsuario = authInteractor.findByLogin(login);
-
-		Set<String> roles = authUsuario.getPerfis().stream()
-		        .map(p -> p.getNmPerfil())
-		        .collect(Collectors.toSet());
-
-		String newAccessToken = jwtUtil.generateToken(login, roles);
-
-		return ResponseEntity.ok(
-		        Map.of("accessToken", newAccessToken)
-		);
-
 	}
 }

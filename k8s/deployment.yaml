@@ -1,0 +1,103 @@
+# ========================================================
+# 1. Deployment do Projeto Piloto (Spring Boot)
+# ========================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projeto-piloto
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projeto-piloto
+  template:
+    metadata:
+      labels:
+        app: projeto-piloto
+    spec:
+      tolerations:
+      - operator: "Exists"
+      containers:
+      - name: projeto-piloto
+        image: pjrdantas/projeto-piloto:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://db-projeto-piloto.cr2que88g18t.us-east-2.rds.amazonaws.com:5432/postgres"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "ROOT"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "zOEH2010"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+
+---
+# Service do Spring Boot
+apiVersion: v1
+kind: Service
+metadata:
+  name: projeto-piloto-svc
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: projeto-piloto
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+---
+# ========================================================
+# 2. Deployment do Nginx (Proxy)
+# ========================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-fargate
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      tolerations:
+      - operator: "Exists"
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-proxy-config
+          mountPath: /etc/nginx/conf.d/proxy.conf
+          subPath: proxy.conf
+      volumes:
+      - name: nginx-proxy-config
+        configMap:
+          name: nginx-conf
+
+---
+# Service do Nginx (LoadBalancer)
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-fargate-svc
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80

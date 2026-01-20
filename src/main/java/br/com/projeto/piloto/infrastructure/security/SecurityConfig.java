@@ -37,25 +37,26 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+	    JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
 
-		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-				.authorizeHttpRequests(auth -> auth
-
-						.requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-ui/**", "/swagger-ui.html",
-								"/swagger-resources/**", "/webjars/**")
-						.permitAll()
-
-						.requestMatchers("/api/auth/**").permitAll()
-
-						.anyRequest().authenticated())
-
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-		return http.build();
+	    return http
+	        .csrf(csrf -> csrf.disable())
+	        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+	        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers(
+	                "/v3/api-docs/**", 
+	                "/v3/api-docs.yaml", 
+	                "/swagger-ui/**", 
+	                "/swagger-ui.html",
+	                "/swagger-resources/**", 
+	                "/webjars/**"
+	            ).permitAll()
+	            .requestMatchers("/api/auth/**").permitAll()
+	            .anyRequest().authenticated()
+	        )
+	        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+	        .build();
 	}
 
 	@Bean

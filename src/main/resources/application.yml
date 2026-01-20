@@ -1,25 +1,45 @@
-server:
-  port: 8080
-
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
-    username: ROOT
-    password: root123
-    driver-class-name: oracle.jdbc.OracleDriver
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        "[format_sql]": true
-        dialect: org.hibernate.dialect.OracleDialect
-
-
+# Configurações Globais (Valem para Dev e Prod)
 auth:
   jwt:
     secret: "GvB8kL9pQ3wR7uT2yX5zA8nF6mH4tK1b"
     expirationMs: 3600000
     refreshExpirationMs: 604800000
+
+spring:
+  profiles:
+    active: dev # Se não avisar nada, inicia com Oracle
+
+server:
+  port: 8080
+
+---
+# DESENVOLVIMENTO: ORACLE LOCAL
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
+    username: ROOT
+    password: root123
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+---
+# PRODUÇÃO: POSTGRESQL AWS
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://db-projeto-piloto.cr2que88g18t.us-east-2.rds.amazonaws.com:5432/postgres
+    username: ROOT
+    password: zOEH2010
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false

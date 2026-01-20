@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuario;
 import br.com.projeto.piloto.domain.port.outbound.AuthUsuarioRepositoryPort;
 
-@Service
+@Service("jwtUserDetailsService") 
+@Primary    
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
