@@ -1,35 +1,20 @@
-# =========================
-# Etapa 1: Build Maven (com cache)
-# =========================
 FROM maven:3.9.0-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Copia apenas o pom para cache de dependências
 COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copia o código e faz o build
+RUN mvn -B dependency:go-offline
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn -B clean package -DskipTests
 
-# =========================
-# Etapa 2: Imagem final (leve e segura)
-# =========================
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-
-# Adiciona usuário não-root para segurança
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
-
-# Copia o JAR da etapa de build
+# Busca o jar dinamicamente para evitar erro de nome
 COPY --from=build /app/target/*.jar app.jar
 
-# Configurações de JVM para container
-ENV JAVA_OPTS="-Xmx512m -Xms256m"
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseContainerSupport"
+# Adicionada a variável para o Spring reconhecer o profile do Docker
+ENV SPRING_PROFILES_ACTIVE=docker
 
-# Expõe a porta do Spring Boot
 EXPOSE 8080
-
-# ENTRYPOINT flexível, aceita variáveis de ambiente
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar app.jar"]

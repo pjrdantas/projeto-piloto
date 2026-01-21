@@ -1,19 +1,25 @@
-# Configurações Globais (Valem para Dev e Prod)
+# Configurações que valem para TODOS os profiles
 auth:
   jwt:
     secret: "GvB8kL9pQ3wR7uT2yX5zA8nF6mH4tK1b"
     expirationMs: 3600000
     refreshExpirationMs: 604800000
 
-spring:
-  profiles:
-    active: dev # Se não avisar nada, inicia com Oracle
-
 server:
   port: 8080
 
+spring:
+  profiles:
+    active: dev
+  # CONFIGURAÇÃO DO FLYWAY (Global)
+  flyway:
+    enabled: true
+    baseline-on-migrate: true  # <--- ISSO PROTEGE SEUS DADOS NO ORACLE
+    baseline-version: 1
+    locations: classpath:db/migration
+
 ---
-# DESENVOLVIMENTO: ORACLE LOCAL
+# DEV — ORACLE LOCAL
 spring:
   config:
     activate:
@@ -24,12 +30,30 @@ spring:
     password: root123
     driver-class-name: oracle.jdbc.OracleDriver
   jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
       ddl-auto: validate
     show-sql: true
 
 ---
-# PRODUÇÃO: POSTGRESQL AWS
+# DOCKER — ORACLE FORA DO CONTAINER (Via Host)
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:oracle:thin:@host.docker.internal:1521/XEPDB1
+    username: ROOT
+    password: root123
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+---
+# PROD — POSTGRES AWS
 spring:
   config:
     activate:
@@ -37,9 +61,10 @@ spring:
   datasource:
     url: jdbc:postgresql://db-projeto-piloto.cr2que88g18t.us-east-2.rds.amazonaws.com:5432/postgres
     username: ROOT
-    password: zOEH2010
+    password: root123
     driver-class-name: org.postgresql.Driver
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: update # Em prod o Flyway cria, mas o Hibernate pode atualizar se necessário
     show-sql: false
