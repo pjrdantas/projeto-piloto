@@ -1,0 +1,242 @@
+Listagem de caminhos de pasta
+O n£mero de s‚rie do volume ‚ C0000100 2EC2:27B3
+C:.
+|   .classpath
+|   .factorypath
+|   .gitattributes
+|   .gitignore
+|   .project
+|   deploy.bat
+|   Dockerfile
+|   estrutura.txt
+|   mvnw
+|   mvnw.cmd
+|   pom.xml
+|   README.md
+|   
++--.github
+|   \---workflows
+|           ci-cd.yml
+|           
++--.settings
+|       org.eclipse.core.resources.prefs
+|       org.eclipse.jdt.apt.core.prefs
+|       org.eclipse.jdt.core.prefs
+|       org.eclipse.m2e.core.prefs
+|       org.springframework.ide.eclipse.prefs
+|       
++--k8s
+|       deployment.yaml
+|       nginx-config.yaml
+|       
++--src
+   +---main
+   |   +---java
+   |   |   \---br
+   |   |       \---com
+   |   |           \---projeto
+   |   |               \---piloto
+   |   |                   |   ProjetoPilotoApplication.java
+   |   |                   |   
+   |   |                   +---adapter
+   |   |                   |   +---in
+   |   |                   |   |   \---web
+   |   |                   |   |       +---controller
+   |   |                   |   |       |       AplicativosController.java
+   |   |                   |   |       |       AuthController.java
+   |   |                   |   |       |       AuthPerfilController.java
+   |   |                   |   |       |       AuthPermissaoController.java
+   |   |                   |   |       |       UsuarioController.java
+   |   |                   |   |       |       
+   |   |                   |   |       +---dto
+   |   |                   |   |       |       AplicativosRequestDTO.java
+   |   |                   |   |       |       AplicativosResponseDTO.java
+   |   |                   |   |       |       AuthPerfilRequestDTO.java
+   |   |                   |   |       |       AuthPerfilResponseDTO.java
+   |   |                   |   |       |       AuthPerfilResumoDTO.java
+   |   |                   |   |       |       AuthPermissaoRequestDTO.java
+   |   |                   |   |       |       AuthPermissaoResponseDTO.java
+   |   |                   |   |       |       AuthResponseDTO.java
+   |   |                   |   |       |       AuthUsuarioRequestDTO.java
+   |   |                   |   |       |       AuthUsuarioResponseDTO.java
+   |   |                   |   |       |       LoginRequestDTO.java
+   |   |                   |   |       |       RefreshTokenRequestDTO.java
+   |   |                   |   |       |       RegisterRequestDTO.java
+   |   |                   |   |       |       
+   |   |                   |   |       \---exception
+   |   |                   |   |               ErrorResponse.java
+   |   |                   |   |               GlobalExceptionHandler.java
+   |   |                   |   |               InvalidLoginException.java
+   |   |                   |   |               
+   |   |                   |   \---out
+   |   |                   |       \---jpa
+   |   |                   |           |   AplicativosRepositoryAdapter.java
+   |   |                   |           |   AuthPerfilRepositoryAdapter.java
+   |   |                   |           |   AuthPermissaoRepositoryAdapter.java
+   |   |                   |           |   AuthUsuarioRepositoryAdapter.java
+   |   |                   |           |   
+   |   |                   |           +---entity
+   |   |                   |           |       Aplicativo.java
+   |   |                   |           |       AuthPerfil.java
+   |   |                   |           |       AuthPermissao.java
+   |   |                   |           |       AuthUsuario.java
+   |   |                   |           |       
+   |   |                   |           +---mapper
+   |   |                   |           |       AplicativosMapper.java
+   |   |                   |           |       AuthPerfilMapper.java
+   |   |                   |           |       AuthPermissaoMapper.java
+   |   |                   |           |       AuthUsuarioMapper.java
+   |   |                   |           |       
+   |   |                   |           \---repository
+   |   |                   |                   SpringAuthPerfilRepository.java
+   |   |                   |                   SpringAuthPermissaoRepository.java
+   |   |                   |                   SpringAuthUsuarioRepository.java
+   |   |                   |                   SpringDataAplicativosRepository.java
+   |   |                   |                   
+   |   |                   +---application
+   |   |                   |   \---usecase
+   |   |                   |           AplicativosInteractor.java
+   |   |                   |           AuthInteractor.java
+   |   |                   |           AuthPerfilInteractor.java
+   |   |                   |           AuthPermissaoInteractor.java
+   |   |                   |           AuthUsuarioInteractor.java
+   |   |                   |           JwtUserDetailsInteractor.java
+   |   |                   |           
+   |   |                   +---domain
+   |   |                   |   +---exception
+   |   |                   |   |       DomainException.java
+   |   |                   |   |       UserNotFoundException.java
+   |   |                   |   |       
+   |   |                   |   +---model
+   |   |                   |   |       AplicativosModel.java
+   |   |                   |   |       AuthPerfilModel.java
+   |   |                   |   |       AuthPermissaoModel.java
+   |   |                   |   |       AuthUsuarioModel.java
+   |   |                   |   |       
+   |   |                   |   \---port
+   |   |                   |       +---inbound
+   |   |                   |       |       AplicativosUseCase.java
+   |   |                   |       |       AuthPerfilUseCase.java
+   |   |                   |       |       AuthPermissaoUseCase.java
+   |   |                   |       |       AuthUseCasePort.java
+   |   |                   |       |       AuthUsuarioUseCasePort.java
+   |   |                   |       |       
+   |   |                   |       \---outbound
+   |   |                   |               AplicativosRepositoryPort.java
+   |   |                   |               AuthPerfilRepositoryPort.java
+   |   |                   |               AuthPermissaoRepositoryPort.java
+   |   |                   |               AuthUsuarioRepositoryPort.java
+   |   |                   |               
+   |   |                   \---infrastructure
+   |   |                       +---config
+   |   |                       |       AuthProperties.java
+   |   |                       |       JwtProperties.java
+   |   |                       |       SwaggerConfig.java
+   |   |                       |       
+   |   |                       \---security
+   |   |                               CustomUserDetailsService.java
+   |   |                               JwtAuthenticationFilter.java
+   |   |                               JwtUtil.java
+   |   |                               SecurityConfig.java
+   |   |                               
+   |   \---resources
+   |       |   application.yml
+   |       |   
+   |       +---db
+   |       |   \---migration
+   |       |           V1__create_tables.sql
+   |       |           
+   |       \---META-INF
+   |               MANIFEST.MF
+   |               
+   \---test
+       +---java
+       |   \---br
+       |       \---com
+       |           \---projeto
+       |               \---piloto
+       |                   |   ProjetoPilotoApplicationTests.java
+       |                   |   
+       |                   +---adapter
+       |                   |   +---in
+       |                   |   |   \---web
+       |                   |   |       +---controller
+       |                   |   |       |       AplicativosControllerTest.java
+       |                   |   |       |       AuthControllerTest.java
+       |                   |   |       |       AuthPerfilControllerTest.java
+       |                   |   |       |       AuthPermissaoControllerTest.java
+       |                   |   |       |       UsuarioControllerTest.java
+       |                   |   |       |       
+       |                   |   |       \---exception
+       |                   |   |               ErrorResponseTest.java
+       |                   |   |               GlobalExceptionHandlerTest.java
+       |                   |   |               InvalidLoginExceptionTest.java
+       |                   |   |               
+       |                   |   \---out
+       |                   |       \---jpa
+       |                   |           |   AplicativosRepositoryAdapterTest.java
+       |                   |           |   AuthPerfilRepositoryAdapterTest.java
+       |                   |           |   AuthPermissaoRepositoryAdapterTest.java
+       |                   |           |   AuthUsuarioRepositoryAdapterTest.java
+       |                   |           |   
+       |                   |           +---entity
+       |                   |           |       AplicativoTest.java
+       |                   |           |       AuthPerfilTest.java
+       |                   |           |       AuthPermissaoTest.java
+       |                   |           |       AuthUsuarioTest.java
+       |                   |           |       
+       |                   |           \---mapper
+       |                   |                   AplicativosMapperTest.java
+       |                   |                   AuthPerfilMapperTest.java
+       |                   |                   AuthPermissaoMapperTest.java
+       |                   |                   AuthUsuarioMapperTest.java
+       |                   |                   
+       |                   +---api
+       |                   |   \---dto
+       |                   |           AplicativosRequestDTOTest.java
+       |                   |           AplicativosResponseDTOTest.java
+       |                   |           AuthPerfilRequestDTOTest.java
+       |                   |           AuthPerfilResponseDTOTest.java
+       |                   |           AuthPerfilResumoDTOTest.java
+       |                   |           AuthPermissaoRequestDTOTest.java
+       |                   |           AuthPermissaoResponseDTOTest.java
+       |                   |           AuthResponseDTOTest.java
+       |                   |           AuthUsuarioRequestDTOTest.java
+       |                   |           AuthUsuarioResponseDTOTest.java
+       |                   |           LoginRequestDTOTest.java
+       |                   |           RefreshTokenRequestDTOTest.java
+       |                   |           RegisterRequestDTOTest.java
+       |                   |           
+       |                   +---application
+       |                   |   \---usecase
+       |                   |           AplicativosInteractorTest.java
+       |                   |           AuthInteractorTest.java
+       |                   |           AuthPerfilInteractorTest.java
+       |                   |           AuthPermissaoInteractorTest.java
+       |                   |           AuthUsuarioInteractorTest.java
+       |                   |           JwtUserDetailsInteractorTest.java
+       |                   |           
+       |                   +---domain
+       |                   |   +---exception
+       |                   |   |       DomainExceptionTest.java
+       |                   |   |       UserNotFoundExceptionTest.java
+       |                   |   |       
+       |                   |   \---model
+       |                   |           AplicativosModelTest.java
+       |                   |           AuthPerfilModelTest.java
+       |                   |           AuthPermissaoModelTest.java
+       |                   |           AuthUsuarioModelTest.java
+       |                   |           
+       |                   \---infrastructure
+       |                       +---config
+       |                       |       SwaggerConfigTest.java
+       |                       |       
+       |                       \---security
+       |                               CustomUserDetailsServiceTest.java
+       |                               JwtAuthenticationFilterTest.java
+       |                               JwtUtilTest.java
+       |                               SecurityConfigTest.java
+       |                               
+       \---resources
+               application-test.yml
+               
