@@ -45,7 +45,7 @@ jobs:
             # Derruba o processo antigo na porta 8080 (se existir)
             sudo fuser -k 8080/tcp || true
             
-            # Inicia o novo JAR com a URL corrigida e em background
+            # Inicia o novo JAR com a URL corrigida (sem o :// extra e com a porta 5432)
             nohup java -jar /home/ec2-user/projeto-piloto-0.0.1-SNAPSHOT.jar \
               --spring.datasource.url=jdbc:postgresql://://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com \
               --spring.datasource.username=postgres \
