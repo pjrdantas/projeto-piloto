@@ -68,3 +68,4 @@ spring:
     hibernate:
       ddl-auto: update # Em prod o Flyway cria, mas o Hibernate pode atualizar se necessário
     show-sql: false
+# Teste IP Fixo
