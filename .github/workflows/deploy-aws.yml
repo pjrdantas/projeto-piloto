@@ -3,7 +3,7 @@ name: Deploy Automático - AWS EC2
 on:
   push:
     branches:
-      - develop  # Agora ele vai disparar quando você der push na develop
+      - develop
 
 jobs:
   build-and-deploy:
@@ -29,6 +29,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "target/projeto-piloto-0.0.1-SNAPSHOT.jar"
           target: "/home/ec2-user/"
           strip_components: 1
@@ -39,15 +40,14 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             # Derruba o processo antigo na porta 8080 (se existir)
             sudo fuser -k 8080/tcp || true
             
-            # Inicia o novo JAR em segundo plano gravando logs no app.log
+            # Inicia o novo JAR com a URL corrigida e em background
             nohup java -jar /home/ec2-user/projeto-piloto-0.0.1-SNAPSHOT.jar \
               --spring.datasource.url=jdbc:postgresql://://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com \
               --spring.datasource.username=postgres \
               --spring.datasource.password='${{ secrets.DB_PASSWORD }}' \
               > /home/ec2-user/app.log 2>&1 &
-
-
