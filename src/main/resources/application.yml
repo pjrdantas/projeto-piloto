@@ -12,11 +12,11 @@ spring:
   profiles:
     active: dev
   # CONFIGURAÇÃO DO FLYWAY (Global)
-  flyway:
-    enabled: true
-    baseline-on-migrate: true  # <--- ISSO PROTEGE SEUS DADOS NO ORACLE
-    baseline-version: 1
-    locations: classpath:db/migration
+#  flyway:
+#    enabled: true
+#    baseline-on-migrate: true  # <--- ISSO PROTEGE SEUS DADOS NO ORACLE
+#    baseline-version: 1
+#    locations: classpath:db/migration
 
 ---
 # DEV — ORACLE LOCAL
@@ -57,11 +57,11 @@ spring:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: dev # ---> mudar para prod quando necessario ir para produção
   datasource:
-    url: jdbc:postgresql://db-projeto-piloto.cr2que88g18t.us-east-2.rds.amazonaws.com:5432/postgres
-    username: ROOT
-    password: root123
+    url: jdbc:postgresql://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com:5432/postgres
+    username: postgres
+    password: c6vOzOH-Z_8*f3Y>f1i7be2w]P9n
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect

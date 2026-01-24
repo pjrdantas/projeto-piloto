@@ -1,0 +1,51 @@
+name: Deploy Automático - AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # O deploy acontece quando você dá push na branch main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Gerar o JAR com Maven
+        run: mvn clean package -DskipTests
+
+      - name: Enviar JAR para EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "target/projeto-piloto-0.0.1-SNAPSHOT.jar"
+          target: "/home/ec2-user/"
+          strip_components: 1
+
+      - name: Iniciar Aplicação na EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Derruba o processo antigo na porta 8080 (se existir)
+            sudo fuser -k 8080/tcp || true
+            
+            # Inicia o novo JAR em segundo plano gravando logs no app.log
+            nohup java -jar /home/ec2-user/projeto-piloto-0.0.1-SNAPSHOT.jar \
+              --spring.datasource.url=jdbc:postgresql://://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com \
+              --spring.datasource.username=postgres \
+              --spring.datasource.password='${{ secrets.DB_PASSWORD }}' \
+              > /home/ec2-user/app.log 2>&1 &
