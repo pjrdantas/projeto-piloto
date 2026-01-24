@@ -7,7 +7,7 @@ metadata:
   name: projeto-piloto
   namespace: default
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: projeto-piloto
@@ -27,13 +27,15 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: "prod"
         - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://db-projeto-piloto.cr2que88g18t.us-east-2.rds.amazonaws.com:5432/postgres"
+          # Atualizado para o seu RDS atual na Virginia (us-east-1)
+          value: "jdbc:postgresql://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com:5432/postgres"
         - name: SPRING_DATASOURCE_USERNAME
-          value: "ROOT"
+          value: "postgres"
         - name: SPRING_DATASOURCE_PASSWORD
-          value: "zOEH2010"
+          value: "c6vOzOH-Z_8*f3Y>f1i7be2w]P9n"
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-          value: "update"
+          value: "validate" # Use validate para segurança, já que o Flyway está ativo
+
 
 ---
 # Service do Spring Boot
@@ -79,8 +81,9 @@ spec:
         - containerPort: 80
         volumeMounts:
         - name: nginx-proxy-config
-          mountPath: /etc/nginx/conf.d/proxy.conf
-          subPath: proxy.conf
+          mountPath: /etc/nginx/conf.d/default.conf # <--- Mude aqui também
+          subPath: default.conf                    # <--- E aqui
+
       volumes:
       - name: nginx-proxy-config
         configMap:
@@ -101,3 +104,5 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 80
+---
+# toda vez que mudar a quantidade de replicas execute o comando : kubectl apply -f k8s/deployment.yaml para ativar a alteração.

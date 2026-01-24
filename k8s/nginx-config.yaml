@@ -4,15 +4,24 @@ metadata:
   name: nginx-conf
   namespace: default
 data:
-  proxy.conf: |
+  default.conf: |
     server {
         listen 80;
+        
+        # Log para debug - se der erro, veremos aqui
+        error_log  /var/log/nginx/error.log notice;
 
         location / {
-            proxy_pass http://projeto-piloto-svc.default.svc.cluster.local;
+            # Usando apenas o nome do service sem o sufixo longo
+            proxy_pass http://projeto-piloto-svc:80; 
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Adicionado para evitar timeouts em conexões lentas com o RDS
+            proxy_connect_timeout 90;
+            proxy_send_timeout 90;
+            proxy_read_timeout 90;
         }
     }
