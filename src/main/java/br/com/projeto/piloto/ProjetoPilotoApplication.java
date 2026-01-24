@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+/**
+ * TESTES
+ */
 @SpringBootApplication
 @ComponentScan("br.com.projeto.piloto")
 @EnableJpaRepositories(basePackages = "br.com.projeto.piloto.adapter.out.jpa.repository")
