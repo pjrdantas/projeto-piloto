@@ -3,7 +3,7 @@ name: Deploy Automático - AWS EC2
 on:
   push:
     branches:
-      - main  # O deploy acontece quando você dá push na branch main
+      - develop  # Agora ele vai disparar quando você der push na develop
 
 jobs:
   build-and-deploy:
