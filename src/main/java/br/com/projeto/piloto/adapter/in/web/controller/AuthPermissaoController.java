@@ -59,7 +59,7 @@ public class AuthPermissaoController {
     }
    
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    @PreAuthorize("hasAuthority('CREATE')")
     @Operation(summary = "Cria uma nova permissão", responses = {
             @ApiResponse(responseCode = "201", description = "Permissão criada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos",              content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
@@ -80,7 +80,7 @@ public class AuthPermissaoController {
     
         
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+	@PreAuthorize("hasAuthority('UPDATE')")
 	@Operation(summary = "Atualiza uma permissão existente", responses = {
 			@ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
 			@ApiResponse(responseCode = "404", description = "Permissão não encontrada",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
@@ -98,7 +98,7 @@ public class AuthPermissaoController {
 
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE')")
     @Operation(summary = "Remove uma permissão", responses = {
             @ApiResponse(responseCode = "204", description = "Removido com sucesso"),
             @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
@@ -114,7 +114,7 @@ public class AuthPermissaoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
+    @PreAuthorize("hasAuthority('READ')")
     @Operation(summary = "Busca permissão por id", responses = {
             @ApiResponse(responseCode = "200", description = "Permissão encontrada",     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
@@ -130,7 +130,7 @@ public class AuthPermissaoController {
     }
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
+    @PreAuthorize("hasAuthority('READ_ALL')")
     @Operation(summary = "Lista todas as permissões")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),

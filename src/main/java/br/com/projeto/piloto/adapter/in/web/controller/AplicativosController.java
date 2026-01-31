@@ -45,7 +45,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AplicativosController {
 
-    private final AplicativosUseCase AplicativosUseCase;
+    private final AplicativosUseCase aplicativosUseCase;
 
     
     private ResponseEntity<ErrorResponse> buildErrorResponse(@NonNull HttpStatus status, String message, HttpServletRequest request) {
@@ -62,7 +62,7 @@ public class AplicativosController {
 
     
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    @PreAuthorize("hasAuthority('CREATE')")
     @Operation(summary = "Cria um novo Aplicativo", responses = {
             @ApiResponse(responseCode = "201", description = "Aplicativo criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos",               content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
@@ -70,29 +70,29 @@ public class AplicativosController {
             @ApiResponse(responseCode = "422", description = "Erro de validação",             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> create(@Validated @RequestBody AplicativosRequestDTO dto, HttpServletRequest request) {
 
-        if (AplicativosUseCase.existsByNome(dto.nome())) {
+        if (aplicativosUseCase.existsByNome(dto.nome())) {
             return buildErrorResponse(HttpStatus.CONFLICT,
                     "Aplicativo já existe com o nome: " + dto.nome(),request);
         }
 
         AplicativosModel domain = AplicativosMapper.toDomain(dto);
-        AplicativosModel created = AplicativosUseCase.create(domain);
+        AplicativosModel created = aplicativosUseCase.create(domain);
         AplicativosResponseDTO response = AplicativosMapper.toResponse(created);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    @PreAuthorize("hasAuthority('UPDATE')")
     @Operation(summary = "Atualiza um Aplicativo existente", responses = {
 			@ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
 			@ApiResponse(responseCode = "404", description = "Aplicativo não encontrado",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     public ResponseEntity<?> update(@PathVariable("id") Long id, @Validated @RequestBody AplicativosRequestDTO dto, HttpServletRequest request) {
 
-	    Optional<AplicativosModel> existing = AplicativosUseCase.findById(id);
+	    Optional<AplicativosModel> existing = aplicativosUseCase.findById(id);
 	    if (existing.isPresent()) {
 	        AplicativosModel domain = AplicativosMapper.toDomain(dto);
-	        AplicativosResponseDTO updatedDto = AplicativosMapper.toResponse(AplicativosUseCase.update(id, domain));
+	        AplicativosResponseDTO updatedDto = AplicativosMapper.toResponse(aplicativosUseCase.update(id, domain));
 	        return ResponseEntity.ok(updatedDto);
 	    } else {
 	        return buildErrorResponse(HttpStatus.NOT_FOUND, "Aplicativo não encontrado: " + id, request);
@@ -100,15 +100,15 @@ public class AplicativosController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE')")
     @Operation(summary = "Remove um Aplicativo", responses = {
             @ApiResponse(responseCode = "204", description = "Removido com sucesso"),
             @ApiResponse(responseCode = "404", description = "Aplicativo não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> delete(@PathVariable("id") Long id, HttpServletRequest request) {
 
-        Optional<AplicativosModel> existing = AplicativosUseCase.findById(id);
+        Optional<AplicativosModel> existing = aplicativosUseCase.findById(id);
        if (existing.isPresent()) {
-           AplicativosUseCase.delete(id);
+    	   aplicativosUseCase.delete(id);
            return ResponseEntity.noContent().build();  
        } else {
            return buildErrorResponse(HttpStatus.NOT_FOUND, "Aplicativo não encontrado: " + id, request);
@@ -117,13 +117,13 @@ public class AplicativosController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
+    @PreAuthorize("hasAuthority('READ')")
     @Operation(summary = "Busca Aplicativo por id", responses = {
             @ApiResponse(responseCode = "200", description = "Aplicativo encontrado",     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Aplicativo não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request) {
 
-        Optional<AplicativosModel> existing = AplicativosUseCase.findById(id);
+        Optional<AplicativosModel> existing = aplicativosUseCase.findById(id);
         if (existing.isPresent()) {
             AplicativosResponseDTO dto = AplicativosMapper.toResponse(existing.get());
             return ResponseEntity.ok(dto);
@@ -133,13 +133,13 @@ public class AplicativosController {
     }
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
+    @PreAuthorize("hasAuthority('READ_ALL')")
     @Operation(summary = "Lista todos os Aplicativos")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<List<AplicativosResponseDTO>> listAll() {
-        List<AplicativosModel> domains = AplicativosUseCase.listAll();
+        List<AplicativosModel> domains = aplicativosUseCase.listAll();
         List<AplicativosResponseDTO> response = domains.stream()
                 .map(AplicativosMapper::toResponse)
                 .collect(Collectors.toList());
@@ -149,15 +149,14 @@ public class AplicativosController {
 
     
     @GetMapping("/ativos")
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR','USER')")
+    @PreAuthorize("hasAuthority('READ_ACTIVE')")
     @Operation(summary = "Lista somente os aplicativos ativos")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> listAtivos(HttpServletRequest request) {
 
-        List<AplicativosModel> domains = AplicativosUseCase.listAll();
-     
+        List<AplicativosModel> domains = aplicativosUseCase.listAtivos();     
         List<AplicativosResponseDTO> response = domains.stream()
                 .map(AplicativosMapper::toResponse)
                 .collect(Collectors.toList());

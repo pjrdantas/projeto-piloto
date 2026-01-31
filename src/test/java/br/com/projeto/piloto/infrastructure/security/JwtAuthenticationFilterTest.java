@@ -28,12 +28,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import br.com.projeto.piloto.application.service.AuthSessaoService; // ADICIONE ESTE IMPORT
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class JwtAuthenticationFilterTest {
 
     @Mock private JwtUtil jwtUtil;
     @Mock private UserDetailsService userDetailsService;
+    @Mock private AuthSessaoService authSessaoService; // 1. ADICIONE ESTE MOCK
     @Mock private HttpServletRequest request;
     @Mock private HttpServletResponse response;
     @Mock private FilterChain filterChain;
@@ -51,16 +54,14 @@ class JwtAuthenticationFilterTest {
     @DisplayName("Deve permitir acesso sem token (Header ausente)")
     void devePermitirSemToken() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn(null);
-
         filter.doFilterInternal(request, response, filterChain);
-
         verify(filterChain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @SuppressWarnings("null")
 	@Test
-    @DisplayName("Deve autenticar usuário quando token é válido")
+    @DisplayName("Deve autenticar usuário quando token é válido e sessão ativa")
     void deveAutenticarComSucesso() throws ServletException, IOException {
         String token = "token.valido";
         String username = "admin";
@@ -70,6 +71,9 @@ class JwtAuthenticationFilterTest {
         when(jwtUtil.validate(token)).thenReturn(true);
         when(jwtUtil.getUsername(token)).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
+        
+        // 2. ADICIONE ESTA LINHA: Essencial para o IF do filtro passar
+        when(authSessaoService.validarSessao(token)).thenReturn(true);
 
         filter.doFilterInternal(request, response, filterChain);
 
@@ -83,10 +87,27 @@ class JwtAuthenticationFilterTest {
     @DisplayName("Deve ignorar token mal formatado (Sem Bearer)")
     void deveIgnorarTokenMalFormatado() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn("TokenInvalido 123");
-
         filter.doFilterInternal(request, response, filterChain);
-
         verify(filterChain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
+    
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve barrar usuário quando sessão no banco está inativa")
+    void deveBarrarSessaoInativaNoBanco() throws ServletException, IOException {
+        String token = "token.valido";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(true);
+        
+        // 3. Simula o login duplo (sessão inativa no banco)
+        when(authSessaoService.validarSessao(token)).thenReturn(false);
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+    
+    
 }

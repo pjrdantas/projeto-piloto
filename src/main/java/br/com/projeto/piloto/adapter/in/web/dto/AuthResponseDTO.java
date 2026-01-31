@@ -7,6 +7,7 @@ public record AuthResponseDTO(
         String refreshToken, 
         String usuario,
         String nome,          
-        Set<String> perfis
+        Set<String> perfis,
+        Set<String> permissoes
 ) {
 }

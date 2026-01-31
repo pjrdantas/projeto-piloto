@@ -10,12 +10,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,10 +37,6 @@ public class AuthPerfil implements Serializable {
 
     @Column(name = "NM_PERFIL", nullable = false)
     private String nmPerfil;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "APLICATIVO_ID", nullable = false)
-    private Aplicativo aplicativo;
 
     @ManyToMany(mappedBy = "perfis")
     @Builder.Default

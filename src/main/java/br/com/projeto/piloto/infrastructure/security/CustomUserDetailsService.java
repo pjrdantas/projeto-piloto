@@ -27,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        
         AuthUsuario authUsuario = userRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
@@ -37,6 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Set<String> authorities = new HashSet<>();
         
         authUsuario.getPerfis().forEach(perfil -> {
+            
             authorities.add("ROLE_" + perfil.getNmPerfil().toUpperCase()); 
 
             perfil.getPermissoes().forEach(permissao -> {
@@ -46,8 +48,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return User.withUsername(authUsuario.getLogin())
                 .password(authUsuario.getSenha())
-                .authorities(authorities.toArray(new String[0]))
+                .authorities(authorities.toArray(new String[0])) 
                 .build();
     }
-
 }

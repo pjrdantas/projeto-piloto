@@ -1,17 +1,13 @@
 package br.com.projeto.piloto.adapter.in.web.controller;
 
-import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,13 +15,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.projeto.piloto.adapter.in.web.dto.LoginRequestDTO;
 import br.com.projeto.piloto.adapter.in.web.dto.RefreshTokenRequestDTO;
-import br.com.projeto.piloto.application.usecase.AuthInteractor;
-import br.com.projeto.piloto.domain.model.AuthPerfilModel; 
+import br.com.projeto.piloto.application.service.AuthSessaoService;
+import br.com.projeto.piloto.application.usecase.AuthInteractor; 
+import br.com.projeto.piloto.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.infrastructure.security.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -47,6 +47,10 @@ class AuthControllerTest {
     @SuppressWarnings("removal")
 	@MockBean
     private JwtUtil jwtUtil;
+
+    @SuppressWarnings("removal")
+	@MockBean
+    private AuthSessaoService authSessaoService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -74,6 +78,7 @@ class AuthControllerTest {
         when(authInteractor.authenticate(anyString(), anyString())).thenReturn(mockUsuario);
         when(jwtUtil.generateToken(anyString(), anySet())).thenReturn("token-access");
         when(jwtUtil.generateRefreshToken(anyString())).thenReturn("token-refresh");
+        when(authSessaoService.criarSessao(org.mockito.ArgumentMatchers.anyLong(), anyString(), anyString())).thenReturn(null);
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -90,6 +95,7 @@ class AuthControllerTest {
 
         when(jwtUtil.validate("valid-refresh")).thenReturn(true);
         when(jwtUtil.extractUsernameFromRefreshToken("valid-refresh")).thenReturn("admin");
+        when(authSessaoService.encontrarPorRefreshToken("valid-refresh")).thenReturn(java.util.Optional.of(new br.com.projeto.piloto.domain.model.AuthSessaoModel()));
         when(authInteractor.findByLogin("admin")).thenReturn(mockUsuario);
         when(jwtUtil.generateToken(anyString(), anySet())).thenReturn("new-access-token");
 

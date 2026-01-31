@@ -1,14 +1,19 @@
 package br.com.projeto.piloto.infrastructure.security;
 
-import br.com.projeto.piloto.infrastructure.config.AuthProperties;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
+import br.com.projeto.piloto.infrastructure.config.AuthProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
@@ -16,42 +21,52 @@ public class JwtUtil {
     private final Key key;
     private final AuthProperties authProperties;
 
-    // Injeção limpa via construtor usando sua classe de configuração
+    
     public JwtUtil(AuthProperties authProperties) {
         this.authProperties = authProperties;
-        // Transforma a String do secret em uma Key segura
+        
         this.key = Keys.hmacShaKeyFor(authProperties.getJwt().getSecret().getBytes());
     }
 
-    public String generateToken(String username, Set<String> roles) {
+    public String generateToken(String username, Set<String> authorities) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles.stream().toList())
+                // Agora enviamos a lista completa para o Angular
+                .claim("authorities", authorities.stream().toList()) 
                 .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + authProperties.getJwt().getExpirationMs())) // Busca da classe
+                .setExpiration(new Date(now + authProperties.getJwt().getExpirationMs())) 
                 .signWith(key)
                 .compact();
     }
+    
+    public List<String> getAuthorities(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        Object auths = claims.get("authorities");
+        if (auths instanceof List<?>) {
+            return ((List<?>) auths).stream().map(Object::toString).toList();
+        }
+        return List.of();
+    }    
 
     public String generateRefreshToken(String username) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + authProperties.getJwt().getRefreshExpirationMs())) // Busca da classe
+                .setExpiration(new Date(now + authProperties.getJwt().getRefreshExpirationMs())) 
                 .signWith(key)
                 .compact();
     }
 
-    // ... (restante dos métodos extractUsername, validate, getUsername, getRoles permanecem iguais)
+    
     
     public boolean validate(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (JwtException ex) {
-            // Engloba ExpiredJwtException e outras falhas de assinatura
+            
             return false;
         }
     }
@@ -76,5 +91,21 @@ public class JwtUtil {
                    .parseClaimsJws(token)
                    .getBody()
                    .getSubject();
+    }
+
+    /**
+     * Extrai a data de expiração do token em LocalDateTime
+     */
+    public LocalDateTime extractExpiration(String token) {
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        
+        return expiration.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 }

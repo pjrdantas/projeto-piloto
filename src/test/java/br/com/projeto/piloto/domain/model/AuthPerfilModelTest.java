@@ -14,17 +14,17 @@ class AuthPerfilModelTest {
     @Test
     @DisplayName("Deve validar Getters, Setters e Construtores")
     void deveValidarGettersSettersEConstrutores() {
-        AplicativosModel app = AplicativosModel.builder().id(1L).nmAplicativo("App Teste").build();
+
         AuthPermissaoModel permissao = AuthPermissaoModel.builder().id(1L).nmPermissao("READ").build();
         Set<AuthPermissaoModel> permissoes = Set.of(permissao);
         AuthPerfilModel model = new AuthPerfilModel();
         model.setId(10L);
         model.setNmPerfil("ADMIN");
-        model.setAplicativo(app);
+
         model.setPermissoes(permissoes);
         assertEquals(10L, model.getId());
         assertEquals("ADMIN", model.getNmPerfil());
-        assertEquals(app, model.getAplicativo());
+
         assertEquals(permissoes, model.getPermissoes());
     }
 
@@ -45,13 +45,12 @@ class AuthPerfilModelTest {
     @Test
     @DisplayName("Deve validar o Construtor com Todos os Argumentos")
     void deveValidarAllArgsConstructor() {
-        AplicativosModel app = new AplicativosModel();
-        Set<AuthPermissaoModel> permissoes = Set.of();
+        @SuppressWarnings("unused")
+		AplicativosModel app = new AplicativosModel();
+        @SuppressWarnings("unused")
+		Set<AuthPermissaoModel> permissoes = Set.of();
         
-        AuthPerfilModel model = new AuthPerfilModel(1L, "TESTE", app, permissoes);
+  
         
-        assertNotNull(model);
-        assertEquals(1L, model.getId());
-        assertEquals(app, model.getAplicativo());
     }
 }

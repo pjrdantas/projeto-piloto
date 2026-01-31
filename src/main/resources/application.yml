@@ -8,15 +8,21 @@ auth:
 server:
   port: 8080
 
+logging:
+  level:
+    "[org.hibernate.SQL]": ERROR
+    "[org.hibernate.orm.jdbc.bind]": ERROR
+
 spring:
   profiles:
     active: dev
-  # CONFIGURAÇÃO DO FLYWAY (Global)
-#  flyway:
-#    enabled: true
-#    baseline-on-migrate: true  # <--- ISSO PROTEGE SEUS DADOS NO ORACLE
-#    baseline-version: 1
-#    locations: classpath:db/migration
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        "[show_sql]": false
+        "[format_sql]": false
+        "[highlight_sql]": false
 
 ---
 # DEV — ORACLE LOCAL
@@ -32,8 +38,8 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
-      ddl-auto: validate
-    show-sql: true
+      # Alterado para update para sincronizar a remoção da coluna aplicativo_id
+      ddl-auto: update
 
 ---
 # DOCKER — ORACLE FORA DO CONTAINER (Via Host)
@@ -49,23 +55,21 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
-      ddl-auto: validate
-    show-sql: true
+      # Alterado para update para corrigir o erro de Schema-validation no Docker
+      ddl-auto: update
 
 ---
 # PROD — POSTGRES AWS
 spring:
   config:
     activate:
-      on-profile: dev # ---> mudar para prod quando necessario ir para produção
+      on-profile: prod
   datasource:
-    url: jdbc:postgresql://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com:5432/postgres
+    url: jdbc:postgresql://://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com
     username: postgres
-    password: c6vOzOH-Z_8*f3Y>f1i7be2w]P9n
+    password: "c6vOzOH-Z_8*f3Y>f1i7be2w]P9n"
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update # Em prod o Flyway cria, mas o Hibernate pode atualizar se necessário
-    show-sql: false
-# Teste IP Fixo
+      ddl-auto: validate

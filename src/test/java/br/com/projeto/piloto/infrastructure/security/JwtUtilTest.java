@@ -1,13 +1,12 @@
 package br.com.projeto.piloto.infrastructure.security;
 
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,16 +33,16 @@ class JwtUtilTest {
     @DisplayName("Deve gerar e extrair dados de um token válido")
     void deveGerarEExtrairDados() {
         String username = "usuario.teste";
-        Set<String> roles = Set.of("ROLE_ADMIN", "ROLE_USER");
+        Set<String> authorities = Set.of("READ", "CREATE", "UPDATE", "DELETE");
 
-        String token = jwtUtil.generateToken(username, roles);
+        String token = jwtUtil.generateToken(username, authorities);
 
         assertNotNull(token);
         assertTrue(jwtUtil.validate(token));
         assertEquals(username, jwtUtil.getUsername(token));
         
-        List<String> extractedRoles = jwtUtil.getRoles(token);
-        assertTrue(extractedRoles.containsAll(roles));
+        List<String> extractedAuthorities = jwtUtil.getAuthorities(token);
+        assertTrue(extractedAuthorities.containsAll(authorities));
     }
 
     @Test

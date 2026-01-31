@@ -36,6 +36,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 
+import br.com.projeto.piloto.application.service.AuthSessaoService;  
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class SecurityConfigTest {
@@ -43,22 +45,29 @@ class SecurityConfigTest {
     @Mock private JwtUtil jwtUtil;
     @Mock private UserDetailsService userDetailsService;
     @Mock private AuthenticationConfiguration authConfig;
+    @Mock private AuthSessaoService authSessaoService;  
 
     private SecurityConfig securityConfig;
 
     @BeforeEach
     void setUp() {
-        securityConfig = new SecurityConfig(jwtUtil, userDetailsService);
+        
+        securityConfig = new SecurityConfig(jwtUtil, userDetailsService, authSessaoService);
     }
 
     @Test
     @DisplayName("Cobre Beans de Auth e Password")
     void deveCobrirBeansSimples() throws Exception {
+         
         assertNotNull(securityConfig.passwordEncoder());
+
         var authManager = mock(org.springframework.security.authentication.AuthenticationManager.class);
+
         when(authConfig.getAuthenticationManager()).thenReturn(authManager);
+
         assertNotNull(securityConfig.authenticationManager(authConfig));
     }
+
 
     @SuppressWarnings("null")
 	@Test

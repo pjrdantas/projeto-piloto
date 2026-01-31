@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import br.com.projeto.piloto.application.service.AuthSessaoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +21,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final AuthSessaoService authSessaoService; // 1. ADICIONE O SERVICE
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService uds) {
+    // 2. ATUALIZE O CONSTRUTOR
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService uds, AuthSessaoService authSessaoService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = uds;
+        this.authSessaoService = authSessaoService;
     }
 
     @Override
@@ -34,14 +38,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
-        
-         
+
         if (StringUtils.hasLength(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             
             try {
-                
-                if (jwtUtil.validate(token)) {
+                // 3. ADICIONE A VALIDAÇÃO DA SESSÃO NO BANCO
+                // Além de validar a assinatura do JWT, verificamos se ele consta como "Ativo" no DB
+                if (jwtUtil.validate(token) && authSessaoService.validarSessao(token)) {
                     String username = jwtUtil.getUsername(token);
 
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -53,9 +57,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
+                } else {
+                    // Se o token não estiver na tabela AuthSessao como ativo, limpamos o contexto
+                    SecurityContextHolder.clearContext();
                 }
             } catch (Exception e) {
-                // Opcional: Logar erro de autenticação
                 SecurityContextHolder.clearContext();
             }
         }
