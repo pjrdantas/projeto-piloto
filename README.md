@@ -4,6 +4,26 @@ Este projeto é um esqueleto de autenticação e gestão de aplicativos desenvol
 
 ---
 
+** ✅ Objetivo do projeto **
+
+Fornecer uma base sólida para sistemas que precisam de autenticação, autorização por perfis e separação clara entre domínio, aplicação e infraestrutura, com foco em:
+
+- Evolução segura do domínio sem acoplamento à infraestrutura.
+- Facilidade para adicionar novos adaptadores (REST, mensageria, persistência).
+- Configuração flexível por ambientes (dev, docker, prod).
+
+---
+
+** 🧩 Principais funcionalidades **
+
+- Autenticação JWT Stateless.
+- Gerenciamento de usuários, perfis e permissões.
+- Integração com Oracle (local) e PostgreSQL (cloud).
+- Migrações versionadas com Flyway.
+- Documentação automática via Swagger/OpenAPI.
+
+---
+
 ** 🛠️ Tecnologias e Especificações **
 - **Java:** 17
 - **Spring Boot:** 3.x
@@ -97,6 +117,61 @@ Utilize o script automatizado que gerencia o build da imagem e a execução do c
 
 ```
 
+---
+
+** ⚙️ Perfis e configurações **
+
+O projeto utiliza o `application.yml` para gerenciar diferentes ambientes:
+
+- **dev**: execução local com Oracle.
+- **docker**: execução em container.
+- **prod**: execução em produção (PostgreSQL AWS RDS).
+
+Para definir um perfil em execução local:
+
+```bash
+SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+```
+
+---
+
+** 🔐 Variáveis importantes **
+
+As principais propriedades do projeto (definidas no `application.yml`) incluem:
+
+- `auth.jwt.secret`: chave de assinatura do JWT.
+- `spring.datasource.url`, `username`, `password`: conexão com o banco.
+- `flyway.baseline-on-migrate`: habilita baseline quando necessário.
+
+Recomenda-se manter os segredos fora do repositório em ambientes produtivos, usando:
+
+- variáveis de ambiente;
+- gerenciadores de segredo (AWS Secrets Manager, Vault etc.).
+
+---
+
+** 🧪 Como executar testes **
+
+```bash
+mvn test
+```
+
+---
+
+** 🚢 Deploy e infraestrutura **
+
+O projeto possui suporte inicial para deploy via Docker e Kubernetes:
+
+- `Dockerfile`: build da aplicação em container.
+- `k8s/`: manifestos de deployment e configuração de nginx.
+
+Para buildar uma imagem local:
+
+```bash
+docker build -t projeto-piloto .
+```
+
+---
 
 ** 4. Carga de Dados Inicial **
 

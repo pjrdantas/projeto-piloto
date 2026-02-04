@@ -59,7 +59,7 @@ public class AuthPermissaoController {
     }
    
     @PostMapping
-    @PreAuthorize("hasAuthority('CREATE')")
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('CREATE')")
     @Operation(summary = "Cria uma nova permissão", responses = {
             @ApiResponse(responseCode = "201", description = "Permissão criada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos",              content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),

@@ -167,7 +167,7 @@ public class UsuarioController {
         return ResponseEntity.ok(toDto(usuario));
     }
 
-    @GetMapping
+    @GetMapping 
     @PreAuthorize("hasAuthority('READ_ALL')")
     @Operation(summary = "Lista todos os usuários")
     @ApiResponses({

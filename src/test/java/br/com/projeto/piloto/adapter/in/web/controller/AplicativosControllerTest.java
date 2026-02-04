@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,7 +64,7 @@ class AplicativosControllerTest {
                 .build();
     }
 
-    @SuppressWarnings("null")
+    @SuppressWarnings("null") 
 	@Test
     void testFullCoverage() throws Exception {
 
@@ -125,16 +126,23 @@ class AplicativosControllerTest {
                 .andExpect(jsonPath("$[0]").exists());
     }
     
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("GET /ativos - Listar ativos")
+    @Test
+    @DisplayName("GET /api/aplicativos/ativos - Listar ativos")
     void listAtivosSuccess() throws Exception {
-        when(aplicativosUseCase.listAll()).thenReturn(List.of(validModel));
+
+        // Mock correto
+        when(aplicativosUseCase.listAtivos()).thenReturn(List.of(validModel));
 
         mockMvc.perform(get("/api/aplicativos/ativos")
-                .contentType(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0]").exists());
+                .andExpect(jsonPath("$[0]").exists())
+                // ⚠️ ajuste o nome do campo conforme o DTO
+                .andExpect(jsonPath("$[0].nome").exists());
     }
+
+
+
 }

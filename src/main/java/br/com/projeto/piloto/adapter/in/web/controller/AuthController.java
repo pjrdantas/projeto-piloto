@@ -66,7 +66,7 @@ public class AuthController {
 	            perfil.getPermissoes().forEach(p -> permissions.add(p.getNmPermissao().toUpperCase()));
 	        }
 	    });
-	    
+	     
 	    // Para o JWT, usar roles + permissions (authorities)
 	    Set<String> authorities = new HashSet<>(roles);
 	    authorities.addAll(permissions);
