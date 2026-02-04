@@ -17,20 +17,18 @@ class AuthPerfilTest {
     @Test
     @DisplayName("Deve validar Getters, Setters e Builder do Lombok para AuthPerfil")
     void deveTestarLombokEConstrutores() {
-        Aplicativo app = Aplicativo.builder().id(1L).nmAplicativo("App Teste").build();
+
         Set<AuthUsuario> usuarios = new HashSet<>();
         Set<AuthPermissao> permissoes = new HashSet<>();
         AuthPerfil perfil = AuthPerfil.builder()
                 .id(10L)
                 .nmPerfil("GERENTE")
-                .aplicativo(app)
                 .usuarios(usuarios)
                 .permissoes(permissoes)
                 .build();
         assertAll("Atributos da Entity AuthPerfil",
             () -> assertEquals(10L, perfil.getId()),
             () -> assertEquals("GERENTE", perfil.getNmPerfil()),
-            () -> assertEquals(app, perfil.getAplicativo()),
             () -> assertEquals(usuarios, perfil.getUsuarios()),
             () -> assertEquals(permissoes, perfil.getPermissoes())
         );
@@ -55,13 +53,13 @@ class AuthPerfilTest {
     @Test
     @DisplayName("Deve validar o construtor com todos os argumentos")
     void deveTestarAllArgsConstructor() {
-        Aplicativo app = new Aplicativo();
+
         Set<AuthUsuario> users = new HashSet<>();
         Set<AuthPermissao> perms = new HashSet<>();
         
-        AuthPerfil perfil = new AuthPerfil(1L, "ADMIN", app, users, perms);
+        AuthPerfil perfil = new AuthPerfil(1L, "ADMIN", users, perms);
         
         assertEquals("ADMIN", perfil.getNmPerfil());
-        assertNotNull(perfil.getAplicativo());
+
     }
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "auth") 
 public class AuthProperties {
+    
     private Jwt jwt = new Jwt();
 
     @Data

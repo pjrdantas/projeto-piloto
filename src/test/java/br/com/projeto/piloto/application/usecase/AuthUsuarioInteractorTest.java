@@ -46,6 +46,9 @@ class AuthUsuarioInteractorTest {
 
     @Mock
     private AuthUsuarioMapper mapper;
+    
+    @Mock // <--- ADICIONE ESTA ANOTAÇÃO AQUI
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private AuthUsuarioInteractor service;
@@ -100,29 +103,41 @@ class AuthUsuarioInteractorTest {
     @DisplayName("Deve atualizar usuário com nova senha e perfis")
     void deveAtualizarCompleto() {
         Long id = 1L;
+        String senhaPlana = "123";
+        String senhaCripto = "$2a$10$hashSimulado"; // O que o encoder retornaria
+
         AuthUsuarioModel model = AuthUsuarioModel.builder()
                 .login("novo")
                 .nome("Nome")
-                .senha("123")
+                .senha(senhaPlana)
                 .perfis(getMockPerfisModel())
                 .build();
+        
         AuthUsuario existing = new AuthUsuario();
         existing.setPerfis(new HashSet<AuthPerfil>());
         
         AuthUsuario updatedEntity = new AuthUsuario();
         updatedEntity.setPerfis(new HashSet<AuthPerfil>());
 
+        // CONFIGURAÇÃO DOS MOCKS
         when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.existsByDsLoginAndIdNot("novo", id)).thenReturn(false);
         when(mapper.toEntity(model)).thenReturn(updatedEntity);
         when(repository.save(existing)).thenReturn(existing);
         when(mapper.toDomain(existing)).thenReturn(model);
+        
+        // MOCK DO ENCODER (Resolve o NullPointerException)
+        when(passwordEncoder.encode(senhaPlana)).thenReturn(senhaCripto);
 
+        // EXECUÇÃO
         AuthUsuarioModel result = service.atualizar(id, model);
 
+        // VALIDAÇÕES
         assertNotNull(result);
-        assertEquals("123", existing.getSenha());
+        assertEquals(senhaCripto, existing.getSenha()); // Verifica se a senha gravada foi a criptografada
+        verify(passwordEncoder).encode(senhaPlana); // Verifica se o encoder foi realmente chamado
     }
+
 
     @Test
     @DisplayName("Deve lançar erro ao atualizar ID inexistente")

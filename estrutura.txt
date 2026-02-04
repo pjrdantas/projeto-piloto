@@ -1,0 +1,803 @@
+Listagem de caminhos de pasta
+O n£mero de s‚rie do volume ‚ C0000100 2EC2:27B3
+C:.
+|   .classpath
+|   .factorypath
+|   .gitattributes
+|   .gitignore
+|   .project
+|   Dockerfile
+|   estrutura.txt
+|   f1i7be2w]P9n'
+|   mvnw
+|   mvnw.cmd
+|   pom.xml
+|   README.md
+|   start-local-k8s.bat
+|   
++---.github
+|   +---appmod
+|   |   \---appcat
+|   \---workflows
+|           deploy-aws.yml
+|           
++---.settings
+|       org.eclipse.core.resources.prefs
+|       org.eclipse.jdt.apt.core.prefs
+|       org.eclipse.jdt.core.prefs
+|       org.eclipse.m2e.core.prefs
+|       org.springframework.ide.eclipse.prefs
+|       
++---k8s
+|       deployment.yaml
+|       nginx-config.yaml
+|       
++---src
+|   +---main
+|   |   +---java
+|   |   |   \---br
+|   |   |       \---com
+|   |   |           \---projeto
+|   |   |               \---piloto
+|   |   |                   |   ProjetoPilotoApplication.java
+|   |   |                   |   
+|   |   |                   +---adapter
+|   |   |                   |   +---in
+|   |   |                   |   |   \---web
+|   |   |                   |   |       +---controller
+|   |   |                   |   |       |       AplicativosController.java
+|   |   |                   |   |       |       AuthController.java
+|   |   |                   |   |       |       AuthPerfilController.java
+|   |   |                   |   |       |       AuthPermissaoController.java
+|   |   |                   |   |       |       UsuarioController.java
+|   |   |                   |   |       |       
+|   |   |                   |   |       +---dto
+|   |   |                   |   |       |       AplicativosRequestDTO.java
+|   |   |                   |   |       |       AplicativosResponseDTO.java
+|   |   |                   |   |       |       AuthPerfilRequestDTO.java
+|   |   |                   |   |       |       AuthPerfilResponseDTO.java
+|   |   |                   |   |       |       AuthPerfilResumoDTO.java
+|   |   |                   |   |       |       AuthPermissaoRequestDTO.java
+|   |   |                   |   |       |       AuthPermissaoResponseDTO.java
+|   |   |                   |   |       |       AuthResponseDTO.java
+|   |   |                   |   |       |       AuthUsuarioRequestDTO.java
+|   |   |                   |   |       |       AuthUsuarioResponseDTO.java
+|   |   |                   |   |       |       LoginRequestDTO.java
+|   |   |                   |   |       |       RefreshTokenRequestDTO.java
+|   |   |                   |   |       |       RegisterRequestDTO.java
+|   |   |                   |   |       |       
+|   |   |                   |   |       \---exception
+|   |   |                   |   |               ErrorResponse.java
+|   |   |                   |   |               GlobalExceptionHandler.java
+|   |   |                   |   |               InvalidLoginException.java
+|   |   |                   |   |               
+|   |   |                   |   \---out
+|   |   |                   |       \---jpa
+|   |   |                   |           |   AplicativosRepositoryAdapter.java
+|   |   |                   |           |   AuthPerfilRepositoryAdapter.java
+|   |   |                   |           |   AuthPermissaoRepositoryAdapter.java
+|   |   |                   |           |   AuthUsuarioRepositoryAdapter.java
+|   |   |                   |           |   
+|   |   |                   |           +---entity
+|   |   |                   |           |       Aplicativo.java
+|   |   |                   |           |       AuthPerfil.java
+|   |   |                   |           |       AuthPermissao.java
+|   |   |                   |           |       AuthSessao.java
+|   |   |                   |           |       AuthUsuario.java
+|   |   |                   |           |       
+|   |   |                   |           +---mapper
+|   |   |                   |           |       AplicativosMapper.java
+|   |   |                   |           |       AuthPerfilMapper.java
+|   |   |                   |           |       AuthPermissaoMapper.java
+|   |   |                   |           |       AuthUsuarioMapper.java
+|   |   |                   |           |       
+|   |   |                   |           \---repository
+|   |   |                   |                   AuthSessaoRepository.java
+|   |   |                   |                   SpringAuthPerfilRepository.java
+|   |   |                   |                   SpringAuthPermissaoRepository.java
+|   |   |                   |                   SpringAuthUsuarioRepository.java
+|   |   |                   |                   SpringDataAplicativosRepository.java
+|   |   |                   |                   
+|   |   |                   +---application
+|   |   |                   |   +---service
+|   |   |                   |   |       AuthSessaoService.java
+|   |   |                   |   |       
+|   |   |                   |   \---usecase
+|   |   |                   |           AplicativosInteractor.java
+|   |   |                   |           AuthInteractor.java
+|   |   |                   |           AuthPerfilInteractor.java
+|   |   |                   |           AuthPermissaoInteractor.java
+|   |   |                   |           AuthUsuarioInteractor.java
+|   |   |                   |           JwtUserDetailsInteractor.java
+|   |   |                   |           
+|   |   |                   +---domain
+|   |   |                   |   +---exception
+|   |   |                   |   |       DomainException.java
+|   |   |                   |   |       UserNotFoundException.java
+|   |   |                   |   |       
+|   |   |                   |   +---model
+|   |   |                   |   |       AplicativosModel.java
+|   |   |                   |   |       AuthPerfilModel.java
+|   |   |                   |   |       AuthPermissaoModel.java
+|   |   |                   |   |       AuthSessaoModel.java
+|   |   |                   |   |       AuthUsuarioModel.java
+|   |   |                   |   |       
+|   |   |                   |   \---port
+|   |   |                   |       +---inbound
+|   |   |                   |       |       AplicativosUseCase.java
+|   |   |                   |       |       AuthPerfilUseCase.java
+|   |   |                   |       |       AuthPermissaoUseCase.java
+|   |   |                   |       |       AuthUseCasePort.java
+|   |   |                   |       |       AuthUsuarioUseCasePort.java
+|   |   |                   |       |       
+|   |   |                   |       \---outbound
+|   |   |                   |               AplicativosRepositoryPort.java
+|   |   |                   |               AuthPerfilRepositoryPort.java
+|   |   |                   |               AuthPermissaoRepositoryPort.java
+|   |   |                   |               AuthUsuarioRepositoryPort.java
+|   |   |                   |               
+|   |   |                   \---infrastructure
+|   |   |                       +---config
+|   |   |                       |       AuthProperties.java
+|   |   |                       |       JwtProperties.java
+|   |   |                       |       SwaggerConfig.java
+|   |   |                       |       
+|   |   |                       \---security
+|   |   |                               CustomUserDetailsService.java
+|   |   |                               JwtAuthenticationFilter.java
+|   |   |                               JwtUtil.java
+|   |   |                               SecurityConfig.java
+|   |   |                               SessaoCleanupScheduler.java
+|   |   |                               
+|   |   \---resources
+|   |       |   application.yml
+|   |       |   application.yml.back2
+|   |       |   
+|   |       +---db
+|   |       |   \---migration
+|   |       |           V1__create_tables.sql
+|   |       |           V2__create_auth_sessao_table.sql
+|   |       |           
+|   |       \---META-INF
+|   |               MANIFEST.MF
+|   |               
+|   \---test
+|       +---java
+|       |   \---br
+|       |       \---com
+|       |           \---projeto
+|       |               \---piloto
+|       |                   |   ProjetoPilotoApplicationTests.java
+|       |                   |   
+|       |                   +---adapter
+|       |                   |   +---in
+|       |                   |   |   \---web
+|       |                   |   |       +---controller
+|       |                   |   |       |       AplicativosControllerTest.java
+|       |                   |   |       |       AuthControllerTest.java
+|       |                   |   |       |       AuthPerfilControllerTest.java
+|       |                   |   |       |       AuthPermissaoControllerTest.java
+|       |                   |   |       |       UsuarioControllerTest.java
+|       |                   |   |       |       
+|       |                   |   |       \---exception
+|       |                   |   |               ErrorResponseTest.java
+|       |                   |   |               GlobalExceptionHandlerTest.java
+|       |                   |   |               InvalidLoginExceptionTest.java
+|       |                   |   |               
+|       |                   |   \---out
+|       |                   |       \---jpa
+|       |                   |           |   AplicativosRepositoryAdapterTest.java
+|       |                   |           |   AuthPerfilRepositoryAdapterTest.java
+|       |                   |           |   AuthPermissaoRepositoryAdapterTest.java
+|       |                   |           |   AuthUsuarioRepositoryAdapterTest.java
+|       |                   |           |   
+|       |                   |           +---entity
+|       |                   |           |       AplicativoTest.java
+|       |                   |           |       AuthPerfilTest.java
+|       |                   |           |       AuthPermissaoTest.java
+|       |                   |           |       AuthUsuarioTest.java
+|       |                   |           |       
+|       |                   |           \---mapper
+|       |                   |                   AplicativosMapperTest.java
+|       |                   |                   AuthPerfilMapperTest.java
+|       |                   |                   AuthPermissaoMapperTest.java
+|       |                   |                   AuthUsuarioMapperTest.java
+|       |                   |                   
+|       |                   +---api
+|       |                   |   \---dto
+|       |                   |           AplicativosRequestDTOTest.java
+|       |                   |           AplicativosResponseDTOTest.java
+|       |                   |           AuthPerfilRequestDTOTest.java
+|       |                   |           AuthPerfilResponseDTOTest.java
+|       |                   |           AuthPerfilResumoDTOTest.java
+|       |                   |           AuthPermissaoRequestDTOTest.java
+|       |                   |           AuthPermissaoResponseDTOTest.java
+|       |                   |           AuthResponseDTOTest.java
+|       |                   |           AuthUsuarioRequestDTOTest.java
+|       |                   |           AuthUsuarioResponseDTOTest.java
+|       |                   |           LoginRequestDTOTest.java
+|       |                   |           RefreshTokenRequestDTOTest.java
+|       |                   |           RegisterRequestDTOTest.java
+|       |                   |           
+|       |                   +---application
+|       |                   |   \---usecase
+|       |                   |           AplicativosInteractorTest.java
+|       |                   |           AuthInteractorTest.java
+|       |                   |           AuthPerfilInteractorTest.java
+|       |                   |           AuthPermissaoInteractorTest.java
+|       |                   |           AuthUsuarioInteractorTest.java
+|       |                   |           JwtUserDetailsInteractorTest.java
+|       |                   |           
+|       |                   +---domain
+|       |                   |   +---exception
+|       |                   |   |       DomainExceptionTest.java
+|       |                   |   |       UserNotFoundExceptionTest.java
+|       |                   |   |       
+|       |                   |   \---model
+|       |                   |           AplicativosModelTest.java
+|       |                   |           AuthPerfilModelTest.java
+|       |                   |           AuthPermissaoModelTest.java
+|       |                   |           AuthUsuarioModelTest.java
+|       |                   |           
+|       |                   \---infrastructure
+|       |                       +---config
+|       |                       |       SwaggerConfigTest.java
+|       |                       |       
+|       |                       \---security
+|       |                               CustomUserDetailsServiceTest.java
+|       |                               JwtAuthenticationFilterTest.java
+|       |                               JwtUtilTest.java
+|       |                               SecurityConfigTest.java
+|       |                               
+|       \---resources
+|               application-test.yml
+|               logback-test.xml
+|               
+\---target
+    |   jacoco.exec
+    |   projeto-piloto-0.0.1-SNAPSHOT.jar
+    |   projeto-piloto-0.0.1-SNAPSHOT.jar.original
+    |   
+    +---classes
+    |   |   application.yml
+    |   |   application.yml.back2
+    |   |   
+    |   +---br
+    |   |   \---com
+    |   |       \---projeto
+    |   |           \---piloto
+    |   |               |   ProjetoPilotoApplication.class
+    |   |               |   
+    |   |               +---adapter
+    |   |               |   +---in
+    |   |               |   |   \---web
+    |   |               |   |       +---controller
+    |   |               |   |       |       AplicativosController.class
+    |   |               |   |       |       AuthController.class
+    |   |               |   |       |       AuthPerfilController.class
+    |   |               |   |       |       AuthPermissaoController.class
+    |   |               |   |       |       UsuarioController.class
+    |   |               |   |       |       
+    |   |               |   |       +---dto
+    |   |               |   |       |       AplicativosRequestDTO.class
+    |   |               |   |       |       AplicativosResponseDTO.class
+    |   |               |   |       |       AuthPerfilRequestDTO.class
+    |   |               |   |       |       AuthPerfilResponseDTO.class
+    |   |               |   |       |       AuthPerfilResumoDTO.class
+    |   |               |   |       |       AuthPermissaoRequestDTO.class
+    |   |               |   |       |       AuthPermissaoResponseDTO.class
+    |   |               |   |       |       AuthResponseDTO.class
+    |   |               |   |       |       AuthUsuarioRequestDTO.class
+    |   |               |   |       |       AuthUsuarioResponseDTO.class
+    |   |               |   |       |       LoginRequestDTO.class
+    |   |               |   |       |       RefreshTokenRequestDTO.class
+    |   |               |   |       |       RegisterRequestDTO.class
+    |   |               |   |       |       
+    |   |               |   |       \---exception
+    |   |               |   |               ErrorResponse$ErrorResponseBuilder.class
+    |   |               |   |               ErrorResponse.class
+    |   |               |   |               GlobalExceptionHandler.class
+    |   |               |   |               InvalidLoginException.class
+    |   |               |   |               
+    |   |               |   \---out
+    |   |               |       \---jpa
+    |   |               |           |   AplicativosRepositoryAdapter.class
+    |   |               |           |   AuthPerfilRepositoryAdapter.class
+    |   |               |           |   AuthPermissaoRepositoryAdapter.class
+    |   |               |           |   AuthUsuarioRepositoryAdapter.class
+    |   |               |           |   
+    |   |               |           +---entity
+    |   |               |           |       Aplicativo$AplicativoBuilder.class
+    |   |               |           |       Aplicativo.class
+    |   |               |           |       AuthPerfil$AuthPerfilBuilder.class
+    |   |               |           |       AuthPerfil.class
+    |   |               |           |       AuthPermissao$AuthPermissaoBuilder.class
+    |   |               |           |       AuthPermissao.class
+    |   |               |           |       AuthSessao$AuthSessaoBuilder.class
+    |   |               |           |       AuthSessao.class
+    |   |               |           |       AuthUsuario$AuthUsuarioBuilder.class
+    |   |               |           |       AuthUsuario.class
+    |   |               |           |       
+    |   |               |           +---mapper
+    |   |               |           |       AplicativosMapper.class
+    |   |               |           |       AuthPerfilMapper.class
+    |   |               |           |       AuthPermissaoMapper.class
+    |   |               |           |       AuthUsuarioMapper.class
+    |   |               |           |       
+    |   |               |           \---repository
+    |   |               |                   AuthSessaoRepository.class
+    |   |               |                   SpringAuthPerfilRepository.class
+    |   |               |                   SpringAuthPermissaoRepository.class
+    |   |               |                   SpringAuthUsuarioRepository.class
+    |   |               |                   SpringDataAplicativosRepository.class
+    |   |               |                   
+    |   |               +---application
+    |   |               |   +---service
+    |   |               |   |       AuthSessaoService.class
+    |   |               |   |       
+    |   |               |   \---usecase
+    |   |               |           AplicativosInteractor.class
+    |   |               |           AuthInteractor.class
+    |   |               |           AuthPerfilInteractor.class
+    |   |               |           AuthPermissaoInteractor.class
+    |   |               |           AuthUsuarioInteractor.class
+    |   |               |           JwtUserDetailsInteractor.class
+    |   |               |           
+    |   |               +---domain
+    |   |               |   +---exception
+    |   |               |   |       DomainException.class
+    |   |               |   |       UserNotFoundException.class
+    |   |               |   |       
+    |   |               |   +---model
+    |   |               |   |       AplicativosModel$AplicativosModelBuilder.class
+    |   |               |   |       AplicativosModel.class
+    |   |               |   |       AuthPerfilModel$AuthPerfilModelBuilder.class
+    |   |               |   |       AuthPerfilModel.class
+    |   |               |   |       AuthPermissaoModel$AuthPermissaoModelBuilder.class
+    |   |               |   |       AuthPermissaoModel.class
+    |   |               |   |       AuthSessaoModel$AuthSessaoModelBuilder.class
+    |   |               |   |       AuthSessaoModel.class
+    |   |               |   |       AuthUsuarioModel$AuthUsuarioModelBuilder.class
+    |   |               |   |       AuthUsuarioModel.class
+    |   |               |   |       
+    |   |               |   \---port
+    |   |               |       +---inbound
+    |   |               |       |       AplicativosUseCase.class
+    |   |               |       |       AuthPerfilUseCase.class
+    |   |               |       |       AuthPermissaoUseCase.class
+    |   |               |       |       AuthUseCasePort.class
+    |   |               |       |       AuthUsuarioUseCasePort.class
+    |   |               |       |       
+    |   |               |       \---outbound
+    |   |               |               AplicativosRepositoryPort.class
+    |   |               |               AuthPerfilRepositoryPort.class
+    |   |               |               AuthPermissaoRepositoryPort.class
+    |   |               |               AuthUsuarioRepositoryPort.class
+    |   |               |               
+    |   |               \---infrastructure
+    |   |                   +---config
+    |   |                   |       AuthProperties$Jwt.class
+    |   |                   |       AuthProperties.class
+    |   |                   |       JwtProperties.class
+    |   |                   |       SwaggerConfig.class
+    |   |                   |       
+    |   |                   \---security
+    |   |                           CustomUserDetailsService.class
+    |   |                           JwtAuthenticationFilter.class
+    |   |                           JwtUtil.class
+    |   |                           SecurityConfig.class
+    |   |                           SessaoCleanupScheduler.class
+    |   |                           
+    |   +---db
+    |   |   \---migration
+    |   |           V1__create_tables.sql
+    |   |           V2__create_auth_sessao_table.sql
+    |   |           
+    |   \---META-INF
+    |       |   MANIFEST.MF
+    |       |   spring-configuration-metadata.json
+    |       |   
+    |       \---maven
+    |           \---br.com.projeto
+    |               \---projeto-piloto
+    |                       pom.properties
+    |                       pom.xml
+    |                       
+    +---generated-sources
+    |   \---annotations
+    +---generated-test-sources
+    |   \---test-annotations
+    +---maven-archiver
+    |       pom.properties
+    |       
+    +---maven-status
+    |   \---maven-compiler-plugin
+    |       +---compile
+    |       |   \---default-compile
+    |       |           createdFiles.lst
+    |       |           inputFiles.lst
+    |       |           
+    |       \---testCompile
+    |           \---default-testCompile
+    |                   createdFiles.lst
+    |                   inputFiles.lst
+    |                   
+    +---site
+    |   \---jacoco
+    |       |   index.html
+    |       |   jacoco-sessions.html
+    |       |   jacoco.csv
+    |       |   jacoco.xml
+    |       |   
+    |       +---br.com.projeto.piloto
+    |       |       index.html
+    |       |       index.source.html
+    |       |       ProjetoPilotoApplication.html
+    |       |       ProjetoPilotoApplication.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.adapter.in.web.controller
+    |       |       AplicativosController.html
+    |       |       AplicativosController.java.html
+    |       |       AuthController.html
+    |       |       AuthController.java.html
+    |       |       AuthPerfilController.html
+    |       |       AuthPerfilController.java.html
+    |       |       AuthPermissaoController.html
+    |       |       AuthPermissaoController.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       UsuarioController.html
+    |       |       UsuarioController.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.adapter.in.web.dto
+    |       |       AplicativosRequestDTO.html
+    |       |       AplicativosRequestDTO.java.html
+    |       |       AplicativosResponseDTO.html
+    |       |       AplicativosResponseDTO.java.html
+    |       |       AuthPerfilRequestDTO.html
+    |       |       AuthPerfilRequestDTO.java.html
+    |       |       AuthPerfilResponseDTO.html
+    |       |       AuthPerfilResponseDTO.java.html
+    |       |       AuthPerfilResumoDTO.html
+    |       |       AuthPerfilResumoDTO.java.html
+    |       |       AuthPermissaoRequestDTO.html
+    |       |       AuthPermissaoRequestDTO.java.html
+    |       |       AuthPermissaoResponseDTO.html
+    |       |       AuthPermissaoResponseDTO.java.html
+    |       |       AuthResponseDTO.html
+    |       |       AuthResponseDTO.java.html
+    |       |       AuthUsuarioRequestDTO.html
+    |       |       AuthUsuarioRequestDTO.java.html
+    |       |       AuthUsuarioResponseDTO.html
+    |       |       AuthUsuarioResponseDTO.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       LoginRequestDTO.html
+    |       |       LoginRequestDTO.java.html
+    |       |       RefreshTokenRequestDTO.html
+    |       |       RefreshTokenRequestDTO.java.html
+    |       |       RegisterRequestDTO.html
+    |       |       RegisterRequestDTO.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.adapter.in.web.exception
+    |       |       GlobalExceptionHandler.html
+    |       |       GlobalExceptionHandler.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       InvalidLoginException.html
+    |       |       InvalidLoginException.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.adapter.out.jpa
+    |       |       AplicativosRepositoryAdapter.html
+    |       |       AplicativosRepositoryAdapter.java.html
+    |       |       AuthPerfilRepositoryAdapter.html
+    |       |       AuthPerfilRepositoryAdapter.java.html
+    |       |       AuthPermissaoRepositoryAdapter.html
+    |       |       AuthPermissaoRepositoryAdapter.java.html
+    |       |       AuthUsuarioRepositoryAdapter.html
+    |       |       AuthUsuarioRepositoryAdapter.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       
+    |       +---br.com.projeto.piloto.adapter.out.jpa.entity
+    |       |       Aplicativo.html
+    |       |       Aplicativo.java.html
+    |       |       AuthSessao.html
+    |       |       AuthSessao.java.html
+    |       |       AuthUsuario.html
+    |       |       AuthUsuario.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       
+    |       +---br.com.projeto.piloto.adapter.out.jpa.mapper
+    |       |       AplicativosMapper.html
+    |       |       AplicativosMapper.java.html
+    |       |       AuthPerfilMapper.html
+    |       |       AuthPerfilMapper.java.html
+    |       |       AuthPermissaoMapper.html
+    |       |       AuthPermissaoMapper.java.html
+    |       |       AuthUsuarioMapper.html
+    |       |       AuthUsuarioMapper.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       
+    |       +---br.com.projeto.piloto.application.service
+    |       |       AuthSessaoService.html
+    |       |       AuthSessaoService.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       
+    |       +---br.com.projeto.piloto.application.usecase
+    |       |       AplicativosInteractor.html
+    |       |       AplicativosInteractor.java.html
+    |       |       AuthInteractor.html
+    |       |       AuthInteractor.java.html
+    |       |       AuthPerfilInteractor.html
+    |       |       AuthPerfilInteractor.java.html
+    |       |       AuthPermissaoInteractor.html
+    |       |       AuthPermissaoInteractor.java.html
+    |       |       AuthUsuarioInteractor.html
+    |       |       AuthUsuarioInteractor.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       JwtUserDetailsInteractor.html
+    |       |       JwtUserDetailsInteractor.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.domain.exception
+    |       |       DomainException.html
+    |       |       DomainException.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       UserNotFoundException.html
+    |       |       UserNotFoundException.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.domain.model
+    |       |       AuthSessaoModel.html
+    |       |       AuthSessaoModel.java.html
+    |       |       AuthUsuarioModel.html
+    |       |       AuthUsuarioModel.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       
+    |       +---br.com.projeto.piloto.infrastructure.config
+    |       |       index.html
+    |       |       index.source.html
+    |       |       SwaggerConfig.html
+    |       |       SwaggerConfig.java.html
+    |       |       
+    |       +---br.com.projeto.piloto.infrastructure.security
+    |       |       CustomUserDetailsService.html
+    |       |       CustomUserDetailsService.java.html
+    |       |       index.html
+    |       |       index.source.html
+    |       |       JwtAuthenticationFilter.html
+    |       |       JwtAuthenticationFilter.java.html
+    |       |       JwtUtil.html
+    |       |       JwtUtil.java.html
+    |       |       SecurityConfig.html
+    |       |       SecurityConfig.java.html
+    |       |       SessaoCleanupScheduler.html
+    |       |       SessaoCleanupScheduler.java.html
+    |       |       
+    |       \---jacoco-resources
+    |               branchfc.gif
+    |               branchnc.gif
+    |               branchpc.gif
+    |               bundle.gif
+    |               class.gif
+    |               down.gif
+    |               greenbar.gif
+    |               group.gif
+    |               method.gif
+    |               package.gif
+    |               prettify.css
+    |               prettify.js
+    |               redbar.gif
+    |               report.css
+    |               report.gif
+    |               session.gif
+    |               sort.gif
+    |               sort.js
+    |               source.gif
+    |               up.gif
+    |               
+    +---surefire-reports
+    |       br.com.projeto.piloto.adapter.in.web.controller.AplicativosControllerTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.controller.AuthControllerTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.controller.AuthPerfilControllerTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.controller.AuthPermissaoControllerTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.controller.UsuarioControllerTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.exception.ErrorResponseTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.exception.GlobalExceptionHandlerTest.txt
+    |       br.com.projeto.piloto.adapter.in.web.exception.InvalidLoginExceptionTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.AplicativosRepositoryAdapterTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.AuthPerfilRepositoryAdapterTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.AuthPermissaoRepositoryAdapterTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.AuthUsuarioRepositoryAdapterTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.entity.AplicativoTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.entity.AuthPerfilTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.entity.AuthPermissaoTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuarioTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.mapper.AplicativosMapperTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPerfilMapperTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPermissaoMapperTest.txt
+    |       br.com.projeto.piloto.adapter.out.jpa.mapper.AuthUsuarioMapperTest.txt
+    |       br.com.projeto.piloto.api.dto.AplicativosRequestDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AplicativosResponseDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthPerfilRequestDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthPerfilResponseDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthPerfilResumoDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthPermissaoRequestDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthPermissaoResponseDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthResponseDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthUsuarioRequestDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.AuthUsuarioResponseDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.LoginRequestDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.RefreshTokenRequestDTOTest.txt
+    |       br.com.projeto.piloto.api.dto.RegisterRequestDTOTest.txt
+    |       br.com.projeto.piloto.application.usecase.AplicativosInteractorTest.txt
+    |       br.com.projeto.piloto.application.usecase.AuthInteractorTest$AuthenticateTests.txt
+    |       br.com.projeto.piloto.application.usecase.AuthInteractorTest$FindByLoginTests.txt
+    |       br.com.projeto.piloto.application.usecase.AuthInteractorTest.txt
+    |       br.com.projeto.piloto.application.usecase.AuthPerfilInteractorTest.txt
+    |       br.com.projeto.piloto.application.usecase.AuthPermissaoInteractorTest.txt
+    |       br.com.projeto.piloto.application.usecase.AuthUsuarioInteractorTest.txt
+    |       br.com.projeto.piloto.application.usecase.JwtUserDetailsInteractorTest.txt
+    |       br.com.projeto.piloto.domain.exception.DomainExceptionTest.txt
+    |       br.com.projeto.piloto.domain.exception.UserNotFoundExceptionTest.txt
+    |       br.com.projeto.piloto.domain.model.AplicativosModelTest.txt
+    |       br.com.projeto.piloto.domain.model.AuthPerfilModelTest.txt
+    |       br.com.projeto.piloto.domain.model.AuthPermissaoModelTest.txt
+    |       br.com.projeto.piloto.domain.model.AuthUsuarioModelTest.txt
+    |       br.com.projeto.piloto.infrastructure.config.SwaggerConfigTest.txt
+    |       br.com.projeto.piloto.infrastructure.security.CustomUserDetailsServiceTest.txt
+    |       br.com.projeto.piloto.infrastructure.security.JwtAuthenticationFilterTest.txt
+    |       br.com.projeto.piloto.infrastructure.security.JwtUtilTest.txt
+    |       br.com.projeto.piloto.infrastructure.security.SecurityConfigTest.txt
+    |       br.com.projeto.piloto.ProjetoPilotoApplicationTest.txt
+    |       TEST-br.com.projeto.piloto.adapter.in.web.controller.AplicativosControllerTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.controller.AuthControllerTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.controller.AuthPerfilControllerTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.controller.AuthPermissaoControllerTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.controller.UsuarioControllerTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.exception.ErrorResponseTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.exception.GlobalExceptionHandlerTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.in.web.exception.InvalidLoginExceptionTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.AplicativosRepositoryAdapterTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.AuthPerfilRepositoryAdapterTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.AuthPermissaoRepositoryAdapterTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.AuthUsuarioRepositoryAdapterTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.entity.AplicativoTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.entity.AuthPerfilTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.entity.AuthPermissaoTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuarioTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.mapper.AplicativosMapperTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPerfilMapperTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPermissaoMapperTest.xml
+    |       TEST-br.com.projeto.piloto.adapter.out.jpa.mapper.AuthUsuarioMapperTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AplicativosRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AplicativosResponseDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthPerfilRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthPerfilResponseDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthPerfilResumoDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthPermissaoRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthPermissaoResponseDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthResponseDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthUsuarioRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.AuthUsuarioResponseDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.LoginRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.RefreshTokenRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.api.dto.RegisterRequestDTOTest.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AplicativosInteractorTest.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AuthInteractorTest$AuthenticateTests.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AuthInteractorTest$FindByLoginTests.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AuthInteractorTest.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AuthPerfilInteractorTest.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AuthPermissaoInteractorTest.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.AuthUsuarioInteractorTest.xml
+    |       TEST-br.com.projeto.piloto.application.usecase.JwtUserDetailsInteractorTest.xml
+    |       TEST-br.com.projeto.piloto.domain.exception.DomainExceptionTest.xml
+    |       TEST-br.com.projeto.piloto.domain.exception.UserNotFoundExceptionTest.xml
+    |       TEST-br.com.projeto.piloto.domain.model.AplicativosModelTest.xml
+    |       TEST-br.com.projeto.piloto.domain.model.AuthPerfilModelTest.xml
+    |       TEST-br.com.projeto.piloto.domain.model.AuthPermissaoModelTest.xml
+    |       TEST-br.com.projeto.piloto.domain.model.AuthUsuarioModelTest.xml
+    |       TEST-br.com.projeto.piloto.infrastructure.config.SwaggerConfigTest.xml
+    |       TEST-br.com.projeto.piloto.infrastructure.security.CustomUserDetailsServiceTest.xml
+    |       TEST-br.com.projeto.piloto.infrastructure.security.JwtAuthenticationFilterTest.xml
+    |       TEST-br.com.projeto.piloto.infrastructure.security.JwtUtilTest.xml
+    |       TEST-br.com.projeto.piloto.infrastructure.security.SecurityConfigTest.xml
+    |       TEST-br.com.projeto.piloto.ProjetoPilotoApplicationTest.xml
+    |       
+    \---test-classes
+        |   application-test.yml
+        |   logback-test.xml
+        |   
+        \---br
+            \---com
+                \---projeto
+                    \---piloto
+                        |   ProjetoPilotoApplicationTest.class
+                        |   
+                        +---adapter
+                        |   +---in
+                        |   |   \---web
+                        |   |       +---controller
+                        |   |       |       AplicativosControllerTest.class
+                        |   |       |       AuthControllerTest.class
+                        |   |       |       AuthPerfilControllerTest.class
+                        |   |       |       AuthPermissaoControllerTest.class
+                        |   |       |       UsuarioControllerTest.class
+                        |   |       |       
+                        |   |       \---exception
+                        |   |               ErrorResponseTest.class
+                        |   |               GlobalExceptionHandlerTest.class
+                        |   |               InvalidLoginExceptionTest.class
+                        |   |               
+                        |   \---out
+                        |       \---jpa
+                        |           |   AplicativosRepositoryAdapterTest.class
+                        |           |   AuthPerfilRepositoryAdapterTest.class
+                        |           |   AuthPermissaoRepositoryAdapterTest.class
+                        |           |   AuthUsuarioRepositoryAdapterTest.class
+                        |           |   
+                        |           +---entity
+                        |           |       AplicativoTest.class
+                        |           |       AuthPerfilTest.class
+                        |           |       AuthPermissaoTest.class
+                        |           |       AuthUsuarioTest.class
+                        |           |       
+                        |           \---mapper
+                        |                   AplicativosMapperTest.class
+                        |                   AuthPerfilMapperTest.class
+                        |                   AuthPermissaoMapperTest.class
+                        |                   AuthUsuarioMapperTest.class
+                        |                   
+                        +---api
+                        |   \---dto
+                        |           AplicativosRequestDTOTest.class
+                        |           AplicativosResponseDTOTest.class
+                        |           AuthPerfilRequestDTOTest.class
+                        |           AuthPerfilResponseDTOTest.class
+                        |           AuthPerfilResumoDTOTest.class
+                        |           AuthPermissaoRequestDTOTest.class
+                        |           AuthPermissaoResponseDTOTest.class
+                        |           AuthResponseDTOTest.class
+                        |           AuthUsuarioRequestDTOTest.class
+                        |           AuthUsuarioResponseDTOTest.class
+                        |           LoginRequestDTOTest.class
+                        |           RefreshTokenRequestDTOTest.class
+                        |           RegisterRequestDTOTest.class
+                        |           
+                        +---application
+                        |   \---usecase
+                        |           AplicativosInteractorTest.class
+                        |           AuthInteractorTest$AuthenticateTests.class
+                        |           AuthInteractorTest$FindByLoginTests.class
+                        |           AuthInteractorTest.class
+                        |           AuthPerfilInteractorTest.class
+                        |           AuthPermissaoInteractorTest.class
+                        |           AuthUsuarioInteractorTest.class
+                        |           JwtUserDetailsInteractorTest.class
+                        |           
+                        +---domain
+                        |   +---exception
+                        |   |       DomainExceptionTest.class
+                        |   |       UserNotFoundExceptionTest.class
+                        |   |       
+                        |   \---model
+                        |           AplicativosModelTest.class
+                        |           AuthPerfilModelTest.class
+                        |           AuthPermissaoModelTest.class
+                        |           AuthUsuarioModelTest.class
+                        |           
+                        \---infrastructure
+                            +---config
+                            |       SwaggerConfigTest.class
+                            |       
+                            \---security
+                                    CustomUserDetailsServiceTest.class
+                                    JwtAuthenticationFilterTest.class
+                                    JwtUtilTest.class
+                                    SecurityConfigTest.class
+                                    

@@ -22,7 +22,8 @@ public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
 
     private final AuthUsuarioRepositoryPort repository;
     private final AuthUsuarioMapper mapper;
-
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    
     @Override
     @Transactional 
     public AuthUsuarioModel criar(AuthUsuarioModel model) {
@@ -32,10 +33,16 @@ public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
             throw new DataIntegrityViolationException("Já existe um usuário com este login.");
         }
 
+        // 2. Criptografar a senha antes de salvar
+        if (model.getSenha() != null) {
+            model.setSenha(passwordEncoder.encode(model.getSenha()));
+        }
+
         AuthUsuario entity = mapper.toEntity(model);
         AuthUsuario saved = repository.save(entity);
         return mapper.toDomain(saved);
     }
+
 
     @Override
     @Transactional
@@ -54,9 +61,11 @@ public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
         existing.setAtivo(model.getAtivo());
         existing.setEmail(model.getEmail());
 
+        // 3. Lógica de atualização de senha: só altera se vier algo do Angular
         if (model.getSenha() != null && !model.getSenha().isBlank()) {
-            existing.setSenha(model.getSenha());
+            existing.setSenha(passwordEncoder.encode(model.getSenha()));
         }
+        // Se vier vazio, o 'existing.getSenha()' permanece o hash original do banco.
 
         existing.getPerfis().clear();
         existing.getPerfis().addAll(mapper.toEntity(model).getPerfis());

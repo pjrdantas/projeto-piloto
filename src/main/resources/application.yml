@@ -1,25 +1,75 @@
-server:
-  port: 8080
-
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
-    username: ROOT
-    password: root123
-    driver-class-name: oracle.jdbc.OracleDriver
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        "[format_sql]": true
-        dialect: org.hibernate.dialect.OracleDialect
-
-
+# Configurações que valem para TODOS os profiles
 auth:
   jwt:
     secret: "GvB8kL9pQ3wR7uT2yX5zA8nF6mH4tK1b"
     expirationMs: 3600000
     refreshExpirationMs: 604800000
+
+server:
+  port: 8080
+
+logging:
+  level:
+    "[org.hibernate.SQL]": ERROR
+    "[org.hibernate.orm.jdbc.bind]": ERROR
+
+spring:
+  profiles:
+    active: dev
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        "[show_sql]": false
+        "[format_sql]": false
+        "[highlight_sql]": false
+
+---
+# DEV — ORACLE LOCAL
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
+    username: ROOT
+    password: root123
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      # Alterado para update para sincronizar a remoção da coluna aplicativo_id
+      ddl-auto: update
+
+---
+# DOCKER — ORACLE FORA DO CONTAINER (Via Host)
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:oracle:thin:@host.docker.internal:1521/XEPDB1
+    username: ROOT
+    password: root123
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      # Alterado para update para corrigir o erro de Schema-validation no Docker
+      ddl-auto: update
+
+---
+# PROD — POSTGRES AWS
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com
+    username: postgres
+    password: "c6vOzOH-Z_8*f3Y>f1i7be2w]P9n"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate

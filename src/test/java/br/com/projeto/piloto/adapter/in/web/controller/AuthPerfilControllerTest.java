@@ -56,7 +56,7 @@ class AuthPerfilControllerTest {
 
     @BeforeEach
     void setup() {
-        validDto = new AuthPerfilRequestDTO("ADMIN", 1L, Set.of(1L));
+        validDto = new AuthPerfilRequestDTO("ADMIN", Set.of(1L));
         
         validModel = AuthPerfilModel.builder()
                 .id(1L)
@@ -86,7 +86,7 @@ class AuthPerfilControllerTest {
 	@Test
     @DisplayName("Cobre ramificação amarela das permissões nulas")
     void testNullPermissionsBranch() throws Exception {
-        AuthPerfilRequestDTO dtoNull = new AuthPerfilRequestDTO("ADMIN", 1L, null);
+        AuthPerfilRequestDTO dtoNull = new AuthPerfilRequestDTO("ADMIN", null);
         
         when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
         when(authPerfilUseCase.create(any())).thenReturn(validModel);

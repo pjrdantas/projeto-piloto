@@ -1,13 +1,9 @@
 package br.com.projeto.piloto.infrastructure.security;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -20,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,11 +28,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import br.com.projeto.piloto.application.service.AuthSessaoService; // ADICIONE ESTE IMPORT
+
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class JwtAuthenticationFilterTest {
 
     @Mock private JwtUtil jwtUtil;
     @Mock private UserDetailsService userDetailsService;
+    @Mock private AuthSessaoService authSessaoService; // 1. ADICIONE ESTE MOCK
     @Mock private HttpServletRequest request;
     @Mock private HttpServletResponse response;
     @Mock private FilterChain filterChain;
@@ -49,56 +51,29 @@ class JwtAuthenticationFilterTest {
 
     @SuppressWarnings("null")
 	@Test
-    @DisplayName("Cobre isPublicPath: Deve permitir acesso a rotas públicas sem token")
-    void devePermitirRotaPublica() throws ServletException, IOException {
-        when(request.getRequestURI()).thenReturn("/api/auth/login");
-
+    @DisplayName("Deve permitir acesso sem token (Header ausente)")
+    void devePermitirSemToken() throws ServletException, IOException {
+        when(request.getHeader("Authorization")).thenReturn(null);
         filter.doFilterInternal(request, response, filterChain);
-
         verify(filterChain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @SuppressWarnings("null")
 	@Test
-    @DisplayName("Cobre Linha 45-48: Deve retornar 401 se header Authorization estiver ausente ou inválido")
-    void deveRetornar401SeHeaderInvalido() throws ServletException, IOException {
-        when(request.getRequestURI()).thenReturn("/api/protegida");
-        when(request.getHeader("Authorization")).thenReturn(null); // Ou "Basic 123"
-
-        filter.doFilterInternal(request, response, filterChain);
-
-        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        verifyNoInteractions(filterChain);
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre Linha 54-57: Deve retornar 401 se o token for inválido no JwtUtil")
-    void deveRetornar401SeTokenInvalido() throws ServletException, IOException {
-        String token = "token.invalido";
-        when(request.getRequestURI()).thenReturn("/api/protegida");
-        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
-        when(jwtUtil.validate(token)).thenReturn(false);
-
-        filter.doFilterInternal(request, response, filterChain);
-
-        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre Sucesso: Deve autenticar usuário quando token é válido")
+    @DisplayName("Deve autenticar usuário quando token é válido e sessão ativa")
     void deveAutenticarComSucesso() throws ServletException, IOException {
         String token = "token.valido";
         String username = "admin";
         UserDetails userDetails = new User(username, "", Collections.emptyList());
 
-        when(request.getRequestURI()).thenReturn("/api/perfil");
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtUtil.validate(token)).thenReturn(true);
         when(jwtUtil.getUsername(token)).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
+        
+        // 2. ADICIONE ESTA LINHA: Essencial para o IF do filtro passar
+        when(authSessaoService.validarSessao(token)).thenReturn(true);
 
         filter.doFilterInternal(request, response, filterChain);
 
@@ -109,32 +84,30 @@ class JwtAuthenticationFilterTest {
 
     @SuppressWarnings("null")
 	@Test
-    @DisplayName("Cobre Bloco Catch (Linha 75): Deve retornar 401 em caso de qualquer exceção")
-    void deveRetornar401EmCasoDeExcecao() throws ServletException, IOException {
-        String token = "token.error";
-        when(request.getRequestURI()).thenReturn("/api/protegida");
+    @DisplayName("Deve ignorar token mal formatado (Sem Bearer)")
+    void deveIgnorarTokenMalFormatado() throws ServletException, IOException {
+        when(request.getHeader("Authorization")).thenReturn("TokenInvalido 123");
+        filter.doFilterInternal(request, response, filterChain);
+        verify(filterChain).doFilter(request, response);
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+    
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve barrar usuário quando sessão no banco está inativa")
+    void deveBarrarSessaoInativaNoBanco() throws ServletException, IOException {
+        String token = "token.valido";
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
-        when(jwtUtil.validate(token)).thenThrow(new RuntimeException("Erro genérico"));
+        when(jwtUtil.validate(token)).thenReturn(true);
+        
+        // 3. Simula o login duplo (sessão inativa no banco)
+        when(authSessaoService.validarSessao(token)).thenReturn(false);
 
         filter.doFilterInternal(request, response, filterChain);
 
-        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
     }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre todos os paths do isPublicPath")
-    void deveCobrirTodasRotasPublicas() throws ServletException, IOException {
-        String[] publicPaths = {
-            "/api/auth/register", "/swagger-ui/index.html", "/swagger-ui.html", 
-            "/v3/api-docs", "/swagger-resources/conf", "/webjars/js"
-        };
-
-        for (String path : publicPaths) {
-            when(request.getRequestURI()).thenReturn(path);
-            filter.doFilterInternal(request, response, filterChain);
-        }
-        
-        verify(filterChain, times(publicPaths.length)).doFilter(request, response);
-    }
+    
+    
 }

@@ -7,9 +7,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import br.com.projeto.piloto.application.service.AuthSessaoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,10 +21,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final AuthSessaoService authSessaoService; // 1. ADICIONE O SERVICE
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService uds) {
+    // 2. ATUALIZE O CONSTRUTOR
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService uds, AuthSessaoService authSessaoService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = uds;
+        this.authSessaoService = authSessaoService;
     }
 
     @Override
@@ -32,54 +37,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String path = request.getRequestURI();
-
-        if (isPublicPath(path)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String header = request.getHeader("Authorization");
 
-        if (!StringUtils.hasText(header) || !header.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+        if (StringUtils.hasLength(header) && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            
+            try {
+                // 3. ADICIONE A VALIDAÇÃO DA SESSÃO NO BANCO
+                // Além de validar a assinatura do JWT, verificamos se ele consta como "Ativo" no DB
+                if (jwtUtil.validate(token) && authSessaoService.validarSessao(token)) {
+                    String username = jwtUtil.getUsername(token);
 
-        String token = header.substring(7);
-
-        try {
-            if (!jwtUtil.validate(token)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                        
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } else {
+                    // Se o token não estiver na tabela AuthSessao como ativo, limpamos o contexto
+                    SecurityContextHolder.clearContext();
+                }
+            } catch (Exception e) {
+                SecurityContextHolder.clearContext();
             }
-
-            String username = jwtUtil.getUsername(token);
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails,   
-                            null,
-                            userDetails.getAuthorities() 
-                    );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            filterChain.doFilter(request, response);
-
-        } catch (Exception ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-    }
 
-    private boolean isPublicPath(String path) {
-        return path.startsWith("/api/auth")
-                || path.startsWith("/swagger-ui")
-                || path.equals("/swagger-ui.html")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/swagger-resources")
-                || path.startsWith("/webjars");
+        filterChain.doFilter(request, response);
     }
 }

@@ -1,9 +1,6 @@
 package br.com.projeto.piloto.adapter.out.jpa.entity;
 
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -11,15 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class AplicativoTest {
 
     @Test
     @DisplayName("Deve validar Getters, Setters e Builder do Lombok")
     void deveTestarLombok() {
-        List<AuthPerfil> perfis = new ArrayList<>();
+
         LocalDateTime agora = LocalDateTime.now();
         Aplicativo app = Aplicativo.builder()
                 .id(1L)
@@ -32,7 +30,6 @@ class AplicativoTest {
                 .flAtivo("S")
                 .criadoEm(agora)
                 .atualizadoEm(agora)
-                .perfis(perfis)
                 .build();
 
         assertAll("Atributos da Entity",
@@ -45,8 +42,8 @@ class AplicativoTest {
             () -> assertEquals("/rota", app.getDsRota()),
             () -> assertEquals("S", app.getFlAtivo()),
             () -> assertEquals(agora, app.getCriadoEm()),
-            () -> assertEquals(agora, app.getAtualizadoEm()),
-            () -> assertEquals(perfis, app.getPerfis())
+            () -> assertEquals(agora, app.getAtualizadoEm())
+
         );
         Aplicativo appSet = new Aplicativo();
         appSet.setId(2L);
@@ -85,7 +82,7 @@ class AplicativoTest {
         Aplicativo appEmpty = new Aplicativo();
         assertNotNull(appEmpty);
 
-        Aplicativo appFull = new Aplicativo(1L, "App", "Desc", "URL", "Mod", "Exp", "Rota", "S", null, null, null);
+        Aplicativo appFull = new Aplicativo(1L, "Desc", "URL", "Mod", "Exp", "Rota", "S", null, null, null);
         assertEquals(1L, appFull.getId());
     }
 }
