@@ -58,24 +58,20 @@ public class AuthController {
 	    Set<String> permissions = new HashSet<>();
 	    
 	    authUsuario.getPerfis().forEach(perfil -> {
-	        // Adiciona o role do perfil
+	  
 	        roles.add(perfil.getNmPerfil().toUpperCase());
 
-	        // Adiciona as permissões do perfil
 	        if (perfil.getPermissoes() != null) {
 	            perfil.getPermissoes().forEach(p -> permissions.add(p.getNmPermissao().toUpperCase()));
 	        }
 	    });
-	     
-	    // Para o JWT, usar roles + permissions (authorities)
+
 	    Set<String> authorities = new HashSet<>(roles);
 	    authorities.addAll(permissions);
 
 	    String token = jwtUtil.generateToken(authUsuario.getLogin(), authorities);
 	    String refreshToken = jwtUtil.generateRefreshToken(authUsuario.getLogin());
-	    
-	    
-	    // Cria a sessão (invalida sessões anteriores)
+
 	    authSessaoService.criarSessao(authUsuario.getId(), token, refreshToken);
 
 	    return ResponseEntity.ok(new AuthResponseDTO(
@@ -101,8 +97,7 @@ public class AuthController {
 				return ResponseEntity.badRequest()
 						.body(Map.of("valid", false, "message", "Token não fornecido"));
 			}
-			
-			// Valida se a sessão está ativa no banco de dados
+
 			boolean sessaoValida = authSessaoService.validarSessao(token);
 			
 			if (!sessaoValida) {
@@ -153,7 +148,6 @@ public class AuthController {
 								.build());
 			}
 
-			// Valida se a sessão ainda está ativa
 			var sessao = authSessaoService.encontrarPorRefreshToken(refreshToken);
 			if (sessao.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -180,8 +174,7 @@ public class AuthController {
 					perfil.getPermissoes().forEach(p -> permissions.add(p.getNmPermissao().toUpperCase()));
 				}
 			});
-			
-			// Para o JWT, usar roles + permissions (authorities)
+
 			Set<String> authorities = new HashSet<>(roles);
 			authorities.addAll(permissions);
 

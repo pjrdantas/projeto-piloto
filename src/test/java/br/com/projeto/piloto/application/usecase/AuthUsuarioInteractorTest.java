@@ -47,7 +47,7 @@ class AuthUsuarioInteractorTest {
     @Mock
     private AuthUsuarioMapper mapper;
     
-    @Mock // <--- ADICIONE ESTA ANOTAÇÃO AQUI
+    @Mock 
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @InjectMocks
@@ -119,23 +119,19 @@ class AuthUsuarioInteractorTest {
         AuthUsuario updatedEntity = new AuthUsuario();
         updatedEntity.setPerfis(new HashSet<AuthPerfil>());
 
-        // CONFIGURAÇÃO DOS MOCKS
+ 
         when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.existsByDsLoginAndIdNot("novo", id)).thenReturn(false);
         when(mapper.toEntity(model)).thenReturn(updatedEntity);
         when(repository.save(existing)).thenReturn(existing);
         when(mapper.toDomain(existing)).thenReturn(model);
-        
-        // MOCK DO ENCODER (Resolve o NullPointerException)
         when(passwordEncoder.encode(senhaPlana)).thenReturn(senhaCripto);
 
-        // EXECUÇÃO
         AuthUsuarioModel result = service.atualizar(id, model);
 
-        // VALIDAÇÕES
         assertNotNull(result);
-        assertEquals(senhaCripto, existing.getSenha()); // Verifica se a senha gravada foi a criptografada
-        verify(passwordEncoder).encode(senhaPlana); // Verifica se o encoder foi realmente chamado
+        assertEquals(senhaCripto, existing.getSenha()); 
+        verify(passwordEncoder).encode(senhaPlana); 
     }
 
 

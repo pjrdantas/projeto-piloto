@@ -29,7 +29,7 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
                 .map(AuthPerfilMapper::toDomain)
                 .collect(Collectors.toList());
         
-        // Garante ao compilador que o retorno não é nulo
+
         return Objects.requireNonNull(list); 
     }
 
@@ -46,7 +46,6 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
     public @NonNull AuthPerfilModel create(@NonNull AuthPerfilModel domain) {
         AuthPerfil entity = AuthPerfilMapper.toEntity(domain);
         AuthPerfil saved = repository.save(entity);
-        // Garante que o retorno do Mapper também não seja nulo
         return Objects.requireNonNull(AuthPerfilMapper.toDomain(saved));
     }
 
@@ -75,13 +74,11 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
                 })
                 .orElseThrow(() -> new RuntimeException("Perfil não encontrado: " + id));
 
-        // O segredo para tirar o warning é validar o resultado final aqui
         return Objects.requireNonNull(updatedModel);
     }
 
     @Override
     public void delete(@NonNull Long id) {
-        // É esta linha que faz o teste parar de dar "nothing was thrown"
         Objects.requireNonNull(id, "ID não pode ser nulo");
         repository.deleteById(id);
     }

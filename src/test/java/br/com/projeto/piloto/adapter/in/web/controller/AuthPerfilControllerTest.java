@@ -152,7 +152,6 @@ class AuthPerfilControllerTest {
 	@Test
     @DisplayName("POST /perfis - Cobertura Conflict")
     void testCreateConflict() throws Exception {
-        // Cobre a linha: return buildErrorResponse(HttpStatus.CONFLICT...)
         when(authPerfilUseCase.existsByNmPerfil(any())).thenReturn(true);
         mockMvc.perform(post("/api/perfis").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validDto)))
@@ -162,7 +161,6 @@ class AuthPerfilControllerTest {
     @Test
     @DisplayName("DELETE /perfis/{id} - Cobertura Success")
     void testDeleteSuccess() throws Exception {
-        // Cobre a linha: if (existing.isPresent()) { authPerfilUseCase.delete(id); ...
         when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(validModel));
         mockMvc.perform(delete("/api/perfis/1")).andExpect(status().isNoContent());
     }
@@ -170,7 +168,6 @@ class AuthPerfilControllerTest {
     @Test
     @DisplayName("GET /perfis/{id} - Cobertura Success")
     void testFindByIdSuccess() throws Exception {
-        // Cobre a linha: if (existing.isPresent()) { AuthPerfilResponseDTO dto = ...
         when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(validModel));
         mockMvc.perform(get("/api/perfis/1")).andExpect(status().isOk());
     }
@@ -179,7 +176,6 @@ class AuthPerfilControllerTest {
 	@Test
     @DisplayName("Cobre Amarelo do Aplicativo não encontrado no Update")
     void testUpdateAppNotFound() {
-        // Perfil existe, mas Aplicativo NÃO
         when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
         when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -194,7 +190,6 @@ class AuthPerfilControllerTest {
 	@Test
     @DisplayName("Cobre Amarelo da Permissão não encontrada no Update")
     void testUpdatePermissionNotFound() {
-        // Perfil existe, Aplicativo existe, mas Permissão NÃO
         when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
         when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
         when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.empty());
@@ -210,7 +205,6 @@ class AuthPerfilControllerTest {
 	@Test
     @DisplayName("Cobre Sucesso do Update (Completa a cobertura das branches)")
     void testUpdateSuccessCoverage() throws Exception {
-        // Tudo existe (Garante que o orElseThrow não seja disparado)
         when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
         when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
         when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.of(new AuthPermissaoModel()));

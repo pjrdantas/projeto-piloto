@@ -46,7 +46,6 @@ class AuthPerfilRepositoryAdapterTest {
 		Optional<AuthPerfilModel> result = adapter.findById(1L);
 
 		assertTrue(result.isPresent());
-        // Atenção: se findById no Adapter não tiver Objects.requireNonNull, este assert falha
 		assertThrows(NullPointerException.class, () -> adapter.findById(null));
 	}
 
@@ -110,7 +109,6 @@ class AuthPerfilRepositoryAdapterTest {
     @DisplayName("Deve lançar erro ao tentar deletar com ID nulo")
     @SuppressWarnings("null")
     void deleteErroNulo() {
-        // Agora este teste vai passar porque o adapter (lá no src/main/java) terá a validação
         assertThrows(NullPointerException.class, () -> adapter.delete(null));
     }
 

@@ -29,7 +29,7 @@ class AuthPerfilRequestDTOTest {
     @DisplayName("Deve validar DTO com sucesso")
     void deveValidarDtoSucesso() {
         Set<Long> ids = Set.of(1L, 2L);
-        // Ajuste aqui: verifique se a ordem no Record é exatamente esta
+
         AuthPerfilRequestDTO dto = new AuthPerfilRequestDTO("ADMIN", ids);
 
         var violations = validator.validate(dto);
@@ -42,13 +42,11 @@ class AuthPerfilRequestDTOTest {
     @Test
     @DisplayName("Deve falhar quando campos obrigatórios são nulos ou vazios")
     void deveFalharCamposObrigatorios() {
-        // CORREÇÃO: Use explicitamente o tipo esperado (Long) para o segundo parâmetro
-        // Se o Record espera primitivo 'long', ele não aceita 'null'
+
         AuthPerfilRequestDTO dto = new AuthPerfilRequestDTO("", null);
 
         var violations = validator.validate(dto);
 
-        // O número de violações pode mudar dependendo das anotações @NotNull no Record
         assertTrue(violations.size() >= 1);
     }
 

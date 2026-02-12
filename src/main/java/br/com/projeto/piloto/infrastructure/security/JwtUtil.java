@@ -32,7 +32,7 @@ public class JwtUtil {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(username)
-                // Agora enviamos a lista completa para o Angular
+
                 .claim("authorities", authorities.stream().toList()) 
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + authProperties.getJwt().getExpirationMs())) 
@@ -93,9 +93,7 @@ public class JwtUtil {
                    .getSubject();
     }
 
-    /**
-     * Extrai a data de expiração do token em LocalDateTime
-     */
+
     public LocalDateTime extractExpiration(String token) {
         Date expiration = Jwts.parserBuilder()
                 .setSigningKey(key)
