@@ -2,13 +2,13 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "develop" ]
-
-  workflow_dispatch: # permite rodar manualmente
+    branches: ["develop"]
+  workflow_dispatch:
 
 jobs:
 
   build-test-sonar:
+    name: Build + Test + SonarCloud
     runs-on: ubuntu-latest
 
     steps:
@@ -25,19 +25,34 @@ jobs:
       - name: Build + Test
         run: mvn clean verify
 
-      - name: SonarQube Scan
+      - name: SonarCloud Scan
         run: mvn sonar:sonar \
           -Dsonar.projectKey=projeto-piloto \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST }} \
+          -Dsonar.organization=pjrdantas \
+          -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
+      - name: Quality Gate (bloqueia pipeline)
+        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   docker:
+    name: Build + Push ECR
     needs: build-test-sonar
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configurar AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Login no ECR
         uses: aws-actions/amazon-ecr-login@v2
@@ -56,24 +71,22 @@ jobs:
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/projeto-piloto:latest
 
   deploy:
+    name: Deploy Kubernetes
     needs: docker
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' # 👈 só manual
+    if: github.event_name == 'workflow_dispatch'
 
     steps:
-      - name: Deploy no Kubernetes (EKS ou local)
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+
+      - name: Deploy no Kubernetes
         run: |
           kubectl apply -f k8s/nginx-config.yaml
           kubectl apply -f k8s/deployment.yaml
           kubectl rollout restart deployment projeto-piloto
-      
-      - name: Sonar Scan
-        run: mvn sonar:sonar -Dsonar.projectKey=projeto-piloto -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-
-      - name: Aguardar Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
-        timeout-minutes: 5
-        env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        
-        
