@@ -1,0 +1,79 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "develop" ]
+
+  workflow_dispatch: # permite rodar manualmente
+
+jobs:
+
+  build-test-sonar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build + Test
+        run: mvn clean verify
+
+      - name: SonarQube Scan
+        run: mvn sonar:sonar \
+          -Dsonar.projectKey=projeto-piloto \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+  docker:
+    needs: build-test-sonar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login no ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build imagem
+        run: docker build -t projeto-piloto .
+
+      - name: Tag imagem
+        run: |
+          docker tag projeto-piloto:latest \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/projeto-piloto:latest
+
+      - name: Push ECR
+        run: |
+          docker push \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/projeto-piloto:latest
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' # 👈 só manual
+
+    steps:
+      - name: Deploy no Kubernetes (EKS ou local)
+        run: |
+          kubectl apply -f k8s/nginx-config.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl rollout restart deployment projeto-piloto
+      
+      - name: Sonar Scan
+        run: mvn sonar:sonar -Dsonar.projectKey=projeto-piloto -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      - name: Aguardar Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        timeout-minutes: 5
+        env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+        
