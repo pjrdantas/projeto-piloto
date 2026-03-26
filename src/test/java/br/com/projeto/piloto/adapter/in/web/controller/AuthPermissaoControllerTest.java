@@ -1,3 +1,4 @@
+
 package br.com.projeto.piloto.adapter.in.web.controller;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -18,9 +19,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,27 +40,23 @@ class AuthPermissaoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @SuppressWarnings("removal")
-	@MockBean
+    @MockitoBean
     private AuthPermissaoUseCase authPermissaoUseCase;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private AuthPermissaoRequestDTO validDto;
     private AuthPermissaoModel validModel;
 
     @BeforeEach
     void setup() {
-        validDto = new AuthPermissaoRequestDTO("READ_PRIVILEGE"); 
+        validDto = new AuthPermissaoRequestDTO("READ_PRIVILEGE");
         validModel = new AuthPermissaoModel();
         validModel.setId(1L);
         validModel.setNmPermissao("READ_PRIVILEGE");
     }
 
-
-    @SuppressWarnings("null")
-	@Test
+    @Test
     @DisplayName("Caminhos de Sucesso e Conflito (POST, GET ID, DELETE, PUT)")
     void testFullWorkflow() throws Exception {
         when(authPermissaoUseCase.existsByNmPermissao(any())).thenReturn(false);

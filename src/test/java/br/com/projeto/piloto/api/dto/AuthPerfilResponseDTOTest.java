@@ -36,7 +36,7 @@ class AuthPerfilResponseDTOTest {
     @Test
     @DisplayName("Cobre métodos automáticos do Record (equals, hashCode e toString)")
     void deveValidarMetodosPadrao() {
-        // CORREÇÃO: Passando Set vazio em vez de String "APP1" ou "APP2"
+
         AuthPerfilResponseDTO dto1 = new AuthPerfilResponseDTO(1L, "ADMIN", Collections.emptySet());
         AuthPerfilResponseDTO dto2 = new AuthPerfilResponseDTO(1L, "ADMIN", Collections.emptySet());
         AuthPerfilResponseDTO dto3 = new AuthPerfilResponseDTO(2L, "USER", Collections.emptySet());

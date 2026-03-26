@@ -23,7 +23,8 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
 
     private final SpringAuthPerfilRepository repository;
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public @NonNull List<AuthPerfilModel> listAll() {
         List<AuthPerfilModel> list = repository.findAll().stream()
                 .map(AuthPerfilMapper::toDomain)
@@ -40,7 +41,7 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
         return repository.findById(id).map(AuthPerfilMapper::toDomain);
     }
 
-    @SuppressWarnings("null")
+    @SuppressWarnings({ "null", "deprecation" })
 	@Override
     @Transactional
     public @NonNull AuthPerfilModel create(@NonNull AuthPerfilModel domain) {
@@ -49,7 +50,8 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
         return Objects.requireNonNull(AuthPerfilMapper.toDomain(saved));
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     @Transactional
     public @NonNull AuthPerfilModel update(@NonNull Long id, @NonNull AuthPerfilModel domain) {
         Objects.requireNonNull(id, "ID não pode ser nulo");
@@ -78,7 +80,7 @@ public class AuthPerfilRepositoryAdapter implements AuthPerfilRepositoryPort {
     }
 
     @Override
-    public void delete(@NonNull Long id) {
+    public void delete(@SuppressWarnings("deprecation") @NonNull Long id) {
         Objects.requireNonNull(id, "ID não pode ser nulo");
         repository.deleteById(id);
     }

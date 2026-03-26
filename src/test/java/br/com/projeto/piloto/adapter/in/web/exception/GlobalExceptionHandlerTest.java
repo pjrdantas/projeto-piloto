@@ -66,7 +66,7 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    @SuppressWarnings("null")
+    @SuppressWarnings({ "null", "deprecation" })
 	@Test
     @DisplayName("Deve tratar MethodArgumentNotValidException e mapear erros")
     void handleValidation() {

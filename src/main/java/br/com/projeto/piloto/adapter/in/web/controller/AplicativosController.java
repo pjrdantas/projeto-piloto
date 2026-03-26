@@ -47,8 +47,7 @@ public class AplicativosController {
 
     private final AplicativosUseCase aplicativosUseCase;
 
-    
-    private ResponseEntity<ErrorResponse> buildErrorResponse(@NonNull HttpStatus status, String message, HttpServletRequest request) {
+    private ResponseEntity<ErrorResponse> buildErrorResponse(@SuppressWarnings("deprecation") @NonNull HttpStatus status, String message, HttpServletRequest request) {
         return ResponseEntity.status(status)
                 .body(
                         ErrorResponse.builder()

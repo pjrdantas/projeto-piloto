@@ -1,219 +1,226 @@
+
 package br.com.projeto.piloto.adapter.in.web.controller;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import br.com.projeto.piloto.adapter.in.web.dto.AuthPerfilRequestDTO;
-import br.com.projeto.piloto.domain.model.AplicativosModel;
+import br.com.projeto.piloto.adapter.in.web.dto.AuthPerfilResponseDTO;
+import br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse;
+import br.com.projeto.piloto.adapter.out.jpa.mapper.AuthPerfilMapper;
 import br.com.projeto.piloto.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.domain.model.AuthPermissaoModel;
-import br.com.projeto.piloto.domain.port.inbound.AplicativosUseCase;
 import br.com.projeto.piloto.domain.port.inbound.AuthPerfilUseCase;
 import br.com.projeto.piloto.domain.port.inbound.AuthPermissaoUseCase;
+import jakarta.servlet.http.HttpServletRequest;
 
-@WebMvcTest(AuthPerfilController.class)
-@ContextConfiguration(classes = AuthPerfilController.class)
-@AutoConfigureMockMvc(addFilters = false)
 class AuthPerfilControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @SuppressWarnings("removal")
-	@MockBean private AuthPerfilUseCase authPerfilUseCase;
-    @SuppressWarnings("removal")
-	@MockBean private AuthPermissaoUseCase authPermissaoUseCase;
-    @SuppressWarnings("removal")
-	@MockBean private AplicativosUseCase aplicativosUseCase;
-    @Autowired private ObjectMapper objectMapper;
+    @Mock
+    private AuthPerfilUseCase authPerfilUseCase;
+    @Mock
+    private AuthPermissaoUseCase authPermissaoUseCase;
+    @Mock
+    private HttpServletRequest request;
 
-    private AuthPerfilRequestDTO validDto;
-    private AuthPerfilModel validModel;
+    @InjectMocks
+    private AuthPerfilController controller;
 
     @BeforeEach
-    void setup() {
-        validDto = new AuthPerfilRequestDTO("ADMIN", Set.of(1L));
-        
-        validModel = AuthPerfilModel.builder()
-                .id(1L)
-                .nmPerfil("ADMIN")
-                .build();
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre orElseThrow de Aplicativo e Permissão (Caminhos Vermelhos)")
-    void testIllegalArgumentExceptions() {
-        when(authPerfilUseCase.existsByNmPerfil(any())).thenReturn(false);
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> 
-            mockMvc.perform(post("/api/perfis").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-        ).hasCauseInstanceOf(IllegalArgumentException.class);
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
-        when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> 
-            mockMvc.perform(post("/api/perfis").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-        ).hasCauseInstanceOf(IllegalArgumentException.class);
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre ramificação amarela das permissões nulas")
-    void testNullPermissionsBranch() throws Exception {
-        AuthPerfilRequestDTO dtoNull = new AuthPerfilRequestDTO("ADMIN", null);
-        
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
-        when(authPerfilUseCase.create(any())).thenReturn(validModel);
-
-        mockMvc.perform(post("/api/perfis").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dtoNull)))
-                .andExpect(status().isCreated());
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        when(request.getRequestURI()).thenReturn("/api/perfis");
     }
 
     @Test
-    @DisplayName("Cobre buildErrorResponse (Outras linhas vermelhas)")
-    void testErrorResponses() throws Exception {
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.empty());
-        mockMvc.perform(delete("/api/perfis/1")).andExpect(status().isNotFound());
-        mockMvc.perform(get("/api/perfis/1")).andExpect(status().isNotFound());
-    }
+    void create_PerfilJaExiste() {
+        AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
+        when(dto.nmPerfil()).thenReturn("ADMIN");
+        when(authPerfilUseCase.existsByNmPerfil("ADMIN")).thenReturn(true);
 
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Caminhos de Sucesso")
-    void testSuccessPaths() throws Exception {
-        when(authPerfilUseCase.existsByNmPerfil(any())).thenReturn(false);
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
-        when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.of(new AuthPermissaoModel()));
-        when(authPerfilUseCase.create(any())).thenReturn(validModel);
+        ResponseEntity<?> response = controller.create(dto, request);
 
-        mockMvc.perform(post("/api/perfis").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").exists()); 
-    }
-    
-    @Test
-    @DisplayName("GET /perfis - Cobertura ListAll")
-    void testListAllCoverage() throws Exception {
-        when(authPerfilUseCase.listAll()).thenReturn(List.of(validModel));
-        mockMvc.perform(get("/api/perfis")).andExpect(status().isOk());
-        when(authPerfilUseCase.listAll()).thenReturn(Collections.emptyList());
-        mockMvc.perform(get("/api/perfis")).andExpect(status().isNotFound());
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("PUT /perfis/{id} - Cobertura Update")
-    void testUpdateCoverage() throws Exception {
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> 
-            mockMvc.perform(put("/api/perfis/1").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-        ).hasCauseInstanceOf(IllegalArgumentException.class);
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
-        when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.of(new AuthPermissaoModel()));
-        when(authPerfilUseCase.update(anyLong(), any())).thenReturn(validModel);
-        
-        mockMvc.perform(put("/api/perfis/1").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-                .andExpect(status().isOk());
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("POST /perfis - Cobertura Conflict")
-    void testCreateConflict() throws Exception {
-        when(authPerfilUseCase.existsByNmPerfil(any())).thenReturn(true);
-        mockMvc.perform(post("/api/perfis").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-                .andExpect(status().isConflict());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertTrue(response.getBody() instanceof ErrorResponse);
     }
 
     @Test
-    @DisplayName("DELETE /perfis/{id} - Cobertura Success")
-    void testDeleteSuccess() throws Exception {
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(validModel));
-        mockMvc.perform(delete("/api/perfis/1")).andExpect(status().isNoContent());
+    void create_Sucesso() {
+        Set<Long> permissoesIds = Set.of(1L);
+        AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
+        when(dto.nmPerfil()).thenReturn("ADMIN");
+        when(dto.permissoesIds()).thenReturn(permissoesIds);
+
+        AuthPermissaoModel permissao = mock(AuthPermissaoModel.class);
+        when(authPerfilUseCase.existsByNmPerfil("ADMIN")).thenReturn(false);
+        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(permissao));
+
+        AuthPerfilModel domain = mock(AuthPerfilModel.class);
+        AuthPerfilModel created = mock(AuthPerfilModel.class);
+
+        try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
+            mapper.when(() -> AuthPerfilMapper.toDomain(dto, Set.of(permissao))).thenReturn(domain);
+            when(authPerfilUseCase.create(domain)).thenReturn(created);
+            AuthPerfilResponseDTO responseDTO = mock(AuthPerfilResponseDTO.class);
+            mapper.when(() -> AuthPerfilMapper.toResponse(created)).thenReturn(responseDTO);
+
+            ResponseEntity<?> response = controller.create(dto, request);
+
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertEquals(responseDTO, response.getBody());
+        }
     }
 
     @Test
-    @DisplayName("GET /perfis/{id} - Cobertura Success")
-    void testFindByIdSuccess() throws Exception {
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(validModel));
-        mockMvc.perform(get("/api/perfis/1")).andExpect(status().isOk());
+    void create_PermissaoNaoEncontrada() {
+        Set<Long> permissoesIds = Set.of(2L);
+        AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
+        when(dto.nmPerfil()).thenReturn("ADMIN");
+        when(dto.permissoesIds()).thenReturn(permissoesIds);
+
+        when(authPerfilUseCase.existsByNmPerfil("ADMIN")).thenReturn(false);
+        when(authPermissaoUseCase.findById(2L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> controller.create(dto, request));
     }
 
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre Amarelo do Aplicativo não encontrado no Update")
-    void testUpdateAppNotFound() {
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.empty());
+    @Test
+    void update_PerfilNaoEncontrado() {
+        AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> 
-            mockMvc.perform(put("/api/perfis/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-        ).hasCauseInstanceOf(IllegalArgumentException.class);
+        assertThrows(IllegalArgumentException.class, () -> controller.update(1L, dto, request));
     }
 
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre Amarelo da Permissão não encontrada no Update")
-    void testUpdatePermissionNotFound() {
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
-        when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.empty());
+    @Test
+    void update_Sucesso() {
+        Set<Long> permissoesIds = Set.of(1L);
+        AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
+        when(dto.permissoesIds()).thenReturn(permissoesIds);
 
-        assertThatThrownBy(() -> 
-            mockMvc.perform(put("/api/perfis/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-        ).hasCauseInstanceOf(IllegalArgumentException.class);
+        AuthPerfilModel perfil = mock(AuthPerfilModel.class);
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+
+        AuthPermissaoModel permissao = mock(AuthPermissaoModel.class);
+        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(permissao));
+
+        AuthPerfilModel domain = mock(AuthPerfilModel.class);
+        AuthPerfilModel updated = mock(AuthPerfilModel.class);
+
+        try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
+            mapper.when(() -> AuthPerfilMapper.toDomain(dto, Set.of(permissao))).thenReturn(domain);
+            when(authPerfilUseCase.update(1L, domain)).thenReturn(updated);
+            AuthPerfilResponseDTO responseDTO = mock(AuthPerfilResponseDTO.class);
+            mapper.when(() -> AuthPerfilMapper.toResponse(updated)).thenReturn(responseDTO);
+
+            ResponseEntity<?> response = controller.update(1L, dto, request);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(responseDTO, response.getBody());
+        }
     }
 
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Cobre Sucesso do Update (Completa a cobertura das branches)")
-    void testUpdateSuccessCoverage() throws Exception {
-        when(authPerfilUseCase.findById(anyLong())).thenReturn(Optional.of(validModel));
-        when(aplicativosUseCase.findById(anyLong())).thenReturn(Optional.of(new AplicativosModel()));
-        when(authPermissaoUseCase.findById(anyLong())).thenReturn(Optional.of(new AuthPermissaoModel()));
-        when(authPerfilUseCase.update(anyLong(), any())).thenReturn(validModel);
+    @Test
+    void update_PermissaoNaoEncontrada() {
+        Set<Long> permissoesIds = Set.of(2L);
+        AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
+        when(dto.permissoesIds()).thenReturn(permissoesIds);
 
-        mockMvc.perform(put("/api/perfis/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validDto)))
-                .andExpect(status().isOk());
+        AuthPerfilModel perfil = mock(AuthPerfilModel.class);
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+        when(authPermissaoUseCase.findById(2L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> controller.update(1L, dto, request));
     }
 
+    @Test
+    void delete_Sucesso() {
+        AuthPerfilModel perfil = mock(AuthPerfilModel.class);
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+
+        ResponseEntity<?> response = controller.delete(1L, request);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(authPerfilUseCase).delete(1L);
+    }
+
+    @Test
+    void delete_NaoEncontrado() {
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> response = controller.delete(1L, request);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertTrue(response.getBody() instanceof ErrorResponse);
+    }
+
+    @Test
+    void findById_Sucesso() {
+        AuthPerfilModel perfil = mock(AuthPerfilModel.class);
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+        AuthPerfilResponseDTO dto = mock(AuthPerfilResponseDTO.class);
+
+        try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
+            mapper.when(() -> AuthPerfilMapper.toResponse(perfil)).thenReturn(dto);
+
+            ResponseEntity<?> response = controller.findById(1L, request);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(dto, response.getBody());
+        }
+    }
+
+    @Test
+    void findById_NaoEncontrado() {
+        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> response = controller.findById(1L, request);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertTrue(response.getBody() instanceof ErrorResponse);
+    }
+
+    @Test
+    void listAll_Sucesso() {
+        AuthPerfilModel perfil = mock(AuthPerfilModel.class);
+        when(authPerfilUseCase.listAll()).thenReturn(List.of(perfil));
+        AuthPerfilResponseDTO dto = mock(AuthPerfilResponseDTO.class);
+
+        try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
+            mapper.when(() -> AuthPerfilMapper.toResponse(perfil)).thenReturn(dto);
+
+            ResponseEntity<?> response = controller.listAll(request);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(List.of(dto), response.getBody());
+        }
+    }
+
+    @Test
+    void listAll_Vazio() {
+        when(authPerfilUseCase.listAll()).thenReturn(List.of());
+
+        ResponseEntity<?> response = controller.listAll(request);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertTrue(response.getBody() instanceof ErrorResponse);
+    }
 }

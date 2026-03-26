@@ -25,8 +25,8 @@ Fornecer uma base sólida para sistemas que precisam de autenticação, autoriza
 ---
 
 ** 🛠️ Tecnologias e Especificações **
-- **Java:** 17
-- **Spring Boot:** 3.x
+- **Java:** 21
+- **Spring Boot:** 4.x
 - **Autenticação:** JWT Stateless (JSON Web Token)
 - **Banco de Dados Local:** Oracle (Service Name: XEPDB1)
 - **Banco de Dados Nuvem:** PostgreSQL (AWS RDS)
