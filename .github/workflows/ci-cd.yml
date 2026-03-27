@@ -15,10 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Java 21
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
           cache: maven
 
@@ -35,9 +35,10 @@ jobs:
 
       - name: Check SonarCloud Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        with:
+          scanMetadataReportFile: '.scannerwork/report-task.txt'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        # Se o Quality Gate falhar, este job falhará e não irá para o Docker
 
   docker:
     name: Build + Push ECR
