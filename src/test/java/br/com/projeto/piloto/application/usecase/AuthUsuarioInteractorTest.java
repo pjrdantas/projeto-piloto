@@ -47,7 +47,7 @@ class AuthUsuarioInteractorTest {
     @Mock
     private AuthUsuarioMapper mapper;
     
-    @Mock // <--- ADICIONE ESTA ANOTAÇÃO AQUI
+    @Mock 
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @InjectMocks
@@ -104,7 +104,7 @@ class AuthUsuarioInteractorTest {
     void deveAtualizarCompleto() {
         Long id = 1L;
         String senhaPlana = "123";
-        String senhaCripto = "$2a$10$hashSimulado"; // O que o encoder retornaria
+        String senhaCripto = "$2a$10$hashSimulado"; 
 
         AuthUsuarioModel model = AuthUsuarioModel.builder()
                 .login("novo")
@@ -119,23 +119,19 @@ class AuthUsuarioInteractorTest {
         AuthUsuario updatedEntity = new AuthUsuario();
         updatedEntity.setPerfis(new HashSet<AuthPerfil>());
 
-        // CONFIGURAÇÃO DOS MOCKS
+ 
         when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.existsByDsLoginAndIdNot("novo", id)).thenReturn(false);
         when(mapper.toEntity(model)).thenReturn(updatedEntity);
         when(repository.save(existing)).thenReturn(existing);
         when(mapper.toDomain(existing)).thenReturn(model);
-        
-        // MOCK DO ENCODER (Resolve o NullPointerException)
         when(passwordEncoder.encode(senhaPlana)).thenReturn(senhaCripto);
 
-        // EXECUÇÃO
         AuthUsuarioModel result = service.atualizar(id, model);
 
-        // VALIDAÇÕES
         assertNotNull(result);
-        assertEquals(senhaCripto, existing.getSenha()); // Verifica se a senha gravada foi a criptografada
-        verify(passwordEncoder).encode(senhaPlana); // Verifica se o encoder foi realmente chamado
+        assertEquals(senhaCripto, existing.getSenha()); 
+        verify(passwordEncoder).encode(senhaPlana); 
     }
 
 
@@ -345,6 +341,69 @@ class AuthUsuarioInteractorTest {
 
         verify(repository, times(1)).existsById(id);
         verify(repository, times(1)).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("Deve criar usuário e codificar a senha quando fornecida")
+    void deveCriarUsuarioComSenha() {
+        AuthUsuarioModel model = AuthUsuarioModel.builder()
+                .login("admin2")
+                .senha("plainpass")
+                .perfis(getMockPerfisModel())
+                .build();
+        AuthUsuario entity = new AuthUsuario();
+
+        when(repository.findByLogin("admin2")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode("plainpass")).thenReturn("hashed-pass");
+        when(mapper.toEntity(model)).thenReturn(entity);
+        when(repository.save(entity)).thenReturn(entity);
+        when(mapper.toDomain(entity)).thenReturn(model);
+
+        AuthUsuarioModel result = service.criar(model);
+
+        assertNotNull(result);
+        verify(passwordEncoder).encode("plainpass");
+        assertEquals("hashed-pass", model.getSenha());
+    }
+
+    @Test
+    @DisplayName("Deve atualizar usuario definindo ativo e email")
+    void deveAtualizarAtivoEmail() {
+        Long id = 2L;
+        AuthUsuarioModel model = AuthUsuarioModel.builder()
+                .login("u2")
+                .nome("Nome2")
+                .ativo("S")
+                .email("u2@example.com")
+                .senha(null)
+                .perfis(getMockPerfisModel())
+                .build();
+
+        AuthUsuario existing = new AuthUsuario();
+        existing.setPerfis(new HashSet<>());
+
+        AuthUsuario entityFromMapper = new AuthUsuario();
+        entityFromMapper.setPerfis(new HashSet<>());
+
+        when(repository.findById(id)).thenReturn(Optional.of(existing));
+        when(repository.existsByDsLoginAndIdNot(anyString(), anyLong())).thenReturn(false);
+        when(mapper.toEntity(any())).thenReturn(entityFromMapper);
+        when(repository.save(existing)).thenReturn(existing);
+        when(mapper.toDomain(existing)).thenReturn(model);
+
+        AuthUsuarioModel result = service.atualizar(id, model);
+        assertNotNull(result);
+        assertEquals("S", existing.getAtivo());
+        assertEquals("u2@example.com", existing.getEmail());
+    }
+
+    @Test
+    @DisplayName("listarTodos retorna lista vazia quando não há usuários")
+    void listarTodosVazio() {
+        when(repository.findAll()).thenReturn(List.of());
+        List<AuthUsuarioModel> result = service.listarTodos();
+        assertNotNull(result);
+        assertEquals(0, result.size());
     }
 
 }

@@ -21,9 +21,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
-    private final AuthSessaoService authSessaoService; // 1. ADICIONE O SERVICE
+    private final AuthSessaoService authSessaoService; 
 
-    // 2. ATUALIZE O CONSTRUTOR
     public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService uds, AuthSessaoService authSessaoService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = uds;
@@ -32,9 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+            @SuppressWarnings({ "null" }) @NonNull HttpServletRequest request,
+            @SuppressWarnings({ "null" }) @NonNull HttpServletResponse response,
+            @SuppressWarnings({ "null" }) @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
@@ -43,8 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
             
             try {
-                // 3. ADICIONE A VALIDAÇÃO DA SESSÃO NO BANCO
-                // Além de validar a assinatura do JWT, verificamos se ele consta como "Ativo" no DB
+  
                 if (jwtUtil.validate(token) && authSessaoService.validarSessao(token)) {
                     String username = jwtUtil.getUsername(token);
 
@@ -58,7 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 } else {
-                    // Se o token não estiver na tabela AuthSessao como ativo, limpamos o contexto
+
                     SecurityContextHolder.clearContext();
                 }
             } catch (Exception e) {

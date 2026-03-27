@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,7 +37,7 @@ class JwtAuthenticationFilterTest {
 
     @Mock private JwtUtil jwtUtil;
     @Mock private UserDetailsService userDetailsService;
-    @Mock private AuthSessaoService authSessaoService; // 1. ADICIONE ESTE MOCK
+    @Mock private AuthSessaoService authSessaoService; 
     @Mock private HttpServletRequest request;
     @Mock private HttpServletResponse response;
     @Mock private FilterChain filterChain;
@@ -71,8 +72,6 @@ class JwtAuthenticationFilterTest {
         when(jwtUtil.validate(token)).thenReturn(true);
         when(jwtUtil.getUsername(token)).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
-        
-        // 2. ADICIONE ESTA LINHA: Essencial para o IF do filtro passar
         when(authSessaoService.validarSessao(token)).thenReturn(true);
 
         filter.doFilterInternal(request, response, filterChain);
@@ -99,8 +98,6 @@ class JwtAuthenticationFilterTest {
         String token = "token.valido";
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtUtil.validate(token)).thenReturn(true);
-        
-        // 3. Simula o login duplo (sessão inativa no banco)
         when(authSessaoService.validarSessao(token)).thenReturn(false);
 
         filter.doFilterInternal(request, response, filterChain);
@@ -108,6 +105,88 @@ class JwtAuthenticationFilterTest {
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
     }
-    
-    
+
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve ignorar quando jwtUtil.validate retorna false")
+    void deveIgnorarQuandoValidateFalse() throws ServletException, IOException {
+        String token = "bad.token";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(false);
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve não autenticar quando username é nulo")
+    void naoAutenticaQuandoUsernameNull() throws ServletException, IOException {
+        String token = "token.semuser";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(true);
+        when(authSessaoService.validarSessao(token)).thenReturn(true);
+        when(jwtUtil.getUsername(token)).thenReturn(null);
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve limpar contexto quando jwtUtil lança exceção")
+    void limpaContextoQuandoJwtUtilLanca() throws ServletException, IOException {
+        String token = "throw.token";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenThrow(new RuntimeException("boom"));
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Deve limpar contexto quando userDetailsService lança exceção")
+    void limpaContextoQuandoUserDetailsServiceLanca() throws ServletException, IOException {
+        String token = "token.exc.user";
+        String username = "userX";
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(true);
+        when(authSessaoService.validarSessao(token)).thenReturn(true);
+        when(jwtUtil.getUsername(token)).thenReturn(username);
+        when(userDetailsService.loadUserByUsername(username)).thenThrow(new RuntimeException("user fail"));
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @SuppressWarnings("null")
+	@Test
+    @DisplayName("Não substitui authentication se já existir no contexto")
+    void naoSubstituiAuthenticationSeExistir() throws ServletException, IOException {
+        String token = "token.existing";
+        String username = "adminExisting";
+        UsernamePasswordAuthenticationToken existing = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(existing);
+
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.validate(token)).thenReturn(true);
+        when(authSessaoService.validarSessao(token)).thenReturn(true);
+        when(jwtUtil.getUsername(token)).thenReturn(username);
+        when(userDetailsService.loadUserByUsername(username)).thenReturn(new User(username, "", Collections.emptyList()));
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        assertEquals(existing, SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
 }

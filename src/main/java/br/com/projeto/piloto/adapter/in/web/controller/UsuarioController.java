@@ -1,3 +1,4 @@
+
 package br.com.projeto.piloto.adapter.in.web.controller;
 
 import java.util.List;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.projeto.piloto.adapter.in.web.dto.AuthPerfilResumoDTO;
-import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.adapter.in.web.dto.AuthUsuarioRequestDTO;
 import br.com.projeto.piloto.adapter.in.web.dto.AuthUsuarioResponseDTO;
 import br.com.projeto.piloto.adapter.in.web.exception.ErrorResponse;
@@ -46,9 +46,8 @@ public class UsuarioController {
 
     private final AuthUsuarioUseCasePort usuarioUseCase;
 
-    
     private AuthUsuarioResponseDTO toDto(AuthUsuarioModel m) {
-        Set<AuthPerfilResumoDTO> perfisDto = m.getPerfis().stream()
+        Set<AuthPerfilResumoDTO> perfisIdsDto = m.getPerfis().stream()
                 .map(p -> new AuthPerfilResumoDTO(
                         p.getId(),
                         p.getNmPerfil()
@@ -63,10 +62,9 @@ public class UsuarioController {
                 m.getEmail(),
                 m.getCriadoEm(),
                 m.getAtualizadoEm(),
-                perfisDto
+                perfisIdsDto
         );
     }
-
 
     private Set<AuthPerfilModel> validarEConverterPerfis(Set<Long> perfisIds) {
         if (perfisIds == null || perfisIds.isEmpty()) {
@@ -77,7 +75,9 @@ public class UsuarioController {
             if (pid == null) {
                 throw new IllegalArgumentException("Não é possível criar ou alterar usuário com 'perfisIds' contendo id nulo.");
             }
-            return AuthPerfilModel.builder().id(pid).build();
+            AuthPerfilModel perfil = new AuthPerfilModel();
+            perfil.setId(pid);
+            return perfil;
         }).collect(Collectors.toSet());
     }
 
@@ -91,12 +91,12 @@ public class UsuarioController {
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE')")
     @Operation(summary = "Cria um novo usuário", responses = {
-            @ApiResponse(responseCode = "201", description = "Usuário criada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos",            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "409", description = "Usuário já existe",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "422", description = "Erro de validação",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthUsuarioResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Usuário já existe", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Erro de validação", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<AuthUsuarioResponseDTO> create(@Validated @RequestBody AuthUsuarioRequestDTO dto) {
-    	
+
         Set<AuthPerfilModel> perfis = validarEConverterPerfis(dto.perfisIds());
 
         AuthUsuarioModel domain = AuthUsuarioModel.builder()
@@ -119,10 +119,10 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('UPDATE')")
     @Operation(summary = "Atualiza um usuário existente", responses = {
-			@ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-			@ApiResponse(responseCode = "404", description = "Usuário não encontrado",            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+            @ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthUsuarioResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<AuthUsuarioResponseDTO> update(@PathVariable("id") Long id, @Validated @RequestBody AuthUsuarioRequestDTO dto) {
-    	
+
         Set<AuthPerfilModel> perfis = validarEConverterPerfis(dto.perfisIds());
 
         AuthUsuarioModel domain = AuthUsuarioModel.builder()
@@ -149,9 +149,8 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('DELETE')")
     @Operation(summary = "Remove um usuário", responses = {
             @ApiResponse(responseCode = "204", description = "Removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    	
         usuarioUseCase.deletar(id);
         return ResponseEntity.noContent().build();
     }
@@ -159,26 +158,23 @@ public class UsuarioController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('READ')")
     @Operation(summary = "Busca um usuário por ID", responses = {
-            @ApiResponse(responseCode = "200", description = "Permissão encontrada",     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthUsuarioResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<AuthUsuarioResponseDTO> findById(@PathVariable("id") Long id) {
-    	
         AuthUsuarioModel usuario = usuarioUseCase.buscarPorId(id);
         return ResponseEntity.ok(toDto(usuario));
     }
 
-    @GetMapping 
+    @GetMapping
     @PreAuthorize("hasAuthority('READ_ALL')")
     @Operation(summary = "Lista todos os usuários")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",  content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthPermissaoResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthUsuarioResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Lista não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<List<AuthUsuarioResponseDTO>> listAll() {
-    	
         List<AuthUsuarioResponseDTO> list = usuarioUseCase.listarTodos().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(list);
     }
-
 }

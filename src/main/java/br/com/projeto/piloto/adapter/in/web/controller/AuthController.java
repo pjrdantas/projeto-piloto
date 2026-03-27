@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Autenticação", description = "Gerenciamento de login, registro e refresh de tokens")
 @Validated
 @CrossOrigin(origins = "http://localhost:4200")
+@Slf4j
 public class AuthController {
 
 	private final AuthInteractor authInteractor;
@@ -58,24 +60,28 @@ public class AuthController {
 	    Set<String> permissions = new HashSet<>();
 	    
 	    authUsuario.getPerfis().forEach(perfil -> {
-	        // Adiciona o role do perfil
-	        roles.add(perfil.getNmPerfil().toUpperCase());
+	  
+	       
+	        String nomePerfil = perfil.getNmPerfil();
+	        if (nomePerfil != null && !nomePerfil.isBlank()) {
+	            roles.add(nomePerfil.toUpperCase());
+	        }
 
-	        // Adiciona as permissões do perfil
 	        if (perfil.getPermissoes() != null) {
-	            perfil.getPermissoes().forEach(p -> permissions.add(p.getNmPermissao().toUpperCase()));
+	            perfil.getPermissoes().forEach(p -> {
+	                if (p != null && p.getNmPermissao() != null) {
+	                    permissions.add(p.getNmPermissao().toUpperCase());
+	                }
+	            });
 	        }
 	    });
-	     
-	    // Para o JWT, usar roles + permissions (authorities)
+
 	    Set<String> authorities = new HashSet<>(roles);
 	    authorities.addAll(permissions);
 
 	    String token = jwtUtil.generateToken(authUsuario.getLogin(), authorities);
 	    String refreshToken = jwtUtil.generateRefreshToken(authUsuario.getLogin());
-	    
-	    
-	    // Cria a sessão (invalida sessões anteriores)
+
 	    authSessaoService.criarSessao(authUsuario.getId(), token, refreshToken);
 
 	    return ResponseEntity.ok(new AuthResponseDTO(
@@ -101,8 +107,7 @@ public class AuthController {
 				return ResponseEntity.badRequest()
 						.body(Map.of("valid", false, "message", "Token não fornecido"));
 			}
-			
-			// Valida se a sessão está ativa no banco de dados
+
 			boolean sessaoValida = authSessaoService.validarSessao(token);
 			
 			if (!sessaoValida) {
@@ -114,7 +119,7 @@ public class AuthController {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			log.error("Erro ao validar sessão: {}", e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(Map.of("valid", false, "message", "Sessão inválida."));
 		}
@@ -145,25 +150,24 @@ public class AuthController {
 			if (!jwtUtil.validate(refreshToken)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 						.body(ErrorResponse.builder()
-								.timestamp(LocalDateTime.now())
-								.status(HttpStatus.UNAUTHORIZED.value())
-								.error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-								.message("Refresh token inválido ou expirado")
-								.path("/api/auth/refresh-token")
-								.build());
+							.timestamp(LocalDateTime.now())
+							.status(HttpStatus.UNAUTHORIZED.value())
+							.error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+							.message("Refresh token inválido ou expirado")
+							.path("/api/auth/refresh-token")
+							.build());
 			}
 
-			// Valida se a sessão ainda está ativa
 			var sessao = authSessaoService.encontrarPorRefreshToken(refreshToken);
 			if (sessao.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 						.body(ErrorResponse.builder()
-								.timestamp(LocalDateTime.now())
-								.status(HttpStatus.UNAUTHORIZED.value())
-								.error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-								.message("Sessão inválida ou expirada. Faça login novamente.")
-								.path("/api/auth/refresh-token")
-								.build());
+							.timestamp(LocalDateTime.now())
+							.status(HttpStatus.UNAUTHORIZED.value())
+							.error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+							.message("Sessão inválida ou expirada. Faça login novamente.")
+							.path("/api/auth/refresh-token")
+							.build());
 			}
 
 			String login = jwtUtil.extractUsernameFromRefreshToken(refreshToken);
@@ -172,16 +176,21 @@ public class AuthController {
 			
 			Set<String> roles = authUsuario.getPerfis().stream()
 					.map(p -> p.getNmPerfil())
+					.filter(n -> n != null && !n.isBlank())
+					.map(String::toUpperCase)
 					.collect(Collectors.toSet());
-		
+			
 			Set<String> permissions = new HashSet<>();
 			authUsuario.getPerfis().forEach(perfil -> {
 				if (perfil.getPermissoes() != null) {
-					perfil.getPermissoes().forEach(p -> permissions.add(p.getNmPermissao().toUpperCase()));
+					perfil.getPermissoes().forEach(p -> {
+						if (p != null && p.getNmPermissao() != null) {
+							permissions.add(p.getNmPermissao().toUpperCase());
+						}
+					});
 				}
 			});
-			
-			// Para o JWT, usar roles + permissions (authorities)
+
 			Set<String> authorities = new HashSet<>(roles);
 			authorities.addAll(permissions);
 
@@ -206,7 +215,7 @@ public class AuthController {
 					.error(HttpStatus.BAD_REQUEST.getReasonPhrase())
 					.message("O token de refresh fornecido é inválido ou malformado")
 					.path("/api/auth/refresh-token").build());
-					
+						
 		} catch (JwtException ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(ErrorResponse.builder()

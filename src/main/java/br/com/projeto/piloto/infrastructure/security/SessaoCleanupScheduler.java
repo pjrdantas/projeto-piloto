@@ -16,6 +16,11 @@ public class SessaoCleanupScheduler {
 
     @Scheduled(fixedDelay = 86400000)
     public void executarFaxina() {
-        authSessaoRepository.deleteByDataExpiracaoBefore(LocalDateTime.now());
+
+        executarFaxinaAt(LocalDateTime.now());
+    }
+
+    public void executarFaxinaAt(LocalDateTime dataHora) {
+        authSessaoRepository.deleteByDataExpiracaoBefore(dataHora);
     }
 }
