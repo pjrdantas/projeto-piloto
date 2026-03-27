@@ -23,24 +23,19 @@ jobs:
           cache: maven
 
       - name: Build + Test
-        run: |
-          echo ">>> Rodando Maven Clean + Verify"
-          mvn clean verify
+        run: mvn -B clean verify
 
       - name: SonarCloud Scan
         run: |
-          echo ">>> Iniciando SonarCloud Scan"
-          mvn sonar:sonar \
+          echo ">>> Rodando SonarCloud CI Scan"
+          mvn -B sonar:sonar \
             -Dsonar.projectKey=pjrdantas_projeto-piloto \
             -Dsonar.organization=pjrdantas \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.ci=true
-          echo ">>> Verificando se report-task.txt foi criado"
-          if [ ! -f ".scannerwork/report-task.txt" ]; then
-            echo "ERROR: report-task.txt não encontrado!"
-            exit 1
-          fi
+            -Dsonar.ci=true \
+            -Dsonar.branch.name=${{ github.ref_name }} \
+            -Dsonar.skip=false
 
       - name: Check SonarCloud Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
@@ -60,16 +55,14 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          echo ">>> Construindo imagem Docker localmente"
           docker build -t projeto-piloto:latest .
-          echo ">>> Lista de imagens geradas"
           docker images | grep projeto-piloto
 
   deploy:
-    name: Deploy Kubernetes
+    name: Deploy Kubernetes (Manual)
     needs: build-test-sonar
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' # Só dispara manualmente
 
     steps:
       - name: Checkout
@@ -82,8 +75,6 @@ jobs:
 
       - name: Deploy no Kubernetes
         run: |
-          echo ">>> Aplicando configs no Kubernetes"
           kubectl apply -f k8s/nginx-config.yaml
           kubectl apply -f k8s/deployment.yaml
-          echo ">>> Reiniciando deployment projeto-piloto"
           kubectl rollout restart deployment projeto-piloto

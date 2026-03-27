@@ -188,7 +188,8 @@
 					<useModulePath>false</useModulePath>
 				</configuration>
 			</plugin>
-
+ 
+ 
 			<!-- ========== JACOCO CONFIGURADO ========== -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
