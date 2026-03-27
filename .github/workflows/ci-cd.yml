@@ -28,7 +28,7 @@ jobs:
       - name: SonarCloud Scan
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=projeto-piloto \
+            -Dsonar.projectKey=pjrdantas_projeto-piloto \
             -Dsonar.organization=pjrdantas \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
