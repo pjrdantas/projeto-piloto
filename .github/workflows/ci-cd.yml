@@ -27,13 +27,13 @@ jobs:
 
       - name: SonarCloud Scan
         run: |
-          echo ">>> Rodando SonarCloud CI Scan"
+          echo ">>> Rodando SonarCloud Scan"
           mvn -B sonar:sonar \
             -Dsonar.projectKey=pjrdantas_projeto-piloto \
             -Dsonar.organization=pjrdantas \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.ci=true \
+            -Dsonar.analysis.mode=preview \
             -Dsonar.branch.name=${{ github.ref_name }} \
             -Dsonar.skip=false
 
