@@ -49,39 +49,31 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           set -e
-          mvn -B -X sonar:sonar \
+          mvn -B sonar:sonar \
             -Dsonar.projectKey=pjrdantas_projeto-piloto \
             -Dsonar.organization=pjrdantas \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${SONAR_TOKEN} \
             -Dsonar.branch.name=${{ github.ref_name }}
 
-      - name: Locate report-task.txt
-        id: locate
-        run: |
-          set -e
-          REPORT_TASK="$(find . -name report-task.txt -print -quit)"
-          if [ -z "$REPORT_TASK" ]; then
-            echo "ERROR: report-task.txt not found. Showing .scannerwork dirs:"
-            find . -type d -name ".scannerwork" -print || true
-            echo "Showing directories (depth 4):"
-            find . -maxdepth 4 -type d -print
-            exit 1
-          fi
-          echo "Found: $REPORT_TASK"
-          cat "$REPORT_TASK"
-          echo "report_task=$REPORT_TASK" >> "$GITHUB_OUTPUT"
-
       - name: Check Quality Gate (via SonarCloud API)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           set -e
-          REPORT_TASK="${{ steps.locate.outputs.report_task }}"
+          REPORT_TASK="target/sonar/report-task.txt"
+
+          if [ ! -f "$REPORT_TASK" ]; then
+            echo "ERROR: $REPORT_TASK not found"
+            ls -la target || true
+            ls -la target/sonar || true
+            exit 1
+          fi
 
           CE_TASK_URL="$(grep -E '^ceTaskUrl=' "$REPORT_TASK" | cut -d'=' -f2-)"
           if [ -z "$CE_TASK_URL" ]; then
             echo "ERROR: ceTaskUrl not found in $REPORT_TASK"
+            cat "$REPORT_TASK"
             exit 1
           fi
 
