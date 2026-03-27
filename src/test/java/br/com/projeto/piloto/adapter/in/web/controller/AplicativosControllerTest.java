@@ -1,3 +1,4 @@
+
 package br.com.projeto.piloto.adapter.in.web.controller;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -20,8 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -75,8 +76,6 @@ class AplicativosControllerTest {
                 .build();
     }
 
-
-
     @Test
     @DisplayName("POST - Criar aplicativo com sucesso (201)")
     void createSuccess() throws Exception {
@@ -100,8 +99,6 @@ class AplicativosControllerTest {
                 .content(objectMapper.writeValueAsString(validDto)))
                 .andExpect(status().isConflict());
     }
-
-
 
     @Test
     @DisplayName("PUT - Atualizar aplicativo existente (200)")
@@ -127,7 +124,6 @@ class AplicativosControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     @DisplayName("DELETE - Remover aplicativo existente (204)")
     void deleteSuccess() throws Exception {
@@ -146,7 +142,6 @@ class AplicativosControllerTest {
         mockMvc.perform(delete("/api/aplicativos/99"))
                 .andExpect(status().isNotFound());
     }
-
 
     @Test
     @DisplayName("GET /{id} - Buscar aplicativo por id existente (200)")
@@ -167,8 +162,6 @@ class AplicativosControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-
-
     @Test
     @DisplayName("GET - Listar todos os aplicativos com registros (200)")
     void listAllSuccess() throws Exception {
@@ -187,7 +180,6 @@ class AplicativosControllerTest {
         mockMvc.perform(get("/api/aplicativos"))
                 .andExpect(status().isOk());
     }
-
 
     @Test
     @DisplayName("GET /ativos - Listar aplicativos ativos com registros (200)")

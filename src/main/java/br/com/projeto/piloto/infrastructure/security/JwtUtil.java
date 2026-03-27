@@ -1,3 +1,4 @@
+
 package br.com.projeto.piloto.infrastructure.security;
 
 import java.time.LocalDateTime;
@@ -30,16 +31,21 @@ public class JwtUtil {
     public String generateToken(String username, Set<String> authorities) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
-                .subject(username)
+                .setSubject(username)
                 .claim("authorities", authorities.stream().toList())
-                .issuedAt(new Date(now))
-                .expiration(new Date(now + authProperties.getJwt().getExpirationMs()))
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + authProperties.getJwt().getExpirationMs()))
                 .signWith(key)
                 .compact();
     }
 
     public List<String> getAuthorities(String token) {
-        Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
         Object auths = claims.get("authorities");
         if (auths instanceof List<?> list) {
             return list.stream().map(Object::toString).toList();
@@ -50,16 +56,19 @@ public class JwtUtil {
     public String generateRefreshToken(String username) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
-                .subject(username)
-                .issuedAt(new Date(now))
-                .expiration(new Date(now + authProperties.getJwt().getRefreshExpirationMs()))
+                .setSubject(username)
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + authProperties.getJwt().getRefreshExpirationMs()))
                 .signWith(key)
                 .compact();
     }
 
     public boolean validate(String token) {
         try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException ex) {
             return false;
@@ -67,11 +76,21 @@ public class JwtUtil {
     }
 
     public String getUsername(String token) {
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public List<String> getRoles(String token) {
-        Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
         Object roles = claims.get("roles");
         if (roles instanceof List<?> list) {
             return list.stream().map(Object::toString).toList();
@@ -80,20 +99,20 @@ public class JwtUtil {
     }
 
     public String extractUsernameFromRefreshToken(String token) {
-        return Jwts.parser()
-                   .verifyWith(key)
+        return Jwts.parserBuilder()
+                   .setSigningKey(key)
                    .build()
-                   .parseSignedClaims(token)
-                   .getPayload()
+                   .parseClaimsJws(token)
+                   .getBody()
                    .getSubject();
     }
 
     public LocalDateTime extractExpiration(String token) {
-        Date expiration = Jwts.parser()
-                .verifyWith(key)
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(key)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload()
+                .parseClaimsJws(token)
+                .getBody()
                 .getExpiration();
 
         return expiration.toInstant()

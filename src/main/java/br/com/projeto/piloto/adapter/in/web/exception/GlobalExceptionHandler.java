@@ -75,8 +75,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @SuppressWarnings("deprecation")
-	@ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
 

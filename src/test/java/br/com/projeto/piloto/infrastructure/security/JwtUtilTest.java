@@ -1,3 +1,4 @@
+
 package br.com.projeto.piloto.infrastructure.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -103,10 +104,10 @@ class JwtUtilTest {
         Date exp = new Date(now.getTime() + authProperties.getJwt().getExpirationMs());
 
         String token = Jwts.builder()
-                .subject("userAuthsList")
+                .setSubject("userAuthsList")
                 .claim("authorities", List.of("A", "B"))
-                .issuedAt(now)
-                .expiration(exp)
+                .setIssuedAt(now)
+                .setExpiration(exp)
                 .signWith(key)
                 .compact();
 
@@ -124,10 +125,10 @@ class JwtUtilTest {
         Date exp = new Date(now.getTime() + authProperties.getJwt().getExpirationMs());
 
         String token = Jwts.builder()
-                .subject("userAuths")
+                .setSubject("userAuths")
                 .claim("authorities", "not-a-list")
-                .issuedAt(now)
-                .expiration(exp)
+                .setIssuedAt(now)
+                .setExpiration(exp)
                 .signWith(key)
                 .compact();
 
@@ -154,10 +155,10 @@ class JwtUtilTest {
         Date exp = new Date(now.getTime() + authProperties.getJwt().getExpirationMs());
 
         String token = Jwts.builder()
-                .subject("userRoles")
+                .setSubject("userRoles")
                 .claim("roles", List.of("ROLE_A", "ROLE_B"))
-                .issuedAt(now)
-                .expiration(exp)
+                .setIssuedAt(now)
+                .setExpiration(exp)
                 .signWith(key)
                 .compact();
 
@@ -185,10 +186,10 @@ class JwtUtilTest {
         Date exp = new Date(now.getTime() + authProperties.getJwt().getExpirationMs());
 
         String token = Jwts.builder()
-                .subject("userRolesString")
+                .setSubject("userRolesString")
                 .claim("roles", "not-a-list")
-                .issuedAt(now)
-                .expiration(exp)
+                .setIssuedAt(now)
+                .setExpiration(exp)
                 .signWith(key)
                 .compact();
 
