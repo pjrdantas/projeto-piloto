@@ -32,7 +32,7 @@ jobs:
             -Dsonar.ci=true   # força modo CI
 
   docker:
-    name: Build + Push ECR
+    name: Build Docker Image
     needs: build-test-sonar
     runs-on: ubuntu-latest
 
@@ -40,28 +40,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurar AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Login no ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build imagem
+      - name: Build Docker Image
         run: docker build -t projeto-piloto .
-
-      - name: Tag imagem
-        run: |
-          docker tag projeto-piloto:latest \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/projeto-piloto:latest
-
-      - name: Push ECR
-        run: |
-          docker push \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/projeto-piloto:latest
 
   deploy:
     name: Deploy Kubernetes
