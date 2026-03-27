@@ -15,10 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java 21
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
           cache: maven
 
@@ -29,7 +29,7 @@ jobs:
             -Dsonar.organization=pjrdantas \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.ci=true   # força modo CI, necessário se Automatic Analysis estiver desabilitado
+            -Dsonar.ci=true   # força modo CI
 
   docker:
     name: Build + Push ECR
