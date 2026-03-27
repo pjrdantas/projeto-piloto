@@ -1,5 +1,6 @@
 name: CI/CD Pipeline
 
+# Dispara o pipeline no push para a branch develop ou manualmente
 on:
   push:
     branches: ["develop"]
@@ -7,14 +8,19 @@ on:
 
 jobs:
 
+  ######################################################
+  # FASE 1: Build + Test + SonarCloud
+  ######################################################
   build-test-sonar:
     name: Build + Test + SonarCloud
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout do código
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2️⃣ Configurar Java 17
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -22,9 +28,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # 3️⃣ Build e Testes
       - name: Build + Test
         run: mvn -B clean verify
 
+      # 4️⃣ SonarCloud Scan (Atualizado, sem -Dsonar.ci)
       - name: SonarCloud Scan
         run: |
           echo ">>> Rodando SonarCloud Scan"
@@ -33,10 +41,10 @@ jobs:
             -Dsonar.organization=pjrdantas \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.analysis.mode=preview \
             -Dsonar.branch.name=${{ github.ref_name }} \
             -Dsonar.skip=false
 
+      # 5️⃣ Check Quality Gate do SonarCloud
       - name: Check SonarCloud Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
         with:
@@ -44,6 +52,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+  ######################################################
+  # FASE 2: Build Docker Local (não faz push ainda)
+  ######################################################
   docker-build-local:
     name: Build Docker Image Locally
     needs: build-test-sonar
@@ -58,6 +69,9 @@ jobs:
           docker build -t projeto-piloto:latest .
           docker images | grep projeto-piloto
 
+  ######################################################
+  # FASE 3: Deploy Kubernetes (Manual)
+  ######################################################
   deploy:
     name: Deploy Kubernetes (Manual)
     needs: build-test-sonar
