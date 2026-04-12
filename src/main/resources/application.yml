@@ -3,7 +3,7 @@
 # ======================================================
 auth:
   jwt:
-    secret: ${JWT_SECRET:defaultSecret}
+    secret: ${JWT_SECRET:q3X5k9ZL8mY2P0vQ7nT4sR6uW1xA9bC3dE5fG7hJkL0=}
     expirationMs: 3600000
     refreshExpirationMs: 604800000
 
