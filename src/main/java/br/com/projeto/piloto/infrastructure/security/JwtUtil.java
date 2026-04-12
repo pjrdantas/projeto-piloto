@@ -1,8 +1,8 @@
-
 package br.com.projeto.piloto.infrastructure.security;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -25,11 +25,42 @@ public class JwtUtil {
 
     public JwtUtil(AuthProperties authProperties) {
         this.authProperties = authProperties;
-        this.key = Keys.hmacShaKeyFor(authProperties.getJwt().getSecret().getBytes());
+
+        String secret = authProperties.getJwt().getSecret();
+
+        // 🔥 GARANTE TAMANHO MÍNIMO (>= 32 bytes)
+        byte[] keyBytes = resolveKey(secret);
+
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    /**
+     * Resolve a chave garantindo tamanho mínimo e suporte a Base64
+     */
+    private byte[] resolveKey(String secret) {
+        byte[] keyBytes;
+
+        try {
+            // tenta Base64 primeiro (melhor prática)
+            keyBytes = Base64.getDecoder().decode(secret);
+        } catch (IllegalArgumentException e) {
+            // fallback: usa string pura
+            keyBytes = secret.getBytes();
+        }
+
+        // 🔥 valida tamanho mínimo (32 bytes = 256 bits)
+        if (keyBytes.length < 32) {
+            throw new IllegalArgumentException(
+                "JWT secret muito fraco. Deve ter no mínimo 32 bytes (256 bits)."
+            );
+        }
+
+        return keyBytes;
     }
 
     public String generateToken(String username, Set<String> authorities) {
         long now = System.currentTimeMillis();
+
         return Jwts.builder()
                 .setSubject(username)
                 .claim("authorities", authorities.stream().toList())
@@ -39,22 +70,9 @@ public class JwtUtil {
                 .compact();
     }
 
-    public List<String> getAuthorities(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        Object auths = claims.get("authorities");
-        if (auths instanceof List<?> list) {
-            return list.stream().map(Object::toString).toList();
-        }
-        return List.of();
-    }
-
     public String generateRefreshToken(String username) {
         long now = System.currentTimeMillis();
+
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date(now))
@@ -65,10 +83,7 @@ public class JwtUtil {
 
     public boolean validate(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+            parse(token);
             return true;
         } catch (JwtException ex) {
             return false;
@@ -76,22 +91,21 @@ public class JwtUtil {
     }
 
     public String getUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return parse(token).getSubject();
+    }
+
+    public List<String> getAuthorities(String token) {
+        Object auths = parse(token).get("authorities");
+
+        if (auths instanceof List<?> list) {
+            return list.stream().map(Object::toString).toList();
+        }
+        return List.of();
     }
 
     public List<String> getRoles(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Object roles = parse(token).get("roles");
 
-        Object roles = claims.get("roles");
         if (roles instanceof List<?> list) {
             return list.stream().map(Object::toString).toList();
         }
@@ -99,24 +113,25 @@ public class JwtUtil {
     }
 
     public String extractUsernameFromRefreshToken(String token) {
-        return Jwts.parserBuilder()
-                   .setSigningKey(key)
-                   .build()
-                   .parseClaimsJws(token)
-                   .getBody()
-                   .getSubject();
+        return parse(token).getSubject();
     }
 
     public LocalDateTime extractExpiration(String token) {
-        Date expiration = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+        Date expiration = parse(token).getExpiration();
 
         return expiration.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+    }
+
+    /**
+     * Centraliza parsing (evita repetição)
+     */
+    private Claims parse(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
