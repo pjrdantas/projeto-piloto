@@ -20,7 +20,7 @@ spec:
       - operator: "Exists"
       containers:
       - name: projeto-piloto
-        image: projeto-piloto:latest
+        image: projeto-piloto:local
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

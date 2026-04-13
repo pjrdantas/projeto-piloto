@@ -11,19 +11,19 @@ RUN mvn -B dependency:go-offline
 COPY src ./src
 RUN mvn -B clean package -DskipTests
 
+
 # =========================
 # STAGE 2 - RUNTIME
 # =========================
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+RUN useradd --system --create-home spring
+USER spring
 
 COPY --from=build /app/target/*.jar app.jar
 
-ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseContainerSupport"
 ENV SPRING_PROFILES_ACTIVE=docker
 
 EXPOSE 8080
