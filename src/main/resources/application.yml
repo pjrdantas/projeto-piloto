@@ -49,8 +49,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/projeto_piloto
-    username: postgres
-    password: postgres
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root123}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -70,7 +70,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/projeto_piloto}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root123}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -90,7 +90,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com:5432/postgres}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: ${SPRING_DATASOURCE_PASSWORD:root123}
     driver-class-name: org.postgresql.Driver
 
   jpa:

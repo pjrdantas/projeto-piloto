@@ -98,6 +98,26 @@ PostgreSQL Connection: Ajuste a URL, username e password.
 JWT Secret: Defina uma chave forte no campo auth.jwt.secret.
 
 
+> ⚠️ Se aparecer `FATAL: autenticação do tipo senha falhou para o usuário "postgres"` (SQLState `28P01`),
+> a aplicação está usando credenciais diferentes das configuradas no seu PostgreSQL local.
+> Defina as variáveis `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD` antes de subir o app.
+
+Exemplo (Linux/macOS):
+```bash
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=root123
+SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+```
+
+Exemplo (Windows PowerShell):
+```powershell
+$env:SPRING_DATASOURCE_USERNAME="postgres"
+$env:SPRING_DATASOURCE_PASSWORD="root123"
+$env:SPRING_PROFILES_ACTIVE="dev"
+mvn spring-boot:run
+```
+
+
 
 ** 2. Execução via Maven **
 
