@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import br.com.projeto.piloto.domain.exception.DomainException;
 import br.com.projeto.piloto.domain.exception.UserNotFoundException;
@@ -33,6 +34,19 @@ class GlobalExceptionHandlerTest {
 
     @Mock
     private HttpServletRequest request;
+
+
+    @SuppressWarnings("null")
+    @Test
+    @DisplayName("Deve tratar AuthorizationDeniedException com 403")
+    void handleAuthorizationDenied() {
+        when(request.getRequestURI()).thenReturn("/usuarios");
+        ResponseEntity<ErrorResponse> response = handler.handleAuthorizationDenied(
+                new AuthorizationDeniedException("Access Denied"), request);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Acesso negado", response.getBody().getError());
+    }
 
     @SuppressWarnings("null")
 	@Test
