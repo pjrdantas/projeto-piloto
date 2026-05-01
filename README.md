@@ -161,6 +161,7 @@ As principais propriedades do projeto (definidas no `application.yml`) incluem:
 
 - `auth.jwt.secret`: chave de assinatura do JWT.
 - `spring.datasource.url`, `username`, `password`: conexão com o banco.
+- `spring.datasource.url`: use o banco `projeto_piloto` (ex.: `jdbc:postgresql://localhost:5432/projeto_piloto`).
 - `flyway.baseline-on-migrate`: habilita baseline quando necessário.
 
 Recomenda-se manter os segredos fora do repositório em ambientes produtivos, usando:
