@@ -40,7 +40,7 @@ management:
 
 ---
 # ======================================================
-# DEV — ORACLE LOCAL
+# DEV — POSTGRESQL LOCAL
 # ======================================================
 spring:
   config:
@@ -48,19 +48,22 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
-    username: ROOT
-    password: root123
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:postgresql://localhost:5432/projeto_piloto
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root123}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.OracleDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
 
+  flyway:
+    validate-on-migrate: false
+
 ---
 # ======================================================
-# DOCKER — ORACLE HOST
+# DOCKER — POSTGRESQL HOST
 # ======================================================
 spring:
   config:
@@ -68,15 +71,18 @@ spring:
       on-profile: docker
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:oracle:thin:@host.docker.internal:1521/XEPDB1}
-    username: ${SPRING_DATASOURCE_USERNAME:ROOT}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/projeto_piloto}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:root123}
-    driver-class-name: oracle.jdbc.OracleDriver
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.OracleDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+
+  flyway:
+    validate-on-migrate: false
 
 ---
 # ======================================================
@@ -88,9 +94,9 @@ spring:
       on-profile: prod
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com:5432/postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://db-projeto-piloto.cg90g0iomqah.us-east-1.rds.amazonaws.com:5432/projeto_piloto}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: ${SPRING_DATASOURCE_PASSWORD:root123}
     driver-class-name: org.postgresql.Driver
 
   jpa:
