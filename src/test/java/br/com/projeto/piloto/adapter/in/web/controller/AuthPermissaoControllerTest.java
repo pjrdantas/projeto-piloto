@@ -40,7 +40,8 @@ class AuthPermissaoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private AuthPermissaoUseCase authPermissaoUseCase;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

@@ -54,13 +54,16 @@ class AuthControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private AuthInteractor authInteractor;
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private JwtUtil jwtUtil;
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private AuthSessaoService authSessaoService;
 
     private AuthUsuarioModel usuario;

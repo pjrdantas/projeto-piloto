@@ -50,7 +50,8 @@ class UsuarioControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private AuthUsuarioUseCasePort usuarioUseCase;
 
     private final ObjectMapper objectMapper = new ObjectMapper()

@@ -43,7 +43,8 @@ class AplicativosControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private AplicativosUseCase aplicativosUseCase;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
