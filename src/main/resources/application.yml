@@ -58,9 +58,6 @@ spring:
     hibernate:
       ddl-auto: update
 
-  flyway:
-    validate-on-migrate: false
-
 ---
 # ======================================================
 # DOCKER — POSTGRESQL HOST
@@ -80,9 +77,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-
-  flyway:
-    validate-on-migrate: false
 
 ---
 # ======================================================

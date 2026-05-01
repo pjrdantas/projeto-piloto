@@ -102,7 +102,7 @@ JWT Secret: Defina uma chave forte no campo auth.jwt.secret.
 > a aplicação está usando credenciais diferentes das configuradas no seu PostgreSQL local.
 > Defina as variáveis `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD` antes de subir o app.
 
-> ℹ️ Para ambientes legados com histórico Flyway já aplicado antes da migração Oracle→PostgreSQL, o profile local está com `spring.flyway.validate-on-migrate=false` para evitar falha por checksum antigo.
+> ℹ️ Para ambientes legados (`dev`/`docker`) com histórico Flyway antigo, a aplicação executa `flyway repair` automaticamente antes do `migrate`, corrigindo checksum divergente da migration V2.
 
 Exemplo (Linux/macOS):
 ```bash
