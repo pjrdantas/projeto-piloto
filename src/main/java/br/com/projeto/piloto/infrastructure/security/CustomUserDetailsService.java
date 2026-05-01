@@ -14,8 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.adapter.out.jpa.entity.AuthUsuario;
-import br.com.projeto.piloto.domain.port.outbound.AuthUsuarioRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 
 @Service("jwtUserDetailsService") 
 @Primary    

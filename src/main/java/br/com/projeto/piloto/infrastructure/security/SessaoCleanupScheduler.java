@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import br.com.projeto.piloto.adapter.out.jpa.repository.AuthSessaoRepository;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component

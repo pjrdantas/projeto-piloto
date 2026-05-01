@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.adapter.out.jpa.entity.AuthSessao;
-import br.com.projeto.piloto.adapter.out.jpa.repository.AuthSessaoRepository;
-import br.com.projeto.piloto.domain.model.AuthSessaoModel;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthSessao;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthSessaoModel;
 import br.com.projeto.piloto.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
