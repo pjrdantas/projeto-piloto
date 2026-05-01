@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -27,11 +28,11 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
 
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAuthorizationDenied(
-            AuthorizationDeniedException ex, HttpServletRequest request) {
+    @ExceptionHandler({ AuthorizationDeniedException.class, AccessDeniedException.class })
+    public ResponseEntity<ErrorResponse> handleAccessDenied(
+            Exception ex, HttpServletRequest request) {
 
-        log.warn("Acesso negado para recurso {}", request.getRequestURI());
+        log.warn("Acesso negado para recurso {}: {}", request.getRequestURI(), ex.getMessage());
 
         return buildErrorResponse(
                 HttpStatus.FORBIDDEN,
