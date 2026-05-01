@@ -18,7 +18,7 @@ Fornecer uma base sólida para sistemas que precisam de autenticação, autoriza
 
 - Autenticação JWT Stateless.
 - Gerenciamento de usuários, perfis e permissões.
-- Integração com Oracle (local) e PostgreSQL (cloud).
+- Integração com PostgreSQL em todos os ambientes.
 - Migrações versionadas com Flyway.
 - Documentação automática via Swagger/OpenAPI.
 
@@ -28,7 +28,7 @@ Fornecer uma base sólida para sistemas que precisam de autenticação, autoriza
 - **Java:** 21
 - **Spring Boot:** 4.x
 - **Autenticação:** JWT Stateless (JSON Web Token)
-- **Banco de Dados Local:** Oracle (Service Name: XEPDB1)
+- **Banco de Dados Local:** PostgreSQL
 - **Banco de Dados Nuvem:** PostgreSQL (AWS RDS)
 - **Migrações:** Flyway com suporte a baseline.
 - **Segurança:** Spring Security com configuração de filtros customizados.
@@ -93,9 +93,29 @@ C:.
 
 Certifique-se de configurar o arquivo src/main/resources/application.yml com as credenciais corretas:
 
-Oracle Connection: Ajuste a URL, username e password.
+PostgreSQL Connection: Ajuste a URL, username e password.
 
 JWT Secret: Defina uma chave forte no campo auth.jwt.secret.
+
+
+> ⚠️ Se aparecer `FATAL: autenticação do tipo senha falhou para o usuário "postgres"` (SQLState `28P01`),
+> a aplicação está usando credenciais diferentes das configuradas no seu PostgreSQL local.
+> Defina as variáveis `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD` antes de subir o app.
+
+Exemplo (Linux/macOS):
+```bash
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=root123
+SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+```
+
+Exemplo (Windows PowerShell):
+```powershell
+$env:SPRING_DATASOURCE_USERNAME="postgres"
+$env:SPRING_DATASOURCE_PASSWORD="root123"
+$env:SPRING_PROFILES_ACTIVE="dev"
+mvn spring-boot:run
+```
 
 
 
@@ -123,8 +143,8 @@ Utilize o script automatizado que gerencia o build da imagem e a execução do c
 
 O projeto utiliza o `application.yml` para gerenciar diferentes ambientes:
 
-- **dev**: execução local com Oracle.
-- **docker**: execução em container.
+- **dev**: execução local com PostgreSQL.
+- **docker**: execução em container com PostgreSQL.
 - **prod**: execução em produção (PostgreSQL AWS RDS).
 
 Para definir um perfil em execução local:
