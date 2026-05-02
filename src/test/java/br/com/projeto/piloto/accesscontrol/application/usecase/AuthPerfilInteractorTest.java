@@ -19,8 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;

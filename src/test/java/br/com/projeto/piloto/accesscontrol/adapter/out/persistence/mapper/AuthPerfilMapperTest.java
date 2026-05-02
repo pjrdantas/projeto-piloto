@@ -20,6 +20,7 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
 
 class AuthPerfilMapperTest {
 

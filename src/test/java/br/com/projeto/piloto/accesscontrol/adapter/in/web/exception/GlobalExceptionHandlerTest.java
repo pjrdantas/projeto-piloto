@@ -25,6 +25,8 @@ import org.springframework.security.access.AccessDeniedException;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.DomainException;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
+import br.com.projeto.piloto.shared.exception.ErrorResponse;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import br.com.projeto.piloto.shared.exception.GlobalExceptionHandler;

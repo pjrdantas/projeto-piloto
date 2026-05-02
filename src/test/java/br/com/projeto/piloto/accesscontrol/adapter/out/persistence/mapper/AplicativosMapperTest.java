@@ -8,6 +8,7 @@ import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.Aplica
 import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosResponseDTO;
 import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
 import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.mapper.AplicativosMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
