@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling; // 1. Importe
 @SpringBootApplication
 @EnableScheduling 
 @ComponentScan("br.com.projeto.piloto")
-@EnableJpaRepositories(basePackages = "br.com.projeto.piloto.adapter.out.jpa.repository")
+@EnableJpaRepositories(basePackages = "br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository")
 public class ProjetoPilotoApplication {
 
 	public static void main(String[] args) {

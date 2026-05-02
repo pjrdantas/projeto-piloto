@@ -4,7 +4,7 @@ package br.com.projeto.piloto.api.dto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.adapter.in.web.dto.AplicativosResponseDTO;
+import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosResponseDTO;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

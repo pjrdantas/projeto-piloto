@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.adapter.in.web.dto.AplicativosRequestDTO;
+import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosRequestDTO;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
