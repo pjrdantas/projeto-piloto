@@ -37,11 +37,10 @@ import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;  
-
-@ExtendWith(MockitoExtension.class)
 import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.SecurityConfig;
 
+@ExtendWith(MockitoExtension.class)
 class SecurityConfigTest {
 
     @Mock private JwtUtil jwtUtil;

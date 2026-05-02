@@ -25,10 +25,9 @@ import org.mockito.quality.Strictness;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
-
-@ExtendWith(MockitoExtension.class)
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthPerfilInteractor;
 
+@ExtendWith(MockitoExtension.class)
 class AuthPerfilInteractorTest {
 
     @Mock private AuthPerfilRepositoryPort repository;
