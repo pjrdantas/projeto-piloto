@@ -19,10 +19,10 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {
