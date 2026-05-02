@@ -26,6 +26,8 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthSessaoModel;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;
+
 @ExtendWith(MockitoExtension.class)
 class AuthSessaoServiceTest {
 

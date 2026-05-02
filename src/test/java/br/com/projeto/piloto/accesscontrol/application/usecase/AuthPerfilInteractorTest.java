@@ -27,7 +27,8 @@ import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.Apli
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthPerfilInteractor;
+
 class AuthPerfilInteractorTest {
 
     @Mock private AuthPerfilRepositoryPort repository;

@@ -25,6 +25,8 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthInteractor;
+
 @ExtendWith(MockitoExtension.class)
 class AuthInteractorTest {
 

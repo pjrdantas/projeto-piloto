@@ -27,6 +27,8 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.UserNo
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 
+import br.com.projeto.piloto.shared.exception.GlobalExceptionHandler;
+
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {
 

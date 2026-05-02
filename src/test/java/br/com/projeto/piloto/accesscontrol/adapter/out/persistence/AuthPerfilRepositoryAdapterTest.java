@@ -18,6 +18,8 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPerfilRepository;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.AuthPerfilRepositoryAdapter;
+
 @ExtendWith(MockitoExtension.class)
 class AuthPerfilRepositoryAdapterTest {
 

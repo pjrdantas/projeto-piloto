@@ -24,6 +24,8 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.CustomUserDetailsService;
+
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {
 

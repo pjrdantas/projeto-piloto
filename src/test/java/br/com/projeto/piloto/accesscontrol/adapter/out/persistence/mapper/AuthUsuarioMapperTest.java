@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.HashSet;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
 
 class AuthUsuarioMapperTest {
 

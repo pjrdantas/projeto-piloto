@@ -24,6 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthUsuarioRepository;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.AuthUsuarioRepositoryAdapter;
+
 @ExtendWith(MockitoExtension.class)
 class AuthUsuarioRepositoryAdapterTest {
 

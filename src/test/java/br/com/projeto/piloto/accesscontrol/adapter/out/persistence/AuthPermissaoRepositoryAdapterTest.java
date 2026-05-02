@@ -27,6 +27,8 @@ import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.AuthPermissaoRepositoryAdapter;
+
 @ExtendWith(MockitoExtension.class)
 class AuthPermissaoRepositoryAdapterTest {
 

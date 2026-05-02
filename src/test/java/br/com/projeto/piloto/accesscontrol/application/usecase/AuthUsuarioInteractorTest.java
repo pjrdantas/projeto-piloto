@@ -33,10 +33,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.UserNotFoundException;
+import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthUsuarioInteractor;
 
 @ExtendWith(MockitoExtension.class)
 class AuthUsuarioInteractorTest {

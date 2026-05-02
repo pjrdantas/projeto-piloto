@@ -25,6 +25,8 @@ import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.e
 import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.repository.SpringDataAplicativosRepository;
 import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
 
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.AplicativosRepositoryAdapter;
+
 @ExtendWith(MockitoExtension.class)
 class AplicativosRepositoryAdapterTest {
 
