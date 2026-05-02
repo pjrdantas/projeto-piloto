@@ -65,9 +65,6 @@ class AuthPerfilInteractorTest {
     @Test
     @DisplayName("Sucesso ao deletar perfil")
     void deleteSucesso() {
- 
-        when(repository.findById(1L)).thenReturn(Optional.of(AuthPerfilModel.builder().id(1L).build()));
-        
         assertDoesNotThrow(() -> service.delete(1L));
         verify(repository).delete(1L);
     }
