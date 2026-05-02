@@ -36,7 +36,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 
-import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService;  
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;  
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

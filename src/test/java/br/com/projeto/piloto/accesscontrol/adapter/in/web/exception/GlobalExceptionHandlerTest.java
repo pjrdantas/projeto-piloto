@@ -22,8 +22,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.access.AccessDeniedException;
 
-import br.com.projeto.piloto.accesscontrol.domain.exception.DomainException;
-import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.DomainException;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 

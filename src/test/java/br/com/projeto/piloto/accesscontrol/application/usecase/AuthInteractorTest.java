@@ -19,11 +19,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.exception.InvalidLoginException;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 class AuthInteractorTest {

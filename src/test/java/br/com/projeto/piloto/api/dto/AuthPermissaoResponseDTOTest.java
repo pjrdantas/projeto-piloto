@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
 
 class AuthPermissaoResponseDTOTest {
 

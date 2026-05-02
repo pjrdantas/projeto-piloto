@@ -23,9 +23,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
 
 @ExtendWith(MockitoExtension.class)
 class AuthPermissaoRepositoryAdapterTest {
