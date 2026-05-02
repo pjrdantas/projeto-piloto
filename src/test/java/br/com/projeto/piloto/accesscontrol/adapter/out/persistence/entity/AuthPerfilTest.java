@@ -12,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+
 class AuthPerfilTest {
 
     @Test

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,10 +37,11 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 
-import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService;  
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;  
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.SecurityConfig;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class SecurityConfigTest {
 
     @Mock private JwtUtil jwtUtil;
@@ -132,7 +134,9 @@ class SecurityConfigTest {
 
         when(http.addFilterBefore(any(), any())).thenReturn(http);
 
-        SecurityFilterChain result = securityConfig.filterChain(http);
+        Method method = SecurityConfig.class.getDeclaredMethod("filterChain", HttpSecurity.class);
+        method.setAccessible(true);
+        SecurityFilterChain result = (SecurityFilterChain) method.invoke(securityConfig, http);
 
         assertNotNull(result);
         verify(http).build();
