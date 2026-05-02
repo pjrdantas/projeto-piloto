@@ -16,20 +16,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.security.access.AccessDeniedException;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.DomainException;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.UserNotFoundException;
-import io.jsonwebtoken.JwtException;
+import br.com.projeto.piloto.accesscontrol.domain.exception.DomainException;
+import br.com.projeto.piloto.accesscontrol.domain.exception.InvalidLoginException;
+import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
-import jakarta.servlet.http.HttpServletRequest;
-
 import br.com.projeto.piloto.shared.exception.GlobalExceptionHandler;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {

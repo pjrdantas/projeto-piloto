@@ -20,10 +20,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthPerfilInteractor;
+import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.aplicativos.application.port.out.AplicativosRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 class AuthPerfilInteractorTest {

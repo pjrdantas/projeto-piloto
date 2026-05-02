@@ -17,11 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-
-import io.jsonwebtoken.Jwts;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
 import br.com.projeto.piloto.shared.config.AuthProperties;
+import io.jsonwebtoken.Jwts;
 
 class JwtUtilTest {
 

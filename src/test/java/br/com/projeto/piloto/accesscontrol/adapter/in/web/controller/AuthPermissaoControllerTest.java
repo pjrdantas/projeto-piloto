@@ -28,10 +28,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in.AuthPermissaoUseCase;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.controller.AuthPermissaoController;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 
 @WebMvcTest(AuthPermissaoController.class)
 @ContextConfiguration(classes = AuthPermissaoController.class)

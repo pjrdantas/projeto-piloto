@@ -1,11 +1,6 @@
 package br.com.projeto.piloto.api.dto;
 
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthUsuarioRequestDTO;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -13,6 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthUsuarioRequestDTO;
 
 class AuthUsuarioRequestDTOTest {
 

@@ -10,8 +10,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,12 +32,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
-
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;  
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.SecurityConfig;
 
 @ExtendWith(MockitoExtension.class)
 class SecurityConfigTest {

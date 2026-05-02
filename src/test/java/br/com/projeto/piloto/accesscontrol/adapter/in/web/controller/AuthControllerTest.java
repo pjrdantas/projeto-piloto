@@ -31,19 +31,18 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.LoginRequestDTO;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.RefreshTokenRequestDTO;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthInteractor;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthSessaoModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.LoginRequestDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.RefreshTokenRequestDTO;
+import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService;
+import br.com.projeto.piloto.accesscontrol.application.usecase.AuthInteractor;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthSessaoModel;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
+import br.com.projeto.piloto.accesscontrol.infrastructure.security.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.controller.AuthController;
 
 @WebMvcTest(AuthController.class)
 @ContextConfiguration(classes = AuthController.class)

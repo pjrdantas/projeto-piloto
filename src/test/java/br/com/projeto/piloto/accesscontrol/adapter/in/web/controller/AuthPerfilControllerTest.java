@@ -22,15 +22,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPerfilRequestDTO;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPerfilResponseDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilRequestDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilResponseDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in.AuthPerfilUseCase;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in.AuthPermissaoUseCase;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.controller.AuthPerfilController;
 import jakarta.servlet.http.HttpServletRequest;
 
 class AuthPerfilControllerTest {

@@ -24,9 +24,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtAuthenticationFilter;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
+import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

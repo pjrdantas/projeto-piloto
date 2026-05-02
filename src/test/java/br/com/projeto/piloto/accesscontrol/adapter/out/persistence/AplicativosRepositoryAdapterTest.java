@@ -21,11 +21,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
-import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.repository.SpringDataAplicativosRepository;
-import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
-
-import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.AplicativosRepositoryAdapter;
+import br.com.projeto.piloto.aplicativos.adapter.out.persistence.AplicativosRepositoryAdapter;
+import br.com.projeto.piloto.aplicativos.adapter.out.persistence.entity.Aplicativo;
+import br.com.projeto.piloto.aplicativos.adapter.out.persistence.repository.SpringDataAplicativosRepository;
+import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
 
 @ExtendWith(MockitoExtension.class)
 class AplicativosRepositoryAdapterTest {

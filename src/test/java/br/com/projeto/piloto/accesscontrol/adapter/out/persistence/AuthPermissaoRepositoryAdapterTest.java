@@ -11,10 +11,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-
-import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +22,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
-
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.AuthPermissaoRepositoryAdapter;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.gateway.AuthPermissaoRepositoryAdapter;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 
 @ExtendWith(MockitoExtension.class)
 class AuthPermissaoRepositoryAdapterTest {

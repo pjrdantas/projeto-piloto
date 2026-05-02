@@ -30,10 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.controller.AplicativosController;
-import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosRequestDTO;
-import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.in.AplicativosUseCase;
-import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.adapter.in.web.controller.AplicativosController;
+import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosRequestDTO;
+import br.com.projeto.piloto.aplicativos.application.port.in.AplicativosUseCase;
+import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
 
 @WebMvcTest(AplicativosController.class)
 @ContextConfiguration(classes = AplicativosController.class)

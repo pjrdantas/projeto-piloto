@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +20,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
-import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;
-
-import br.com.projeto.piloto.aplicativos.accesscontrol.application.usecase.AplicativosInteractor;
+import br.com.projeto.piloto.aplicativos.application.port.out.AplicativosRepositoryPort;
+import br.com.projeto.piloto.aplicativos.application.usecase.AplicativosInteractor;
+import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
 
 @ExtendWith(MockitoExtension.class)
 class AplicativosInteractorTest {

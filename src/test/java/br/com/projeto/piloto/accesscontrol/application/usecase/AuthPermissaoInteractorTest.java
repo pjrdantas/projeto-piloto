@@ -21,10 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPermissaoRepositoryPort;
-
-import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthPermissaoInteractor;
+import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPermissaoRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 
 @ExtendWith(MockitoExtension.class)
 class AuthPermissaoInteractorTest {

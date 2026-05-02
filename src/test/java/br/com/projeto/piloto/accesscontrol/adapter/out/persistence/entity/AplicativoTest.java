@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
+import br.com.projeto.piloto.aplicativos.adapter.out.persistence.entity.Aplicativo;
 
 class AplicativoTest {
 

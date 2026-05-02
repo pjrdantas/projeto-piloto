@@ -15,8 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
-import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.SessaoCleanupScheduler;
+import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
 
 @ExtendWith(MockitoExtension.class)
 class SessaoCleanupSchedulerTest {
