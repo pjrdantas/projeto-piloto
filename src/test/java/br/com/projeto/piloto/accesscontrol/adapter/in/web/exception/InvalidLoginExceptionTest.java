@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
 
 class InvalidLoginExceptionTest {
 

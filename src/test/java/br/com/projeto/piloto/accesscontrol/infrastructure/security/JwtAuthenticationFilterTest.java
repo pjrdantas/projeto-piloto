@@ -56,7 +56,7 @@ class JwtAuthenticationFilterTest {
     @DisplayName("Deve permitir acesso sem token (Header ausente)")
     void devePermitirSemToken() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn(null);
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
         verify(filterChain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
@@ -75,7 +75,7 @@ class JwtAuthenticationFilterTest {
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
         when(authSessaoService.validarSessao(token)).thenReturn(true);
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertNotNull(SecurityContextHolder.getContext().getAuthentication());
         assertEquals(username, SecurityContextHolder.getContext().getAuthentication().getName());
@@ -87,7 +87,7 @@ class JwtAuthenticationFilterTest {
     @DisplayName("Deve ignorar token mal formatado (Sem Bearer)")
     void deveIgnorarTokenMalFormatado() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn("TokenInvalido 123");
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
         verify(filterChain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
@@ -101,7 +101,7 @@ class JwtAuthenticationFilterTest {
         when(jwtUtil.validate(token)).thenReturn(true);
         when(authSessaoService.validarSessao(token)).thenReturn(false);
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
@@ -116,7 +116,7 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtUtil.validate(token)).thenReturn(false);
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
@@ -132,7 +132,7 @@ class JwtAuthenticationFilterTest {
         when(authSessaoService.validarSessao(token)).thenReturn(true);
         when(jwtUtil.getUsername(token)).thenReturn(null);
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
@@ -146,7 +146,7 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtUtil.validate(token)).thenThrow(new RuntimeException("boom"));
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
@@ -164,7 +164,7 @@ class JwtAuthenticationFilterTest {
         when(jwtUtil.getUsername(token)).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenThrow(new RuntimeException("user fail"));
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
@@ -185,7 +185,7 @@ class JwtAuthenticationFilterTest {
         when(jwtUtil.getUsername(token)).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(new User(username, "", Collections.emptyList()));
 
-        filter.doFilterInternal(request, response, filterChain);
+        filter.doFilter(request, response, filterChain);
 
         assertEquals(existing, SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
