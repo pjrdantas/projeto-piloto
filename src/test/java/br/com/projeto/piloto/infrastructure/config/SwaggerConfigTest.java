@@ -22,7 +22,7 @@ class SwaggerConfigTest {
 
     @Test
     @DisplayName("Deve configurar o OpenAPI com suporte a Bearer Token e informações da API")
-    void deveConfigurarOpenAPI() {
+    void deveConfigurarOpenAPI() throws Exception {
         Method method = SwaggerConfig.class.getDeclaredMethod("customOpenAPI");
         method.setAccessible(true);
         OpenAPI openAPI = (OpenAPI) method.invoke(swaggerConfig);
