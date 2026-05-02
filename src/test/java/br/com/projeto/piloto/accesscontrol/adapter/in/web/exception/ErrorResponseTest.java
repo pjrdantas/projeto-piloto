@@ -13,6 +13,8 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import br.com.projeto.piloto.shared.exception.ErrorResponse;
+
 class ErrorResponseTest {
 
     @Test

@@ -19,15 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.aplicativos.application.port.out.AplicativosRepositoryPort;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.AuthPerfilInteractor;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class AuthPerfilInteractorTest {
 
     @Mock private AuthPerfilRepositoryPort repository;
@@ -67,9 +65,6 @@ class AuthPerfilInteractorTest {
     @Test
     @DisplayName("Sucesso ao deletar perfil")
     void deleteSucesso() {
- 
-        when(repository.findById(1L)).thenReturn(Optional.of(AuthPerfilModel.builder().id(1L).build()));
-        
         assertDoesNotThrow(() -> service.delete(1L));
         verify(repository).delete(1L);
     }

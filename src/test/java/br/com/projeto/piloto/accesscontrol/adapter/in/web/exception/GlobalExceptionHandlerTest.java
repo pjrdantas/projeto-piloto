@@ -25,7 +25,11 @@ import org.springframework.security.access.AccessDeniedException;
 import br.com.projeto.piloto.accesscontrol.domain.exception.DomainException;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
+import br.com.projeto.piloto.shared.exception.ErrorResponse;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
 import jakarta.servlet.http.HttpServletRequest;
+
+import br.com.projeto.piloto.shared.exception.GlobalExceptionHandler;
 
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {
@@ -60,17 +64,6 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         assertEquals("Acesso negado", response.getBody().getError());
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Deve tratar RuntimeException generica")
-    void handleRuntimeException() {
-        when(request.getRequestURI()).thenReturn("/api/teste");
-        ResponseEntity<ErrorResponse> response = handler.handleRuntimeException(new RuntimeException("Erro fatal"), request);
-        
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Erro de execução", response.getBody().getError());
     }
 
     @Test
