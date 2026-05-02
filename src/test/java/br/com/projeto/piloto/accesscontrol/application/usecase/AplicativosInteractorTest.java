@@ -19,8 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
-import br.com.projeto.piloto.aplicativos.application.port.out.AplicativosRepositoryPort;
+import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;
+
+import br.com.projeto.piloto.aplicativos.accesscontrol.application.usecase.AplicativosInteractor;
 
 @ExtendWith(MockitoExtension.class)
 class AplicativosInteractorTest {

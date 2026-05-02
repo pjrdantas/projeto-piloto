@@ -14,9 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.SpringAuthPerfilRepository;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPerfilRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
+
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.AuthPerfilRepositoryAdapter;
 
 @ExtendWith(MockitoExtension.class)
 class AuthPerfilRepositoryAdapterTest {

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.RegisterRequestDTO;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.RegisterRequestDTO;
 
 class RegisterRequestDTOTest {
 

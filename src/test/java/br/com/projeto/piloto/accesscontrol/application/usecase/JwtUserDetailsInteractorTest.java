@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.usecase.JwtUserDetailsInteractor;
 
 class JwtUserDetailsInteractorTest {
 

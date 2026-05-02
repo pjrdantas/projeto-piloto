@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Test;
 
 
 import io.jsonwebtoken.Jwts;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
+import br.com.projeto.piloto.shared.config.AuthProperties;
 
 class JwtUtilTest {
 
