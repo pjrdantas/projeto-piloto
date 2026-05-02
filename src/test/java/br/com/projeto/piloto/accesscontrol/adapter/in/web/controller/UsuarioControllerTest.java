@@ -35,11 +35,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthUsuarioRequestDTO;
-import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthUsuarioRequestDTO;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.exception.UserNotFoundException;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.controller.UsuarioController;
 import jakarta.servlet.ServletException;
 
 @WebMvcTest(UsuarioController.class)
