@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.aplicativos.adapter.out.persistence.entity.Aplicativo;
-import br.com.projeto.piloto.aplicativos.adapter.out.persistence.repository.SpringDataAplicativosRepository;
-import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
-import br.com.projeto.piloto.aplicativos.application.port.out.AplicativosRepositoryPort;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.repository.SpringDataAplicativosRepository;
+import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.out.AplicativosRepositoryPort;
+import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
 import lombok.RequiredArgsConstructor;
 
 @Component

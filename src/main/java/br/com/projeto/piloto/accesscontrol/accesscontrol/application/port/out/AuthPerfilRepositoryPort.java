@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.lang.NonNull;
 
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 
 public interface AuthPerfilRepositoryPort {
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.projeto.piloto.aplicativos.adapter.out.persistence.entity.Aplicativo;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
 
 @Repository
 public interface SpringDataAplicativosRepository extends JpaRepository<Aplicativo, Long> {

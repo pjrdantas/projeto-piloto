@@ -1,20 +1,20 @@
 package br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.Objects;
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPermissaoMapper; // Import necessário
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.SpringAuthPerfilRepository;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPerfil;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthPermissaoMapper;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPerfilRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 import lombok.RequiredArgsConstructor;
 
 @Component

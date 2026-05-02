@@ -8,12 +8,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
 @Service

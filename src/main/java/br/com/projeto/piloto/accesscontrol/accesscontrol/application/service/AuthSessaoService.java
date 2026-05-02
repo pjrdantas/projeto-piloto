@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthSessao;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthSessaoModel;
-import br.com.projeto.piloto.accesscontrol.infrastructure.security.JwtUtil;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthSessao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthSessaoModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service

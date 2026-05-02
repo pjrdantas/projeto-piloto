@@ -1,9 +1,9 @@
 package br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.mapper;
 
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
 
 public class AuthPermissaoMapper {
 

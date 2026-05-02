@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.SpringAuthUsuarioRepository;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthUsuarioRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 
 @Component
 public class AuthUsuarioRepositoryAdapter implements AuthUsuarioRepositoryPort {

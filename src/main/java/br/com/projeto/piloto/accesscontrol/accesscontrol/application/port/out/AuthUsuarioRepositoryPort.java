@@ -3,7 +3,7 @@ package br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out;
 import java.util.List;
 import java.util.Optional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 
 public interface AuthUsuarioRepositoryPort {
 

@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPermissaoRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.SpringAuthPermissaoRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPermissaoRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPermissaoModel;
 import lombok.RequiredArgsConstructor;
 
 @Component

@@ -1,6 +1,6 @@
 package br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in;
 
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
 
 public interface AuthUseCasePort {
 

@@ -2,8 +2,8 @@ package br.com.projeto.piloto.accesscontrol.infrastructure.security;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.repository.AuthSessaoRepository;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.SessaoCleanupScheduler;
 
 @ExtendWith(MockitoExtension.class)
 class SessaoCleanupSchedulerTest {

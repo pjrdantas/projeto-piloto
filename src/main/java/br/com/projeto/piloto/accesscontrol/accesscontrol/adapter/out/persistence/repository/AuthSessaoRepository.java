@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthSessao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthSessao;
 
 @Repository
 public interface AuthSessaoRepository extends JpaRepository<AuthSessao, Long> {

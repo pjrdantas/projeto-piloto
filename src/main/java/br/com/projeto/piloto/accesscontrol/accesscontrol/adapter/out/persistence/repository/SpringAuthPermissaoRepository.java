@@ -3,7 +3,7 @@ package br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistenc
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthPermissao;
 
 @Repository
 public interface SpringAuthPermissaoRepository extends JpaRepository<AuthPermissao, Long> {

@@ -18,18 +18,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtAuthenticationFilter;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService; // ADICIONE ESTE IMPORT
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

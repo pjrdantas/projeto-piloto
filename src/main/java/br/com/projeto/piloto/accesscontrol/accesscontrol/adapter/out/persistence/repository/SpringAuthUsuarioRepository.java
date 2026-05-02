@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 
 public interface SpringAuthUsuarioRepository extends JpaRepository<AuthUsuario, Long> {
 

@@ -4,8 +4,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthUsuarioModel;
 import lombok.RequiredArgsConstructor;
 
 @Component

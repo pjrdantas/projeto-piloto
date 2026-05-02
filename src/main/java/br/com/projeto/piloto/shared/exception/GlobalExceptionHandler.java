@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
 import br.com.projeto.piloto.accesscontrol.domain.exception.DomainException;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 

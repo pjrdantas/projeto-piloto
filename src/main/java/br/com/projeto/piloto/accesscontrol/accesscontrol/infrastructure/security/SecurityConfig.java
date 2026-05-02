@@ -1,5 +1,7 @@
 package br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import br.com.projeto.piloto.accesscontrol.application.service.AuthSessaoService;
-
-import java.util.List;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.service.AuthSessaoService;
 
 @Configuration
 @EnableMethodSecurity

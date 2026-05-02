@@ -20,14 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosRequestDTO;
-import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosResponseDTO;
-import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosRequestDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosResponseDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.mapper.AplicativosMapper;
+import br.com.projeto.piloto.aplicativos.accesscontrol.application.port.in.AplicativosUseCase;
+import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
-import br.com.projeto.piloto.aplicativos.adapter.out.persistence.mapper.AplicativosMapper;
-import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
-import br.com.projeto.piloto.aplicativos.application.port.in.AplicativosUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

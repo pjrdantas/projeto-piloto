@@ -5,7 +5,7 @@ package br.com.projeto.piloto.aplicativos.accesscontrol.application.port.in;
 import java.util.List;
 import java.util.Optional;
 
-import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
 
 public interface AplicativosUseCase {
     List<AplicativosModel> listAll();

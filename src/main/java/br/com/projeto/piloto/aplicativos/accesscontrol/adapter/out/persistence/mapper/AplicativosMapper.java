@@ -1,9 +1,9 @@
 package br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.mapper;
 
-import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosRequestDTO;
-import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosResponseDTO;
-import br.com.projeto.piloto.aplicativos.adapter.out.persistence.entity.Aplicativo;
-import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosRequestDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosResponseDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
+import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
 
 public class AplicativosMapper {
 

@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCase;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.in.AuthPerfilUseCase;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.domain.model.AuthPerfilModel;
 import lombok.RequiredArgsConstructor;
 
 @Service

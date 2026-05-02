@@ -1,7 +1,5 @@
 package br.com.projeto.piloto.accesscontrol.accesscontrol.infrastructure.security;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
-import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
+import lombok.RequiredArgsConstructor;
 
 @Service("jwtUserDetailsService") 
 @Primary    
