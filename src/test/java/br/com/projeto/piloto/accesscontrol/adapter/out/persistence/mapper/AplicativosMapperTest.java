@@ -4,10 +4,11 @@ package br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosRequestDTO;
-import br.com.projeto.piloto.aplicativos.adapter.in.web.dto.AplicativosResponseDTO;
-import br.com.projeto.piloto.aplicativos.adapter.out.persistence.entity.Aplicativo;
-import br.com.projeto.piloto.aplicativos.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosRequestDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.in.web.dto.AplicativosResponseDTO;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.entity.Aplicativo;
+import br.com.projeto.piloto.aplicativos.accesscontrol.domain.model.AplicativosModel;
+import br.com.projeto.piloto.aplicativos.accesscontrol.adapter.out.persistence.mapper.AplicativosMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
