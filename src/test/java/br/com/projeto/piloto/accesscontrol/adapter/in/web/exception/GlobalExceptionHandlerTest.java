@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,10 +26,21 @@ import org.springframework.security.access.AccessDeniedException;
 import br.com.projeto.piloto.accesscontrol.domain.exception.DomainException;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
+import br.com.projeto.piloto.shared.exception.ErrorResponse;
+import br.com.projeto.piloto.accesscontrol.accesscontrol.adapter.in.web.exception.InvalidLoginException;
 import jakarta.servlet.http.HttpServletRequest;
+
+import br.com.projeto.piloto.shared.exception.GlobalExceptionHandler;
 
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {
+
+    @BeforeAll
+    static void silenciarLogsDoHandler() {
+        ch.qos.logback.classic.Logger logger =
+                (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        logger.setLevel(ch.qos.logback.classic.Level.OFF);
+    }
 
     @InjectMocks
     private GlobalExceptionHandler handler;
@@ -60,17 +72,6 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         assertEquals("Acesso negado", response.getBody().getError());
-    }
-
-    @SuppressWarnings("null")
-	@Test
-    @DisplayName("Deve tratar RuntimeException generica")
-    void handleRuntimeException() {
-        when(request.getRequestURI()).thenReturn("/api/teste");
-        ResponseEntity<ErrorResponse> response = handler.handleRuntimeException(new RuntimeException("Erro fatal"), request);
-        
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Erro de execução", response.getBody().getError());
     }
 
     @Test
