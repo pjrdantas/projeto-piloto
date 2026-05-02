@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.adapter.in.web.dto.AuthResponseDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthResponseDTO;
 
 class AuthResponseDTOTest {
 

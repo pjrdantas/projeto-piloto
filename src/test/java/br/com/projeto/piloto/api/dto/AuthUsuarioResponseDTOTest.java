@@ -4,8 +4,8 @@ package br.com.projeto.piloto.api.dto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.adapter.in.web.dto.AuthPerfilResumoDTO;
-import br.com.projeto.piloto.adapter.in.web.dto.AuthUsuarioResponseDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilResumoDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthUsuarioResponseDTO;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

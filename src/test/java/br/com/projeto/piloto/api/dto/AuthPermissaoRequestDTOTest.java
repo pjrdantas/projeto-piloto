@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.com.projeto.piloto.adapter.in.web.dto.AuthPermissaoRequestDTO;
+import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
 
 class AuthPermissaoRequestDTOTest {
 
