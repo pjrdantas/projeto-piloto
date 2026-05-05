@@ -16,5 +16,11 @@ public interface AuthUsuarioUseCasePort {
 
     AuthUsuarioModel buscarPorId(Long id);
 
+    AuthUsuarioModel buscarPorLogin(String login);
+
     List<AuthUsuarioModel> listarTodos();
+
+    boolean existsByLogin(String login);
+
+    boolean existsByEmail(String email);
 }

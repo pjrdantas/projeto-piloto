@@ -10,6 +10,8 @@ public interface AuthUsuarioRepositoryPort {
     AuthUsuario save( AuthUsuario usuario);
     Optional<AuthUsuario> findById( Long id);
     Optional<AuthUsuario> findByLogin(String login);
+    boolean existsByLogin(String login);
+    boolean existsByEmail(String email);
     List<AuthUsuario> findAll();
     void deleteById( Long id);
     boolean existsByDsLoginAndIdNot(String login, Long id);
