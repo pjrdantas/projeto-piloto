@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
+import br.com.projeto.piloto.accesscontrol.application.port.in.UsuarioUseCasePort;
 import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
+public class AuthUsuarioInteractor implements UsuarioUseCasePort {
 
     private final AuthUsuarioRepositoryPort repository;
     private final AuthUsuarioMapper mapper;
