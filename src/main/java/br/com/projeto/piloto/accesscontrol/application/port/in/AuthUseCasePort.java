@@ -4,7 +4,8 @@ import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
 
 public interface AuthUseCasePort {
 
+    /**
+     * Responsável apenas por autenticar usuário no sistema.
+     */
     AuthUsuarioModel authenticate(String login, String senha);
-
-    AuthUsuarioModel findByLogin(String login);
 }
