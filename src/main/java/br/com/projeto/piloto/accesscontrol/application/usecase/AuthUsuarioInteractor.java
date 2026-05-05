@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthUsuario;
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthUsuarioMapper;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
+import br.com.projeto.piloto.accesscontrol.application.port.in.UsuarioUseCasePort;
 import br.com.projeto.piloto.accesscontrol.application.port.out.AuthUsuarioRepositoryPort;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
+public class AuthUsuarioInteractor implements UsuarioUseCasePort {
 
     private final AuthUsuarioRepositoryPort repository;
     private final AuthUsuarioMapper mapper;
@@ -87,10 +87,27 @@ public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
     }
 
     @Override
+    public AuthUsuarioModel buscarPorLogin(String login) {
+        return repository.findByLogin(login)
+                .map(mapper::toDomain)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+    }
+
+    @Override
     public List<AuthUsuarioModel> listarTodos() {
         return repository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsByLogin(String login) {
+        return repository.existsByLogin(login);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
     }
 
     private void validar(AuthUsuarioModel model) {

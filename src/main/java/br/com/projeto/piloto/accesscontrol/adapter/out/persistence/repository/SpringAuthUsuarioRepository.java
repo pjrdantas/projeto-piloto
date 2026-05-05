@@ -12,4 +12,8 @@ public interface SpringAuthUsuarioRepository extends JpaRepository<AuthUsuario, 
 
     boolean existsByLoginAndIdNot(String login, Long id);
 
+    boolean existsByLogin(String login);
+
+    boolean existsByEmail(String email);
+
 }
