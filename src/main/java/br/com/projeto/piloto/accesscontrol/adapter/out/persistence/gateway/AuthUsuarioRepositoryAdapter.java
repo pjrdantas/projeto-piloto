@@ -37,6 +37,18 @@ public class AuthUsuarioRepositoryAdapter implements AuthUsuarioRepositoryPort {
     }
 
     @Override
+    public boolean existsByLogin(String login) {
+        Objects.requireNonNull(login, "login não pode ser nulo");
+        return repository.existsByLogin(login);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        Objects.requireNonNull(email, "email não pode ser nulo");
+        return repository.existsByEmail(email);
+    }
+
+    @Override
     public List<AuthUsuario> findAll() {
         return repository.findAll();
     }

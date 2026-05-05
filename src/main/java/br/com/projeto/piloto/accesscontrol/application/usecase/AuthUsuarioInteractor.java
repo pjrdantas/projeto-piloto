@@ -87,10 +87,27 @@ public class AuthUsuarioInteractor implements AuthUsuarioUseCasePort {
     }
 
     @Override
+    public AuthUsuarioModel buscarPorLogin(String login) {
+        return repository.findByLogin(login)
+                .map(mapper::toDomain)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+    }
+
+    @Override
     public List<AuthUsuarioModel> listarTodos() {
         return repository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsByLogin(String login) {
+        return repository.existsByLogin(login);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
     }
 
     private void validar(AuthUsuarioModel model) {
