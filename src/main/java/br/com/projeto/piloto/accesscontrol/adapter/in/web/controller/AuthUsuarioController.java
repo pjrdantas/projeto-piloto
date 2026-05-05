@@ -42,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Usuários", description = "Gerenciamento de usuários do sistema")
 @Validated
 @CrossOrigin(origins = "http://localhost:4200")
-public class UsuarioController {
+public class AuthUsuarioController {
 
     private final AuthUsuarioUseCasePort usuarioUseCase;
 

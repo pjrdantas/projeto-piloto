@@ -128,10 +128,10 @@ public class AuthController {
 	@PostMapping("/refresh-token")
 	@Operation(summary = "Renova o access token usando refresh token")
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Novo access token gerado", content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"accessToken\": \"novo-access-token\" }"))),
+			@ApiResponse(responseCode = "200", description = "Novo access token gerado",             content = @Content(mediaType = "application/json", schema = @Schema(example = "{ \"accessToken\": \"novo-access-token\" }"))),
 			@ApiResponse(responseCode = "400", description = "Token inválido ou argumento inválido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "401", description = "Token expirado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "500", description = "Erro interno", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "401", description = "Token expirado",                       content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "500", description = "Erro interno",                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO request) {
 
 		String refreshToken = request.refreshToken();

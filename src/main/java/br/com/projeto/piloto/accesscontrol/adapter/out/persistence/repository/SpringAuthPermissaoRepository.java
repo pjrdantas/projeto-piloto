@@ -8,6 +8,5 @@ import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.entity.AuthPe
 @Repository
 public interface SpringAuthPermissaoRepository extends JpaRepository<AuthPermissao, Long> {
 
-     
 	boolean existsByNmPermissao(String nmPermissao);
 }

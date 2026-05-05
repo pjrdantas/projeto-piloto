@@ -26,6 +26,7 @@ import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPe
 import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
