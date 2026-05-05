@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCasePort;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 
 @WebMvcTest(AuthPermissaoController.class)
@@ -42,7 +42,7 @@ class AuthPermissaoControllerTest {
 
     @SuppressWarnings("removal")
 	@MockBean
-    private AuthPermissaoUseCase authPermissaoUseCase;
+    private AuthPermissaoUseCasePort authPermissaoUseCasePort;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -60,45 +60,45 @@ class AuthPermissaoControllerTest {
     @Test
     @DisplayName("Caminhos de Sucesso e Conflito (POST, GET ID, DELETE, PUT)")
     void testFullWorkflow() throws Exception {
-        when(authPermissaoUseCase.existsByNmPermissao(any())).thenReturn(false);
-        when(authPermissaoUseCase.create(any())).thenReturn(validModel);
+        when(authPermissaoUseCasePort.existsByNmPermissao(any())).thenReturn(false);
+        when(authPermissaoUseCasePort.create(any())).thenReturn(validModel);
         mockMvc.perform(post("/api/permissoes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validDto)))
                 .andExpect(status().isCreated());
-        when(authPermissaoUseCase.existsByNmPermissao(any())).thenReturn(true);
+        when(authPermissaoUseCasePort.existsByNmPermissao(any())).thenReturn(true);
         mockMvc.perform(post("/api/permissoes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validDto)))
                 .andExpect(status().isConflict());
-        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(validModel));
+        when(authPermissaoUseCasePort.findById(1L)).thenReturn(Optional.of(validModel));
         mockMvc.perform(get("/api/permissoes/1")).andExpect(status().isOk());
-        when(authPermissaoUseCase.findById(99L)).thenReturn(Optional.empty());
+        when(authPermissaoUseCasePort.findById(99L)).thenReturn(Optional.empty());
         mockMvc.perform(get("/api/permissoes/99")).andExpect(status().isNotFound());
-        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(validModel));
-        when(authPermissaoUseCase.update(eq(1L), any())).thenReturn(validModel);
+        when(authPermissaoUseCasePort.findById(1L)).thenReturn(Optional.of(validModel));
+        when(authPermissaoUseCasePort.update(eq(1L), any())).thenReturn(validModel);
         mockMvc.perform(put("/api/permissoes/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validDto)))
                 .andExpect(status().isOk());
-        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.empty());
+        when(authPermissaoUseCasePort.findById(1L)).thenReturn(Optional.empty());
         mockMvc.perform(put("/api/permissoes/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validDto)))
                 .andExpect(status().isNotFound());
-        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(validModel));
-        doNothing().when(authPermissaoUseCase).delete(1L);
+        when(authPermissaoUseCasePort.findById(1L)).thenReturn(Optional.of(validModel));
+        doNothing().when(authPermissaoUseCasePort).delete(1L);
         mockMvc.perform(delete("/api/permissoes/1")).andExpect(status().isNoContent());
-        when(authPermissaoUseCase.findById(2L)).thenReturn(Optional.empty());
+        when(authPermissaoUseCasePort.findById(2L)).thenReturn(Optional.empty());
         mockMvc.perform(delete("/api/permissoes/2")).andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("LIST ALL - Cobertura da lista populada e lista vazia")
     void testListAllCoverage() throws Exception {
-        when(authPermissaoUseCase.listAll()).thenReturn(List.of(validModel));
+        when(authPermissaoUseCasePort.listAll()).thenReturn(List.of(validModel));
         mockMvc.perform(get("/api/permissoes")).andExpect(status().isOk());
-        when(authPermissaoUseCase.listAll()).thenReturn(Collections.emptyList());
+        when(authPermissaoUseCasePort.listAll()).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/api/permissoes")).andExpect(status().isNotFound());
     }
 }

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 
-public interface AuthPermissaoUseCase {
+public interface AuthPermissaoUseCasePort {
 
     List<AuthPermissaoModel> listAll();
 

@@ -7,14 +7,14 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCasePort;
 import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPerfilRepositoryPort;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthPerfilInteractor implements AuthPerfilUseCase {
+public class AuthPerfilInteractor implements AuthPerfilUseCasePort {
 
     private final AuthPerfilRepositoryPort repository;
     @Override

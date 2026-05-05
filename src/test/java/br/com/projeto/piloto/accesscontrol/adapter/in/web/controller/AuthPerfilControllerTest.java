@@ -25,8 +25,8 @@ import org.springframework.http.ResponseEntity;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilRequestDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilResponseDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCase;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCasePort;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCasePort;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
@@ -35,9 +35,9 @@ import jakarta.servlet.http.HttpServletRequest;
 class AuthPerfilControllerTest {
 
     @Mock
-    private AuthPerfilUseCase authPerfilUseCase;
+    private AuthPerfilUseCasePort authPerfilUseCasePort;
     @Mock
-    private AuthPermissaoUseCase authPermissaoUseCase;
+    private AuthPermissaoUseCasePort authPermissaoUseCasePort;
     @Mock
     private HttpServletRequest request;
 
@@ -54,7 +54,7 @@ class AuthPerfilControllerTest {
     void create_PerfilJaExiste() {
         AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
         when(dto.nmPerfil()).thenReturn("ADMIN");
-        when(authPerfilUseCase.existsByNmPerfil("ADMIN")).thenReturn(true);
+        when(authPerfilUseCasePort.existsByNmPerfil("ADMIN")).thenReturn(true);
 
         ResponseEntity<?> response = controller.create(dto, request);
 
@@ -70,15 +70,15 @@ class AuthPerfilControllerTest {
         when(dto.permissoesIds()).thenReturn(permissoesIds);
 
         AuthPermissaoModel permissao = mock(AuthPermissaoModel.class);
-        when(authPerfilUseCase.existsByNmPerfil("ADMIN")).thenReturn(false);
-        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(permissao));
+        when(authPerfilUseCasePort.existsByNmPerfil("ADMIN")).thenReturn(false);
+        when(authPermissaoUseCasePort.findById(1L)).thenReturn(Optional.of(permissao));
 
         AuthPerfilModel domain = mock(AuthPerfilModel.class);
         AuthPerfilModel created = mock(AuthPerfilModel.class);
 
         try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
             mapper.when(() -> AuthPerfilMapper.toDomain(dto, Set.of(permissao))).thenReturn(domain);
-            when(authPerfilUseCase.create(domain)).thenReturn(created);
+            when(authPerfilUseCasePort.create(domain)).thenReturn(created);
             AuthPerfilResponseDTO responseDTO = mock(AuthPerfilResponseDTO.class);
             mapper.when(() -> AuthPerfilMapper.toResponse(created)).thenReturn(responseDTO);
 
@@ -96,8 +96,8 @@ class AuthPerfilControllerTest {
         when(dto.nmPerfil()).thenReturn("ADMIN");
         when(dto.permissoesIds()).thenReturn(permissoesIds);
 
-        when(authPerfilUseCase.existsByNmPerfil("ADMIN")).thenReturn(false);
-        when(authPermissaoUseCase.findById(2L)).thenReturn(Optional.empty());
+        when(authPerfilUseCasePort.existsByNmPerfil("ADMIN")).thenReturn(false);
+        when(authPermissaoUseCasePort.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> controller.create(dto, request));
     }
@@ -105,7 +105,7 @@ class AuthPerfilControllerTest {
     @Test
     void update_PerfilNaoEncontrado() {
         AuthPerfilRequestDTO dto = mock(AuthPerfilRequestDTO.class);
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.empty());
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> controller.update(1L, dto, request));
     }
@@ -117,17 +117,17 @@ class AuthPerfilControllerTest {
         when(dto.permissoesIds()).thenReturn(permissoesIds);
 
         AuthPerfilModel perfil = mock(AuthPerfilModel.class);
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.of(perfil));
 
         AuthPermissaoModel permissao = mock(AuthPermissaoModel.class);
-        when(authPermissaoUseCase.findById(1L)).thenReturn(Optional.of(permissao));
+        when(authPermissaoUseCasePort.findById(1L)).thenReturn(Optional.of(permissao));
 
         AuthPerfilModel domain = mock(AuthPerfilModel.class);
         AuthPerfilModel updated = mock(AuthPerfilModel.class);
 
         try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
             mapper.when(() -> AuthPerfilMapper.toDomain(dto, Set.of(permissao))).thenReturn(domain);
-            when(authPerfilUseCase.update(1L, domain)).thenReturn(updated);
+            when(authPerfilUseCasePort.update(1L, domain)).thenReturn(updated);
             AuthPerfilResponseDTO responseDTO = mock(AuthPerfilResponseDTO.class);
             mapper.when(() -> AuthPerfilMapper.toResponse(updated)).thenReturn(responseDTO);
 
@@ -145,8 +145,8 @@ class AuthPerfilControllerTest {
         when(dto.permissoesIds()).thenReturn(permissoesIds);
 
         AuthPerfilModel perfil = mock(AuthPerfilModel.class);
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
-        when(authPermissaoUseCase.findById(2L)).thenReturn(Optional.empty());
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.of(perfil));
+        when(authPermissaoUseCasePort.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> controller.update(1L, dto, request));
     }
@@ -154,17 +154,17 @@ class AuthPerfilControllerTest {
     @Test
     void delete_Sucesso() {
         AuthPerfilModel perfil = mock(AuthPerfilModel.class);
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.of(perfil));
 
         ResponseEntity<?> response = controller.delete(1L, request);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(authPerfilUseCase).delete(1L);
+        verify(authPerfilUseCasePort).delete(1L);
     }
 
     @Test
     void delete_NaoEncontrado() {
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.empty());
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.empty());
 
         ResponseEntity<?> response = controller.delete(1L, request);
 
@@ -175,7 +175,7 @@ class AuthPerfilControllerTest {
     @Test
     void findById_Sucesso() {
         AuthPerfilModel perfil = mock(AuthPerfilModel.class);
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.of(perfil));
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.of(perfil));
         AuthPerfilResponseDTO dto = mock(AuthPerfilResponseDTO.class);
 
         try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
@@ -190,7 +190,7 @@ class AuthPerfilControllerTest {
 
     @Test
     void findById_NaoEncontrado() {
-        when(authPerfilUseCase.findById(1L)).thenReturn(Optional.empty());
+        when(authPerfilUseCasePort.findById(1L)).thenReturn(Optional.empty());
 
         ResponseEntity<?> response = controller.findById(1L, request);
 
@@ -201,7 +201,7 @@ class AuthPerfilControllerTest {
     @Test
     void listAll_Sucesso() {
         AuthPerfilModel perfil = mock(AuthPerfilModel.class);
-        when(authPerfilUseCase.listAll()).thenReturn(List.of(perfil));
+        when(authPerfilUseCasePort.listAll()).thenReturn(List.of(perfil));
         AuthPerfilResponseDTO dto = mock(AuthPerfilResponseDTO.class);
 
         try (MockedStatic<AuthPerfilMapper> mapper = mockStatic(AuthPerfilMapper.class)) {
@@ -216,7 +216,7 @@ class AuthPerfilControllerTest {
 
     @Test
     void listAll_Vazio() {
-        when(authPerfilUseCase.listAll()).thenReturn(List.of());
+        when(authPerfilUseCasePort.listAll()).thenReturn(List.of());
 
         ResponseEntity<?> response = controller.listAll(request);
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
 
-public interface AuthPerfilUseCase {
+public interface AuthPerfilUseCasePort {
 
     
     AuthPerfilModel create(AuthPerfilModel domain);

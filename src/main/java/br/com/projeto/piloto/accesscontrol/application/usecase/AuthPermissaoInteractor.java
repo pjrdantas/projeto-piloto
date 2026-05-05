@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCasePort;
 import br.com.projeto.piloto.accesscontrol.application.port.out.AuthPermissaoRepositoryPort;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 
 @Service
-public class AuthPermissaoInteractor implements AuthPermissaoUseCase {
+public class AuthPermissaoInteractor implements AuthPermissaoUseCasePort {
 
     private final AuthPermissaoRepositoryPort repository;
 

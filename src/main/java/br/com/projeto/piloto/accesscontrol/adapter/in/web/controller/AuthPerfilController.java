@@ -25,8 +25,8 @@ import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilRequestD
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilResponseDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPerfilMapper;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCase;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPerfilUseCasePort;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCasePort;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +46,8 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthPerfilController {
 
-    private final AuthPerfilUseCase authPerfilUseCase;
-    private final AuthPermissaoUseCase authPermissaoUseCase;
+    private final AuthPerfilUseCasePort authPerfilUseCasePort;
+    private final AuthPermissaoUseCasePort authPermissaoUseCasePort;
  
 
    
@@ -71,7 +71,7 @@ public class AuthPerfilController {
         @ApiResponse(responseCode = "422", description = "Erro de validação",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> create(@Validated @RequestBody AuthPerfilRequestDTO dto, HttpServletRequest request) {
     	   	
-        if (authPerfilUseCase.existsByNmPerfil(dto.nmPerfil())) {
+        if (authPerfilUseCasePort.existsByNmPerfil(dto.nmPerfil())) {
             return buildErrorResponse(HttpStatus.CONFLICT, "Perfil já existe: " + dto.nmPerfil(), request);
         }
 
@@ -80,12 +80,12 @@ public class AuthPerfilController {
         var permissoes = Optional.ofNullable(dto.permissoesIds())
             .orElse(Set.of())
             .stream()
-            .map(id -> authPermissaoUseCase.findById(id)
+            .map(id -> authPermissaoUseCasePort.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Permissão não encontrada: " + id)))
             .collect(Collectors.toSet());
 
         AuthPerfilModel domain = AuthPerfilMapper.toDomain(dto, permissoes);
-        AuthPerfilModel created = authPerfilUseCase.create(domain);
+        AuthPerfilModel created = authPerfilUseCasePort.create(domain);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(AuthPerfilMapper.toResponse(created));
@@ -98,17 +98,17 @@ public class AuthPerfilController {
             @ApiResponse(responseCode = "404", description = "Perfil não encontrado",              content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> update(@PathVariable("id") Long id, @Validated @RequestBody AuthPerfilRequestDTO dto, HttpServletRequest request) {
  
-        authPerfilUseCase.findById(id).orElseThrow(() -> new IllegalArgumentException("Perfil não encontrado: " + id));
+        authPerfilUseCasePort.findById(id).orElseThrow(() -> new IllegalArgumentException("Perfil não encontrado: " + id));
 
         var permissoes = Optional.ofNullable(dto.permissoesIds())
             .orElse(Set.of())
             .stream()
-            .map(pid -> authPermissaoUseCase.findById(pid)
+            .map(pid -> authPermissaoUseCasePort.findById(pid)
             .orElseThrow(() -> new IllegalArgumentException("Permissão não encontrada: " + pid)))
             .collect(Collectors.toSet());
 
         AuthPerfilModel domain = AuthPerfilMapper.toDomain(dto, permissoes);
-        AuthPerfilModel updated = authPerfilUseCase.update(id, domain);
+        AuthPerfilModel updated = authPerfilUseCasePort.update(id, domain);
 
         return ResponseEntity.ok(AuthPerfilMapper.toResponse(updated));
     }    
@@ -120,9 +120,9 @@ public class AuthPerfilController {
             @ApiResponse(responseCode = "404", description = "Perfil não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> delete(@PathVariable("id") Long id, HttpServletRequest request) {
     	
-        Optional<AuthPerfilModel> existing = authPerfilUseCase.findById(id);
+        Optional<AuthPerfilModel> existing = authPerfilUseCasePort.findById(id);
         if (existing.isPresent()) {
-            authPerfilUseCase.delete(id);
+            authPerfilUseCasePort.delete(id);
             return ResponseEntity.noContent().build();  
         } else {
             return buildErrorResponse(HttpStatus.NOT_FOUND, "Perfil não encontrada: " + id, request);
@@ -136,7 +136,7 @@ public class AuthPerfilController {
             @ApiResponse(responseCode = "404", description = "Perfil não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request) {
     	
-        Optional<AuthPerfilModel> existing = authPerfilUseCase.findById(id);
+        Optional<AuthPerfilModel> existing = authPerfilUseCasePort.findById(id);
         if (existing.isPresent()) {
             AuthPerfilResponseDTO dto = AuthPerfilMapper.toResponse(existing.get());
             return ResponseEntity.ok(dto);
@@ -153,7 +153,7 @@ public class AuthPerfilController {
         @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> listAll(HttpServletRequest request) {
     	
-        List<AuthPerfilModel> domains = authPerfilUseCase.listAll();
+        List<AuthPerfilModel> domains = authPerfilUseCasePort.listAll();
         if (domains.isEmpty()) {
             return buildErrorResponse(HttpStatus.NOT_FOUND, "Nenhum Perfil encontrado", request);
         }

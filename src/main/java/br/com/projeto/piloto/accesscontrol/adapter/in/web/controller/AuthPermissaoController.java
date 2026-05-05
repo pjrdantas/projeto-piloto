@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoRequestDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPermissaoResponseDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.out.persistence.mapper.AuthPermissaoMapper;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCase;
+import br.com.projeto.piloto.accesscontrol.application.port.in.AuthPermissaoUseCasePort;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPermissaoModel;
 import br.com.projeto.piloto.shared.exception.ErrorResponse;
 
@@ -44,7 +44,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthPermissaoController {
 
-    private final AuthPermissaoUseCase authPermissaoUseCase;
+    private final AuthPermissaoUseCasePort authPermissaoUseCasePort;
     
     
     private ResponseEntity<ErrorResponse> buildErrorResponse(@NonNull HttpStatus status, String message, HttpServletRequest request) {
@@ -67,13 +67,13 @@ public class AuthPermissaoController {
             @ApiResponse(responseCode = "422", description = "Erro de validação",            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> create(@Validated @RequestBody AuthPermissaoRequestDTO dto, HttpServletRequest request) {
 
-        if (authPermissaoUseCase.existsByNmPermissao(dto.nmPermissao())) {
+        if (authPermissaoUseCasePort.existsByNmPermissao(dto.nmPermissao())) {
             return buildErrorResponse(HttpStatus.CONFLICT,
                     "Permissão já existe com o nome: " + dto.nmPermissao(), request);
         }
 
         AuthPermissaoModel domain = AuthPermissaoMapper.toDomain(dto);
-        AuthPermissaoModel created = authPermissaoUseCase.create(domain);
+        AuthPermissaoModel created = authPermissaoUseCasePort.create(domain);
         AuthPermissaoResponseDTO response = AuthPermissaoMapper.toResponse(created);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -86,10 +86,10 @@ public class AuthPermissaoController {
 			@ApiResponse(responseCode = "404", description = "Permissão não encontrada",          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @Validated @RequestBody AuthPermissaoRequestDTO dto, HttpServletRequest request) {
 
-	    Optional<AuthPermissaoModel> existing = authPermissaoUseCase.findById(id);
+	    Optional<AuthPermissaoModel> existing = authPermissaoUseCasePort.findById(id);
 	    if (existing.isPresent()) {
 	        AuthPermissaoModel domain = AuthPermissaoMapper.toDomain(dto);
-	        AuthPermissaoResponseDTO updatedDto = AuthPermissaoMapper.toResponse(authPermissaoUseCase.update(id, domain));
+	        AuthPermissaoResponseDTO updatedDto = AuthPermissaoMapper.toResponse(authPermissaoUseCasePort.update(id, domain));
 	        return ResponseEntity.ok(updatedDto);
 	    } else {
 	        return buildErrorResponse(HttpStatus.NOT_FOUND, "Permissão não encontrada: " + id, request);
@@ -104,9 +104,9 @@ public class AuthPermissaoController {
             @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> delete(@PathVariable("id") Long id, HttpServletRequest request) {
     	
-        Optional<AuthPermissaoModel> existing = authPermissaoUseCase.findById(id);
+        Optional<AuthPermissaoModel> existing = authPermissaoUseCasePort.findById(id);
         if (existing.isPresent()) {
-            authPermissaoUseCase.delete(id);
+            authPermissaoUseCasePort.delete(id);
             return ResponseEntity.noContent().build();  
         } else {
             return buildErrorResponse(HttpStatus.NOT_FOUND, "Permissão não encontrada: " + id, request);
@@ -120,7 +120,7 @@ public class AuthPermissaoController {
             @ApiResponse(responseCode = "404", description = "Permissão não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request) {
     	
-        Optional<AuthPermissaoModel> existing = authPermissaoUseCase.findById(id);
+        Optional<AuthPermissaoModel> existing = authPermissaoUseCasePort.findById(id);
         if (existing.isPresent()) {
             AuthPermissaoResponseDTO dto = AuthPermissaoMapper.toResponse(existing.get());
             return ResponseEntity.ok(dto);
@@ -137,7 +137,7 @@ public class AuthPermissaoController {
             @ApiResponse(responseCode = "404", description = "Lista não encontrada",         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<?> listAll(HttpServletRequest request) {
     	
-        List<AuthPermissaoModel> domains = authPermissaoUseCase.listAll();
+        List<AuthPermissaoModel> domains = authPermissaoUseCasePort.listAll();
         if (domains.isEmpty()) {
             return buildErrorResponse(HttpStatus.NOT_FOUND, "Nenhuma permissão encontrada", request);
         }
