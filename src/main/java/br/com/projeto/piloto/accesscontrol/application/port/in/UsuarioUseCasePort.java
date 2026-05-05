@@ -6,21 +6,19 @@ import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
 
 public interface UsuarioUseCasePort {
 
-    // CRUD
+    
     AuthUsuarioModel criar(AuthUsuarioModel model);
 
     AuthUsuarioModel atualizar(Long id, AuthUsuarioModel model);
 
     void deletar(Long id);
-
-    // CONSULTAS
+  
     AuthUsuarioModel buscarPorId(Long id);
 
     AuthUsuarioModel buscarPorLogin(String login);
 
     List<AuthUsuarioModel> listarTodos();
 
-    // REGRAS / VALIDAÇÕES
     boolean existsByLogin(String login);
 
     boolean existsByEmail(String email);
