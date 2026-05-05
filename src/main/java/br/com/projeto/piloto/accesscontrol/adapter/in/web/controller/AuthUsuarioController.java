@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthPerfilResumoDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthUsuarioRequestDTO;
 import br.com.projeto.piloto.accesscontrol.adapter.in.web.dto.AuthUsuarioResponseDTO;
-import br.com.projeto.piloto.accesscontrol.application.port.in.AuthUsuarioUseCasePort;
+import br.com.projeto.piloto.accesscontrol.application.port.in.UsuarioUseCasePort;
 import br.com.projeto.piloto.accesscontrol.domain.exception.UserNotFoundException;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthPerfilModel;
 import br.com.projeto.piloto.accesscontrol.domain.model.AuthUsuarioModel;
@@ -44,7 +44,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthUsuarioController {
 
-    private final AuthUsuarioUseCasePort usuarioUseCase;
+    private final UsuarioUseCasePort usuarioUseCase;
 
     private AuthUsuarioResponseDTO toDto(AuthUsuarioModel m) {
         Set<AuthPerfilResumoDTO> perfisIdsDto = m.getPerfis().stream()
